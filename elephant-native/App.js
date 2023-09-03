@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import Home from './screens/home';
 import About from './screens/about';
+import Contact from './screens/contact';
 import Dashboard from './screens/dashboard';
 import Settings from './screens/settings';
 
@@ -16,6 +17,7 @@ export default function App() {
       <Drawer.Navigator initialRouteName="Home">
         <Drawer.Screen name="Home" component={Home} />
         <Drawer.Screen name="About" component={About} />
+        <Drawer.Screen name="Contact" component={Contact} />
         <Drawer.Screen name="Dashboard" component={Dashboard} />
         <Drawer.Screen name="Settings" component={Settings} />
       </Drawer.Navigator>
