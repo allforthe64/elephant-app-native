@@ -1,17 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, Touchable } from 'react-native';
+import Accordion from '../components/accordion';
 
 export default function About({navigation: { navigate }}) {
-
-  const [clicked, setClicked] = useState('Not Clicked')
-
-  const testHandler = () => {
-    clicked === 'Not Clicked' ? setClicked('Clicked') : setClicked('Not Clicked')
-  }
 
   return (
     <ScrollView>
@@ -23,6 +14,9 @@ export default function About({navigation: { navigate }}) {
         <StatusBar style="auto" />
       </View>
       <View style={styles.container}>
+      <View style={{paddingLeft: '4%', paddingRight: '4%', marginBottom: 50}}>
+        <Accordion />
+      </View>
       <View style={styles.wrapperContainer}>
           <Text style={styles.buttonHeading}>Ready To Get Started?</Text>
           <View style={styles.buttonWrapper}>
@@ -87,17 +81,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: 'full',
     textAlign: 'center',
-    fontSize: 18
+    fontSize: 18,
+    borderRadius: 25
   },
   bgImg: {
     objectFit: 'scale-down',
     opacity: .4,
   },
 
-
   container: {
     backgroundColor: 'rgb(41 37 36)',
-    height: 500
+    paddingBottom: 50,
+    paddingTop: 50
   },
   buttonHeading: {
     fontSize: 30,

@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: 'full',
     textAlign: 'center',
-    fontSize: 18
+    fontSize: 18,
+    borderRadius: 25
   }
 });
