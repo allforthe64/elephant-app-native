@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {View, ScrollView, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native'
-import email from 'react-native-email'
+import emailjs from '@emailjs/browser'
+import {EMAILJS_API_KEY, EMAILJS_TEMPLATE_ID, EMAILJS_SERVICE_ID} from '../secrets'
 
 const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 const PHONE_REGEX = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/
@@ -9,7 +10,7 @@ const ContactForm = () => {
 
   const [fName, setfName] = useState('')
   const [lName, setlName] = useState('')
-  const [email, setEmail] = useState('')
+  const [userEmail, setUserEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [position, setPosition] = useState('')
   const [message, setMessage] = useState('')
@@ -18,9 +19,9 @@ const ContactForm = () => {
 
   //run regex check on email input
   useEffect(() => {
-    const emailResult = EMAIL_REGEX.test(email)
+    const emailResult = EMAIL_REGEX.test(userEmail)
     setValidEmail(emailResult)
-  }, [email])
+  }, [userEmail])
 
   //run regex check on phone input
   useEffect(() => {
@@ -30,19 +31,38 @@ const ContactForm = () => {
 
   const sendEmail = () => {
 
-    if (!validEmail || !validPhone || email === '' || phone === '') {
+    if (!validEmail || !validPhone || userEmail === '' || phone === '') {
       return false
     }
 
-    console.log('running')
+    let templateParams = {
+      sender_first_name: fName,
+      sender_last_name: lName,
+      sender_address: userEmail,
+      sender_phone: phone,
+      sender_position: position,
+      message: message,
+    };
+    console.log('ENVIADOS: ', JSON.stringify(templateParams));
+  
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, EMAILJS_API_KEY).then(
+      function (response) {
+        console.log('SUCCESS!', response.status, response.text);
+      },
+      function (error) {
+        console.log('FAILED...', error);
+      }
+    );
 
-    const to = ['williamhrainey@gmail.com'] // string or array of email addresses
-        email(to, {
-            // Optional additional arguments
-            subject: 'Show how to use',
-            body: 'Some body right here',
-            checkCanOpen: false // Call Linking.canOpenURL prior to Linking.openURL
-        }).catch(console.error)
+    setfName('')
+    setlName('')
+    setUserEmail('')
+    setPhone('')
+    setPosition('')
+    setMessage('')
+    setValidEmail(null)
+    setValidPhone(null)
+
   }
 
   return (
@@ -59,12 +79,12 @@ const ContactForm = () => {
             placeholder={'Last Name'}
             style={styles.formInput}
             />
-            <TextInput onChangeText={(e) => setEmail(e)}
-            value={email}
+            <TextInput onChangeText={(e) => setUserEmail(e)}
+            value={userEmail}
             placeholder={'Your Email'}
-            style={(validEmail || email === '') ? styles.formInput : styles.invalid}
+            style={(validEmail || userEmail === '') ? styles.formInput : styles.invalid}
             />
-            <Text style={(validEmail || email === '') ? {display: 'none'} : {display: 'flex', color: 'red', textAlign:'left', width: '90%', marginBottom: '2.2%'}}>Please Enter A Valid Email</Text>
+            <Text style={(validEmail || userEmail === '') ? {display: 'none'} : {display: 'flex', color: 'red', textAlign:'left', width: '90%', marginBottom: '2.2%'}}>Please Enter A Valid Email</Text>
             <TextInput onChangeText={(e) => setPhone(e)}
             value={phone}
             placeholder={'Phone Number'}

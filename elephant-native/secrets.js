@@ -1,0 +1,5 @@
+const EMAILJS_TEMPLATE_ID="template_m0srb16"
+const EMAILJS_SERVICE_ID="service_kjoydna"
+const EMAILJS_API_KEY="oxzB_fsP6GjdCcDs4"
+
+export {EMAILJS_API_KEY, EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID}
