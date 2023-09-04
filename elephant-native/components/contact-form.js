@@ -1,5 +1,9 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {View, ScrollView, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native'
+import email from 'react-native-email'
+
+const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+const PHONE_REGEX = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/
 
 const ContactForm = () => {
 
@@ -9,6 +13,37 @@ const ContactForm = () => {
   const [phone, setPhone] = useState('')
   const [position, setPosition] = useState('')
   const [message, setMessage] = useState('')
+  const [validEmail, setValidEmail] = useState(null)
+  const [validPhone, setValidPhone] = useState(null)
+
+  //run regex check on email input
+  useEffect(() => {
+    const emailResult = EMAIL_REGEX.test(email)
+    setValidEmail(emailResult)
+  }, [email])
+
+  //run regex check on phone input
+  useEffect(() => {
+    const phoneResult = PHONE_REGEX.test(phone)
+    setValidPhone(phoneResult)
+  }, [phone])
+
+  const sendEmail = () => {
+
+    if (!validEmail || !validPhone || email === '' || phone === '') {
+      return false
+    }
+
+    console.log('running')
+
+    const to = ['williamhrainey@gmail.com'] // string or array of email addresses
+        email(to, {
+            // Optional additional arguments
+            subject: 'Show how to use',
+            body: 'Some body right here',
+            checkCanOpen: false // Call Linking.canOpenURL prior to Linking.openURL
+        }).catch(console.error)
+  }
 
   return (
     <ScrollView>
@@ -27,13 +62,15 @@ const ContactForm = () => {
             <TextInput onChangeText={(e) => setEmail(e)}
             value={email}
             placeholder={'Your Email'}
-            style={styles.formInput}
+            style={(validEmail || email === '') ? styles.formInput : styles.invalid}
             />
+            <Text style={(validEmail || email === '') ? {display: 'none'} : {display: 'flex', color: 'red', textAlign:'left', width: '90%', marginBottom: '2.2%'}}>Please Enter A Valid Email</Text>
             <TextInput onChangeText={(e) => setPhone(e)}
             value={phone}
             placeholder={'Phone Number'}
-            style={styles.formInput}
+            style={(validPhone || phone === '') ? styles.formInput : styles.invalid}
             />
+            <Text style={(validPhone || phone === '') ? {display: 'none'} : {display: 'flex', color: 'red', textAlign:'left', width: '90%', marginBottom: '2.2%'}}>Please Enter A Valid Phone Number</Text>
             <TextInput onChangeText={(e) => setPosition(e)}
             value={position}
             placeholder={'Professional Position (optional)'}
@@ -47,7 +84,7 @@ const ContactForm = () => {
             multiline
             numberOfLines={5}
             />
-            <TouchableOpacity onPress={() => false}>
+            <TouchableOpacity onPress={() => sendEmail()}>
               <Text style={styles.button}>More About Us</Text>
             </TouchableOpacity>
         </View>
@@ -82,6 +119,16 @@ const styles = StyleSheet.create({
       fontSize: 18,
       textAlignVertical: 'top',
       width: '90%'
+    },
+    invalid: {
+      backgroundColor: 'white',
+      paddingLeft: 4,
+      paddingRight: 4,
+      paddingTop: 2,
+      paddingBottom: 2,
+      fontSize: 18,
+      width: '90%',
+      marginBottom: '2%'
     },
     formCon: {
       flex: 1,
