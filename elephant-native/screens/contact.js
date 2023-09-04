@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
+import ContactForm from '../components/contact-form';
 import { useState } from 'react';
 
 export default function Contact() {
@@ -12,8 +13,9 @@ export default function Contact() {
 
   return (
     <View style={styles.container}>
+      <Image source={require('../assets/elephant-about.jpg')} style={styles.bgImg}/>
       <View style={styles.modal}>
-        <Text style={styles.bigHeader}>Welcome to My Elephant App (Contact Page)</Text>
+        <ContactForm />
       </View>
       <StatusBar style="auto" />
     </View>
@@ -26,19 +28,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'rgb(0, 0, 0)'
   },
   modal: {
-    width: '85%',
-    height: '60%',
+    width: '90%',
     backgroundColor: 'rgba(0, 0, 0, .5)',
-    paddingTop: '30%'
-  },
-  bigHeader: {
-    color: 'white',
-    fontSize: 40,
-    textAlign: 'center',
-    fontWeight: '700',
-    marginBottom: '2.5%'
+    position: 'absolute',
+    padding: 10
   },
   subheading: {
     color: 'white',
@@ -59,5 +55,9 @@ const styles = StyleSheet.create({
     padding: 8,
     margin: 10,
     width: '50%'
-  }
+  },
+  bgImg: {
+    objectFit: 'scale-down',
+    opacity: .4,
+  },
 });
