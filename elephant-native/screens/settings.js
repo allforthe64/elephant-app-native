@@ -1,29 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
+import { StyleSheet } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
+import Main from './settingsStackScreens/main';
+import Screen1 from './settingsStackScreens/screen1';
+import Screen2 from './settingsStackScreens/screen2';
+import Screen3 from './settingsStackScreens/screen3';
+import Screen4 from './settingsStackScreens/screen4';
+import Screen5 from './settingsStackScreens/screen5';
+
+const Stack = createStackNavigator()
 
 export default function Settings() {
 
-  const [clicked, setClicked] = useState('Not Clicked')
-
-  const testHandler = () => {
-    clicked === 'Not Clicked' ? setClicked('Clicked') : setClicked('Not Clicked')
-  }
-
   return (
-    <View style={styles.container}>
-      <View style={styles.modal}>
-        <Text style={styles.bigHeader}>Welcome to My Elephant App (Settings)</Text>
-      </View>
-      <StatusBar style="auto" />
-    </View>
+    <Stack.Navigator>
+      <Stack.Screen name="Settings" component={Main} />
+      <Stack.Screen name="Settings1" component={Screen1} />
+      <Stack.Screen name="Settings2" component={Screen2} />
+      <Stack.Screen name="Settings3" component={Screen3} />
+      <Stack.Screen name="Settings4" component={Screen4} />
+      <Stack.Screen name="Settings5" component={Screen5} />
+    </Stack.Navigator> 
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'rgb(23,23,23)',
     alignItems: 'center',
     justifyContent: 'center',
   },
