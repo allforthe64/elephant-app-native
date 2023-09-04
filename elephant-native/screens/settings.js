@@ -13,7 +13,7 @@ export default function Settings() {
 
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Settings" component={Main} />
+      <Stack.Screen name="Settings" component={Main} options={{headerShown: false}}/>
       <Stack.Screen name="Settings1" component={Screen1} />
       <Stack.Screen name="Settings2" component={Screen2} />
       <Stack.Screen name="Settings3" component={Screen3} />
