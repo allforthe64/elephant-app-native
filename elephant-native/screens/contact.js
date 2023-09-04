@@ -3,7 +3,7 @@ import { StyleSheet, View, Image } from 'react-native';
 import ContactForm from '../components/contact-form';
 import { useState } from 'react';
 
-export default function Contact() {
+export default function Contact({navigation: { navigate }}) {
 
   const [clicked, setClicked] = useState('Not Clicked')
 
@@ -15,7 +15,7 @@ export default function Contact() {
     <View style={styles.container}>
       <Image source={require('../assets/elephant-about.jpg')} style={styles.bgImg}/>
       <View style={styles.modal}>
-        <ContactForm />
+        <ContactForm navigateFunc={navigate}/>
       </View>
       <StatusBar style="auto" />
     </View>
