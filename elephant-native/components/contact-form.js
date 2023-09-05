@@ -16,7 +16,7 @@ const ContactForm = ({ navigateFunc }) => {
   const [message, setMessage] = useState('')
   const [validEmail, setValidEmail] = useState(null)
   const [validPhone, setValidPhone] = useState(null)
-  const [success, setSuccess] = useState(true)
+  const [success, setSuccess] = useState(false)
 
   //run regex check on email input
   useEffect(() => {

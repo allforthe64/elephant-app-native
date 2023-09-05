@@ -1,27 +1,25 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useState } from 'react';
+import DashCollectContainer from '../../components/dashCollectContainer';
 
 export default function DashMain({navigation: { navigate }}) {
 
   return (
     <View>
-        <ScrollView /* style={styles.container} */>
-      <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
-      <View style={styles.fileContainer}>
-        <Text style={styles.bigHeader}>Welcome to My Elephant App (Dashboard)</Text>
-        <Text style={styles.bigHeader}>Welcome to My Elephant App (Dashboard)</Text>
-        <Text style={styles.bigHeader}>Welcome to My Elephant App (Dashboard)</Text>
-        <Text style={styles.bigHeader}>Welcome to My Elephant App (Dashboard)</Text>
-        <Text style={styles.bigHeader}>Welcome to My Elephant App (Dashboard)</Text>
-      </View>
-      <StatusBar style="auto" />
-    </ScrollView>
-    <View style={styles.buttonWrapper}>
-        <TouchableOpacity onPress={() => navigate('Collect Data')}>
-            <Text style={styles.input}>Collect Data</Text>
-        </TouchableOpacity>
-    </View>
+        <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
+        <View style={styles.buttonContainer}>
+            <Text style={styles.bigHeader}>Welcome to your dashboard</Text>
+            <Text style={styles.subheading}>Collect Data:</Text>
+            <DashCollectContainer navigate={navigate}/>
+            <View style={styles.wrapperContainer}>
+                <View style={styles.buttonWrapper}>
+                    <TouchableOpacity onPress={() => navigate('Files')}>
+                        <Text style={styles.input}>View Your Files</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View>
     </View>
     
   );
@@ -34,34 +32,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  fileContainer: {
+  buttonContainer: {
     width: '100%',
     height: '100%',
     backgroundColor: 'rgba(0, 0, 0, .6)',
-    paddingTop: '30%',
+    paddingTop: '5%',
     position: 'absolute'
   },
   bigHeader: {
     color: 'white',
-    fontSize: 40,
+    fontSize: 45,
     textAlign: 'center',
     fontWeight: '700',
-    marginBottom: '2.5%'
+    marginBottom: '5%'
   },
   subheading: {
     color: 'white',
     textAlign: 'center',
-    fontSize: 18
+    fontSize: 35,
+    fontWeight: '600'
   },
   wrapperContainer: {
-    flex: 1,
-    alignItems: 'center'
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingTop: '10%'
   },
   buttonWrapper: {
-    position: 'absolute',
-    bottom: '5%',
-    alignSelf: 'flex-end',
-    width: '50%'
+    width: '80%'
   },
   input: {
     borderWidth: 1,
@@ -71,7 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: 'full',
     textAlign: 'center',
-    fontSize: 15,
+    fontSize: 20,
     borderRadius: 25
   },
   bgImg: {

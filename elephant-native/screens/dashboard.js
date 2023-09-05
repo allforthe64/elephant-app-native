@@ -1,7 +1,8 @@
 import { StyleSheet } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import DashMain from './dashboardStackScreens/dashMain';
-import CollectData from './dashboardStackScreens/collectData';
+import Files from './dashboardStackScreens/files';
+import Notepad from './dashboardStackScreens/notepad';
 
 const Stack = createStackNavigator()
 
@@ -10,7 +11,8 @@ export default function Dashboard() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Dashboard-Main" component={DashMain} options={{headerShown: false}}/>
-      <Stack.Screen name="Collect Data" component={CollectData} />
+      <Stack.Screen name="Files" component={Files} />
+      <Stack.Screen name="Notepad" component={Notepad} />
     </Stack.Navigator> 
   );
 }

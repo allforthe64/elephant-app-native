@@ -2,13 +2,13 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, TouchableOpacity, Image } from 'react-native';
 import { useState } from 'react';
 
-export default function CollectData() {
+export default function Files() {
 
   return (
     <View style={styles.container}>
       <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
       <View style={styles.modal}>
-        <Text style={styles.bigHeader}>Welcome to My Elephant App (Collect Data)</Text>
+        <Text style={styles.bigHeader}>Welcome to My Elephant App (Files)</Text>
       </View>
       <StatusBar style="auto" />
     </View>
