@@ -1,29 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
+import { StyleSheet } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
+import DashMain from './dashboardStackScreens/dashMain';
+import CollectData from './dashboardStackScreens/collectData';
+
+const Stack = createStackNavigator()
 
 export default function Dashboard() {
 
-  const [clicked, setClicked] = useState('Not Clicked')
-
-  const testHandler = () => {
-    clicked === 'Not Clicked' ? setClicked('Clicked') : setClicked('Not Clicked')
-  }
-
   return (
-    <View style={styles.container}>
-      <View style={styles.modal}>
-        <Text style={styles.bigHeader}>Welcome to My Elephant App (Dashboard)</Text>
-      </View>
-      <StatusBar style="auto" />
-    </View>
+    <Stack.Navigator>
+      <Stack.Screen name="Dashboard-Main" component={DashMain} options={{headerShown: false}}/>
+      <Stack.Screen name="Collect Data" component={CollectData} />
+    </Stack.Navigator> 
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'rgb(23,23,23)',
     alignItems: 'center',
     justifyContent: 'center',
   },
