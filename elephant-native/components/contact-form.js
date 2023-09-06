@@ -108,19 +108,23 @@ const ContactForm = ({ navigateFunc }) => {
               multiline
               numberOfLines={5}
               />
-              <TouchableOpacity onPress={() => sendEmail()}>
-                <Text style={styles.button}>More About Us</Text>
-              </TouchableOpacity>
+              <View style={styles.buttonWrapper}>
+                <TouchableOpacity onPress={() => sendEmail()}>
+                  <Text style={styles.input}>Send Feedback</Text>
+                </TouchableOpacity>
+              </View>
           </View>
       </ScrollView>
     ) : (
       <View>
         <Text style={styles.bigHeaderMarginReduced}>Thanks for reaching out :&#41;</Text>
         <Text style={styles.subheading}>Our team is reviewing our message and will respond shorlty :0</Text>
-        <View style={styles.buttonCon}>
-          <TouchableOpacity onPress={() => navigateFunc('Home')}>
-            <Text style={styles.button}>Back To Home</Text>
-          </TouchableOpacity>
+        <View style={styles.wrapperContainer}>
+          <View style={styles.buttonWrapper}>
+            <TouchableOpacity onPress={() => navigateFunc('Home')}>
+              <Text style={styles.input}>Back to home</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     )
@@ -156,7 +160,8 @@ const styles = StyleSheet.create({
       paddingBottom: 2,
       fontSize: 18,
       width: '90%',
-      marginBottom: '10%'
+      marginBottom: '10%',
+      color: 'black'
     },
     formInputMessage: {
       backgroundColor: 'white',
@@ -184,22 +189,48 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       paddingBottom: 20
     },
+
+
+    wrapperContainer: {
+      flex: 1,
+      alignItems: 'center',
+      width: '100%',
+      marginBottom: '5%'
+    },
+    buttonWrapper: {
+      width: '60%',
+      borderColor: '#777',
+      borderRadius: 25,
+      backgroundColor: 'white',
+      borderWidth: 1,
+      paddingTop: '2%',
+      paddingBottom: '2%',
+      marginTop: '10%'
+    },
+    input: {
+      textAlign: 'center',
+      fontSize: 18,
+      width: '100%',
+    },
+
+
+
     buttonCon: {
       flex: 1,
       flexDirection: 'column',
       alignItems: 'center',
-      paddingBottom: 20
+      paddingBottom: 20,
+      borderRadius: 25
     },
     button: {
       borderWidth: 1,
       borderColor: '#777',
       padding: 8,
       marginTop: '5%',
-      backgroundColor: 'white',
+      backgroundColor: 'red',
       width: 'full',
       textAlign: 'center',
       fontSize: 18,
-      borderRadius: 25
     }
 })
 

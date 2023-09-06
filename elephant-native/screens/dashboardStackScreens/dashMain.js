@@ -53,24 +53,24 @@ const styles = StyleSheet.create({
     fontWeight: '600'
   },
   wrapperContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    paddingTop: '10%'
+    flex: 1,
+    alignItems: 'center',
+    width: '100%'
   },
   buttonWrapper: {
-    width: '80%'
+    width: '60%',
+    borderColor: '#777',
+    borderRadius: 25,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    paddingTop: '2%',
+    paddingBottom: '2%',
+    marginTop: '10%'
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#777',
-    padding: 8,
-    margin: 10,
-    backgroundColor: 'white',
-    width: 'full',
     textAlign: 'center',
-    fontSize: 20,
-    borderRadius: 25
+    fontSize: 18,
+    width: '100%',
   },
   bgImg: {
     objectFit: 'scale-down',
