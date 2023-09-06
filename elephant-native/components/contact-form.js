@@ -70,35 +70,40 @@ const ContactForm = ({ navigateFunc }) => {
   return (
 
     !success ? (
-      <ScrollView>
+      <View>
           <Text style={styles.bigHeader}>Contact Us</Text>
           <View style={styles.formCon}>
             <TextInput onChangeText={(e) => setfName(e)}
               value={fName}
               placeholder={'First Name'}
               style={styles.formInput}
+              placeholderTextColor='grey'
               />
               <TextInput onChangeText={(e) => setlName(e)}
               value={lName}
               placeholder={'Last Name'}
               style={styles.formInput}
+              placeholderTextColor='grey'
               />
               <TextInput onChangeText={(e) => setUserEmail(e)}
               value={userEmail}
               placeholder={'Your Email'}
               style={(validEmail || userEmail === '') ? styles.formInput : styles.invalid}
+              placeholderTextColor='grey'
               />
               <Text style={(validEmail || userEmail === '') ? {display: 'none'} : {display: 'flex', color: 'red', textAlign:'left', width: '90%', marginBottom: '2.2%'}}>Please Enter A Valid Email</Text>
               <TextInput onChangeText={(e) => setPhone(e)}
               value={phone}
               placeholder={'Phone Number'}
               style={(validPhone || phone === '') ? styles.formInput : styles.invalid}
+              placeholderTextColor='grey'
               />
               <Text style={(validPhone || phone === '') ? {display: 'none'} : {display: 'flex', color: 'red', textAlign:'left', width: '90%', marginBottom: '2.2%'}}>Please Enter A Valid Phone Number</Text>
               <TextInput onChangeText={(e) => setPosition(e)}
               value={position}
               placeholder={'Professional Position (optional)'}
               style={styles.formInput}
+              placeholderTextColor='grey'
               />
               <TextInput onChangeText={(e) => setMessage(e)}
               value={message}
@@ -107,6 +112,7 @@ const ContactForm = ({ navigateFunc }) => {
               editable
               multiline
               numberOfLines={5}
+              placeholderTextColor='grey'
               />
               <View style={styles.buttonWrapper}>
                 <TouchableOpacity onPress={() => sendEmail()}>
@@ -114,7 +120,7 @@ const ContactForm = ({ navigateFunc }) => {
                 </TouchableOpacity>
               </View>
           </View>
-      </ScrollView>
+      </View>
     ) : (
       <View>
         <Text style={styles.bigHeaderMarginReduced}>Thanks for reaching out :&#41;</Text>
@@ -171,7 +177,8 @@ const styles = StyleSheet.create({
       paddingBottom: 2,
       fontSize: 18,
       textAlignVertical: 'top',
-      width: '90%'
+      width: '90%',
+      height: '30%'
     },
     invalid: {
       backgroundColor: 'white',
@@ -187,7 +194,8 @@ const styles = StyleSheet.create({
       flex: 1,
       flexDirection: 'column',
       alignItems: 'center',
-      paddingBottom: 20
+      paddingBottom: 20,
+      height: "auto"
     },
 
 
@@ -228,7 +236,7 @@ const styles = StyleSheet.create({
       padding: 8,
       marginTop: '5%',
       backgroundColor: 'red',
-      width: 'full',
+      width: '100%',
       textAlign: 'center',
       fontSize: 18,
     }

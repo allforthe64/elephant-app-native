@@ -66,23 +66,23 @@ const styles = StyleSheet.create({
   },
   wrapperContainer: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '100%'
   },
   buttonWrapper: {
-    paddingTop: '3%',
-    width: '60%'
+    width: '60%',
+    borderColor: '#777',
+    borderRadius: 25,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    paddingTop: '2%',
+    paddingBottom: '2%',
+    marginTop: '10%'
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#777',
-    padding: 8,
-    margin: 10,
-    width: '50%',
-    backgroundColor: 'white',
-    width: 'full',
     textAlign: 'center',
     fontSize: 18,
-    borderRadius: 25
+    width: '100%',
   },
   bgImg: {
     objectFit: 'scale-down',

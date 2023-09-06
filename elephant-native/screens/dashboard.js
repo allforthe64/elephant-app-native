@@ -10,7 +10,7 @@ export default function Dashboard() {
 
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Dashboard-Main" component={DashMain} options={{headerShown: false}}/>
+      <Stack.Screen name="Dashboard" component={DashMain} options={{headerShown: false}}/>
       <Stack.Screen name="Files" component={Files} />
       <Stack.Screen name="Notepad" component={Notepad} />
     </Stack.Navigator> 

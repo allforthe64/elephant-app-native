@@ -34,7 +34,8 @@ const styles = StyleSheet.create({
     width: '90%',
     backgroundColor: 'rgba(0, 0, 0, .5)',
     position: 'absolute',
-    padding: 10
+    padding: 10,
+    height: '80%'
   },
   subheading: {
     color: 'white',

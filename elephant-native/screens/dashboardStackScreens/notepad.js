@@ -20,12 +20,14 @@ const Notepad = () => {
                 value={subject}
                 placeholder={'Subject'}
                 style={styles.formInput}
+                placeholderTextColor='grey'
                 />
             <Text style={styles.subheading}>Add a location:</Text>
             <TextInput onChangeText={(e) => setLocation(e)}
                 value={location}
                 placeholder={'Location'}
                 style={styles.formInput}
+                placeholderTextColor='grey'
                 />
             <Text style={styles.subheading}>Note Body:</Text>
             <TextInput onChangeText={(e) => setBody(e)}
@@ -35,14 +37,15 @@ const Notepad = () => {
                 editable
                 multiline
                 numberOfLines={8}
+                placeholderTextColor='grey'
                 />
         </View>
         <View style={styles.wrapperContainer}>
-                <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => saveNote()}>
-                        <Text style={styles.input}>Save Note</Text>
-                    </TouchableOpacity>
-                </View>
+            <View style={styles.buttonWrapper}>
+                <TouchableOpacity onPress={() => saveNote()}>
+                    <Text style={styles.input}>Save Note</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     </View>
   )
@@ -63,7 +66,7 @@ const styles = StyleSheet.create({
       fontSize: 45,
       textAlign: 'center',
       fontWeight: '700',
-      marginTop: '2.5%',
+      marginTop: '5%',
       marginBottom: '5%'
     },
     subheading: {
@@ -93,28 +96,28 @@ const styles = StyleSheet.create({
         paddingBottom: 2,
         fontSize: 18,
         textAlignVertical: 'top',
-        width: '90%'
+        width: '90%',
+        height: '35%'
     },
     wrapperContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        paddingTop: '5%'
-      },
-      buttonWrapper: {
-        width: '80%'
-      },
-      input: {
-        borderWidth: 1,
-        borderColor: '#777',
-        padding: 8,
-        margin: 10,
-        backgroundColor: 'white',
-        width: 'full',
-        textAlign: 'center',
-        fontSize: 20,
-        borderRadius: 25
-      },
+      flex: 1,
+      alignItems: 'center',
+      width: '100%'
+    },
+    buttonWrapper: {
+      width: '60%',
+      borderColor: '#777',
+      borderRadius: 25,
+      backgroundColor: 'white',
+      borderWidth: 1,
+      paddingTop: '2%',
+      paddingBottom: '2%',
+    },
+    input: {
+      textAlign: 'center',
+      fontSize: 18,
+      width: '100%',
+    },
 })
 
 export default Notepad
