@@ -4,8 +4,9 @@
             [
                 "expo-media-library",
                 {
-                    "photosPermission": "Allow ${PRODUCT_NAME} to access your photos.",
-                    "savePhotosPermission": "Allow ${PRODUCT_NAME} to save photos.",
+                    "photosPermission": "Allow Elephant App to access your photos.",
+                    "savePhotosPermission": "Allow Elephant App to save photos.",
+                    "microphonePermission": "Allow Elephant App to access your microphone",
                     "isAccessMediaLocationEnabled": "true"
                 }
             ]

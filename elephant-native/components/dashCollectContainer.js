@@ -22,9 +22,9 @@ export default function DashCollectContainer({ navigate }) {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => navigate('Files')}>
+                    <TouchableOpacity onPress={() => navigate('Record Audio')}>
                     <FontAwesomeIcon icon={faMicrophone} size={50} style={{marginLeft: '28%'}}/>
-                        <Text style={styles.input}>Audio recorder</Text>
+                        <Text style={styles.input}>Record Audio</Text>
                     </TouchableOpacity>
                 </View>
             </View>
