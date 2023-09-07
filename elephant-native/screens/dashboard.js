@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import DashMain from './dashboardStackScreens/dashMain';
 import Files from './dashboardStackScreens/files';
 import Notepad from './dashboardStackScreens/notepad';
+import CameraComponent from './dashboardStackScreens/camera';
 
 const Stack = createStackNavigator()
 
@@ -13,6 +14,7 @@ export default function Dashboard() {
       <Stack.Screen name="Dashboard" component={DashMain} options={{headerShown: false}}/>
       <Stack.Screen name="Files" component={Files} />
       <Stack.Screen name="Notepad" component={Notepad} />
+      <Stack.Screen name="Camera" component={CameraComponent} />
     </Stack.Navigator> 
   );
 }

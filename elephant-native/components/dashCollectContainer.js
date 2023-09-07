@@ -16,7 +16,7 @@ export default function DashCollectContainer({ navigate }) {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => navigate('Files')}>
+                    <TouchableOpacity onPress={() => navigate('Camera')}>
                     <FontAwesomeIcon icon={faCamera} size={50} style={{marginLeft: '10%'}}/>
                         <Text style={styles.input}>Camera</Text>
                     </TouchableOpacity>
