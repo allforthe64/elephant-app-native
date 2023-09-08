@@ -10,7 +10,7 @@ export default function DashCollectContainer({ navigate }) {
 
             <View style={styles.column}>
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => navigate('Files')}>
+                    <TouchableOpacity onPress={() => navigate('Add Local File')}>
                         <FontAwesomeIcon icon={faFile} size={50} style={{marginLeft: '25%'}}/>
                         <Text style={styles.input}>Add Local File</Text>
                     </TouchableOpacity>
