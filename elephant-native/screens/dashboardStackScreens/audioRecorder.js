@@ -43,7 +43,8 @@ const AudioRecorder = () => {
         updatedRecordings.push({
             sound: sound,
             duration: getDurartionFormatted(status.durationMillis),
-            file: recording.getURI()
+            file: recording.getURI(),
+            name: `Recording ${recordings.length + 1}`
         })
 
         setRecordings(updatedRecordings)
@@ -58,12 +59,12 @@ const AudioRecorder = () => {
     }
 
     const getRecordingLines = () => {
-        console.log(recordings)
-        return recordings.map((recordingLine, index) => {return (
+        return recordings.map((recordingLine, index) => {
+            return (
             <View key={index} style={styles.row}>
-                <Text style={styles.fill}>Recording {index + 1} - {recordingLine.duration}</Text>
+                <Text style={styles.fill}>{recordingLine.name} - {recordingLine.duration}</Text>
                 <Button style={styles.button} onPress={() => recordingLine.sound.replayAsync()} title='Play'/>
-                <Button style={styles.button + 'color:red'} onPress={(recordingLine) => filterRecordings(recordings, recordingLine)} title='Delete'/>
+                <Button style={styles.button + 'color:red'} onPress={() => filterRecordings(recordings, recordingLine)} title='Delete'/>
             </View>
         ) 
             
@@ -72,20 +73,13 @@ const AudioRecorder = () => {
 
     const filterRecordings = (input, target) => {
 
-        if (input.length === 1) {
-            setRecordings([])
-        } else {
-            for (let i = 0; i < input.length; i++) {
-                    
-                if (input.indexOf(target.file) !== -1) {
-                    input.splice(i, 1);
-                    console.log(input)
-                    i--;
-                }
-            }
-        }
-        
-        setRecordings(input)
+        const arr = []
+
+        input.map(el => {
+            if (JSON.stringify(el) !== JSON.stringify(target)) arr.push(el)
+        })
+
+        setRecordings(arr)
     }
 
   return (
