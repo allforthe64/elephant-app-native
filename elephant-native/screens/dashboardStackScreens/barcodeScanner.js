@@ -51,11 +51,9 @@ const Scanner = () => {
   return (
     <View style={styles.container}>
         {scanData ? 
-            <View style={styles.container}>
+            <View>
                 <Button title='Scan Again?' onPress={() => setScanData(undefined)} /> 
-                <ScrollView style={styles.scrollCon} height={200}>
                     {mapUrls()}
-                </ScrollView>
                 <Button title='Save All'/>
             </View>
         :
@@ -77,9 +75,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: '100%'
-    },
-    scrollCon: {
-        borderWidth: 1,
-        height: '20%'
     }
 })
