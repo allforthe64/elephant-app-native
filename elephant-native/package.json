@@ -41,7 +41,8 @@
     "styled-components": "^5.3.11",
     "expo-document-picker": "~11.5.4",
     "expo-image-picker": "~14.3.2",
-    "expo-barcode-scanner": "~12.5.3"
+    "expo-barcode-scanner": "~12.5.3",
+    "expo-file-system": "~15.4.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -1,11 +1,14 @@
-import { StyleSheet, Text, View, Button } from 'react-native'
+import { StyleSheet, Text, View, Button, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { BarCodeScanner } from 'expo-barcode-scanner'
+import * as FileSystem from 'expo-file-system'
+import { shareAsync } from 'expo-sharing'
 
 const Scanner = () => {
 
     const [hasPermissions, setHasPermissions] = useState(false)
     const [scanData, setScanData] = useState()
+    const [urls, setUrls] = useState()
 
     useEffect(() => {
         (async() => {
@@ -13,6 +16,7 @@ const Scanner = () => {
             setHasPermissions(status === "granted")
         })()
     }, [])
+
 
     if (!hasPermissions) {
         return (
@@ -23,20 +27,28 @@ const Scanner = () => {
     }
 
     const handleBarCodeScanned = ({data}) => {
+        let arr = [...urls]
         setScanData(data)
-        console.log(`data: `, data)
+        arr.push(data)
+        setUrls(arr)
     }
 
-    console.log(scanData)
+    console.log('Scan data outside of bar code scanner function: ', scanData)
 
   return (
     <View style={styles.container}>
-      <BarCodeScanner 
-      style={StyleSheet.absoluteFillObject}
-      barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
-      onBarCodeScanned={scanData !== undefined ? undefined : handleBarCodeScanned }
-      />
-      {scanData !== undefined && <Button title='Scan Again?' onPress={() => setScanData(undefined)} />}
+        {scanData ? 
+            <View>
+                <Button title='Scan Again?' onPress={() => setScanData(undefined)} /> 
+                <Image source={{uri: scanData}} style={{borderWidth: 1}}/>
+            </View>
+        :
+            <BarCodeScanner 
+            style={StyleSheet.absoluteFillObject}
+            barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
+            onBarCodeScanned={scanData !== undefined ? undefined : handleBarCodeScanned }
+            />
+        }
     </View>
   )
 }
