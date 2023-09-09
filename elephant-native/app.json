@@ -23,9 +23,15 @@
             [
                 "expo-image-picker",
                 {
-                  "photosPermission": "The app accesses your photos to let you share them with your friends."
+                  "photosPermission": "Allow Elephant App to access your photos."
                 }
-              ]
+            ],
+            [
+                "expo-barcode-scanner",
+                {
+                    "cameraPermission": "Allow Elephant App to access camera."
+                }
+            ]
         ]
     }
 }

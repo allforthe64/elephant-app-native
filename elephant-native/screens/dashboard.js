@@ -6,6 +6,8 @@ import Notepad from './dashboardStackScreens/notepad';
 import CameraComponent from './dashboardStackScreens/camera';
 import AudioRecorder from './dashboardStackScreens/audioRecorder';
 import FilePicker from './dashboardStackScreens/documentPicker';
+import BarcodeScanner from './dashboardStackScreens/barcodeScanner';
+import Scanner from './dashboardStackScreens/barcodeScanner';
 
 const Stack = createStackNavigator()
 
@@ -19,6 +21,7 @@ export default function Dashboard() {
       <Stack.Screen name="Camera" component={CameraComponent} />
       <Stack.Screen name="Record Audio" component={AudioRecorder} />
       <Stack.Screen name="Add Local File" component={FilePicker} />
+      <Stack.Screen name='QR Scanner' component={Scanner} />
     </Stack.Navigator> 
   );
 }

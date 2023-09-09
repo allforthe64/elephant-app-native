@@ -40,7 +40,8 @@
     "react-native-svg": "^13.13.0",
     "styled-components": "^5.3.11",
     "expo-document-picker": "~11.5.4",
-    "expo-image-picker": "~14.3.2"
+    "expo-image-picker": "~14.3.2",
+    "expo-barcode-scanner": "~12.5.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

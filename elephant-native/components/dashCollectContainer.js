@@ -31,9 +31,9 @@ export default function DashCollectContainer({ navigate }) {
             
             <View style={styles.column}>
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => navigate('Files')}>
-                    <FontAwesomeIcon icon={faQrcode} size={50} style={{marginLeft: '33%'}}/>
-                        <Text style={styles.input}>Qr Code Scanner</Text>
+                    <TouchableOpacity onPress={() => navigate('QR Scanner')}>
+                    <FontAwesomeIcon icon={faQrcode} size={50} style={{marginLeft: '23%'}}/>
+                        <Text style={styles.input}>QR Scanner</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.buttonWrapper}>
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   },
   input: {
     padding: 8,
-    width: 'full',
+    width: '100%',
     textAlign: 'center',
     fontSize: 20,
   }
