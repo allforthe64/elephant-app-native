@@ -1,14 +1,15 @@
-import { StyleSheet, Text, View, Button, Image } from 'react-native'
+import { StyleSheet, Text, View, Button } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { BarCodeScanner } from 'expo-barcode-scanner'
-import * as FileSystem from 'expo-file-system'
-import { shareAsync } from 'expo-sharing'
+import UrlEditor from '../../components/urlEditor'
+import { height } from '@mui/system'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const Scanner = () => {
 
     const [hasPermissions, setHasPermissions] = useState(false)
     const [scanData, setScanData] = useState()
-    const [urls, setUrls] = useState()
+    const [urls, setUrls] = useState([])
 
     useEffect(() => {
         (async() => {
@@ -33,14 +34,29 @@ const Scanner = () => {
         setUrls(arr)
     }
 
-    console.log('Scan data outside of bar code scanner function: ', scanData)
+    const mapUrls = () => {
+        return urls.map((url, index) => {
+            console.log(url)
+            return <UrlEditor url={url} key={index} deleteFunc={deleteUrl}/>
+        })
+    }
+
+    const deleteUrl = (target) => {
+        const arr = urls.filter(url => url != target)
+        setUrls(arr)
+    }
+
+    console.log(urls)
 
   return (
     <View style={styles.container}>
         {scanData ? 
-            <View>
+            <View style={styles.container}>
                 <Button title='Scan Again?' onPress={() => setScanData(undefined)} /> 
-                <Image source={{uri: scanData}} style={{borderWidth: 1}}/>
+                <ScrollView style={styles.scrollCon} height={200}>
+                    {mapUrls()}
+                </ScrollView>
+                <Button title='Save All'/>
             </View>
         :
             <BarCodeScanner 
@@ -59,6 +75,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        height: '100%'
+    },
+    scrollCon: {
+        borderWidth: 1,
+        height: '20%'
     }
 })
