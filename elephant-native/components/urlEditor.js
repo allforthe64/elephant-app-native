@@ -1,15 +1,17 @@
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
 import React, {useState} from 'react'
 
 const UrlEditor = ({url, deleteFunc}) => {
     const [urlTitle, setUrlTitle] = useState('')
   return (
     <View style={styles.bigCon}>
+        <Text style={styles.url} numberOfLines={1}>Url: {url}</Text>
         <View style={styles.container}>
             <TextInput value={urlTitle} onChangeText={(e) => setUrlTitle(e)} placeholder='Add title for url' placeholderTextColor={'rgb(0, 0, 0)'} style={styles.input} />
-            <Text style={styles.url} numberOfLines={1}>{url}</Text>
+            <TouchableOpacity title='Delete' onPress={() => deleteFunc(url)}>
+                <Text style={styles.pressable}>Delete</Text>
+            </TouchableOpacity>
         </View>
-        <Button title='Delete' onPress={() => deleteFunc(url)}/>
     </View>
   )
 }
@@ -19,23 +21,34 @@ export default UrlEditor
 const styles = StyleSheet.create({
     bigCon: {
         marginBottom: '5%',
-        borderWidth: 1,
-        borderColor: 'red'
+        width: '90%',
     },
     container: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%',
-        paddingLeft: '7%',
-        paddingRight: '7%'
+        paddingRight: '5%'
     },
     input: {
+        backgroundColor: 'white',
+        paddingLeft: '2%',
+        fontSize: 15,
         borderWidth: 1,
-        width: '40%'
+        width: '60%',
+        marginBottom: '5%'
     },
     url: {
-        width: '50%',
+        fontSize: 15,
+        fontWeight: '600',
+        width: '100%',
+        color: 'white',
         overflow: 'hidden',
+        marginBottom: '5%'
+    },
+    pressable: {
+        color: 'red',
+        fontSize: 15,
+        fontWeight: '500'
     }
 })
