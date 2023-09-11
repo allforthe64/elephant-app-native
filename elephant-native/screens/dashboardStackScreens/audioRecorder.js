@@ -1,12 +1,14 @@
 import { Audio } from 'expo-av'
 import React, { useState } from 'react'
-import { Text, View , Button, StyleSheet} from 'react-native'
+import { Text, View , TouchableOpacity, ScrollView, StyleSheet, Image} from 'react-native'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faMicrophone, faSquare } from '@fortawesome/free-solid-svg-icons'
+import AudioEditor from '../../components/audioEditor'
 
 const AudioRecorder = () => {
 
     const [recording, setRecording] = useState()
     const [recordings, setRecordings] = useState([])
-    const [message, setMessage] = useState()
 
     const startRecording = async () => {
         try {
@@ -61,11 +63,7 @@ const AudioRecorder = () => {
     const getRecordingLines = () => {
         return recordings.map((recordingLine, index) => {
             return (
-            <View key={index} style={styles.row}>
-                <Text style={styles.fill}>{recordingLine.name} - {recordingLine.duration}</Text>
-                <Button style={styles.button} onPress={() => recordingLine.sound.replayAsync()} title='Play'/>
-                <Button style={styles.button + 'color:red'} onPress={() => filterRecordings(recordings, recordingLine)} title='Delete'/>
-            </View>
+            <AudioEditor recordingLine={recordingLine} index={index} recordings={recordings} deleteFunc={filterRecordings} />
         ) 
             
         })
@@ -84,34 +82,120 @@ const AudioRecorder = () => {
 
   return (
     <View style={styles.container}>
-        <Text>{message}</Text>
-        <Button title={recording ? 'Stop Recording': 'Start Recording'}
-        onPress={recording ? stopRecording : startRecording}
-        />
-        {getRecordingLines()}
+        <Image style={styles.bgImg } source={require('../../assets/elephant-dashboard.jpg')} />
+        <View style={styles.innerContainer}>
+            <Text style={styles.bigHeader}>Audio Recordings:</Text>
+            {recordings.length === 0 ? 
+                <View style={styles.noRecCon}>
+                    <Text style={styles.bigHeader}>No Recordings Yet</Text>
+                </View>
+            :
+                <View style={styles.scrollCon}>
+                    <ScrollView>
+                        {getRecordingLines()}
+                    </ScrollView>
+                </View>
+            }
+            <View style={styles.wrapperContainer}>
+                <View style={recording ? styles.buttonWrapperIcon : styles.buttonWrapperRed}>
+                    <TouchableOpacity onPress={recording ? stopRecording : startRecording}>
+                    {recording ? <FontAwesomeIcon icon={faSquare} size={46} style={{color: 'red', marginLeft: '13%'}}/> : <FontAwesomeIcon icon={faMicrophone} size={50} style={{marginLeft: '12%'}}/>}
+                    </TouchableOpacity>
+                </View>
+            </View>
+            <View style={styles.wrapperContainer}>
+                <View style={styles.buttonWrapper}>
+                    <TouchableOpacity onPress={() => console.log('saving urls...')}>
+                    <Text style={styles.input}>Save All</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+    bigHeader: {
+        color: 'white',
+        fontSize: 25,
+        textAlign: 'center',
+        fontWeight: '700',
+        marginBottom: '8%'
+      },
     container: {
-        flex: 1,
+        backgroundColor: 'rgb(23,23,23)',
+        height: '100%'
+    },
+    innerContainer: {
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        paddingTop: '10%',
+        paddingBottom: '10%'
+    },
+    scrollCon: {
+        height: '60%',
+        width: '95%',
+        borderBottomWidth: 1,
+        borderColor: 'white',
+        marginBottom: '10%'
+    },
+    noRecCon: {
+        height: '60%',
+        width: '95%',
+        borderBottomWidth: 1,
+        borderColor: 'white',
+        marginBottom: '10%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    bgImg: {
+        objectFit: 'scale-down',
+        opacity: .15,
+        transform: [{scaleX: -1}]
+    },
+    wrapperContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+        marginBottom: '8%'
+    },
+    buttonWrapper: {
+        width: '60%',
+        borderColor: '#777',
+        borderRadius: 25,
         backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center'
+        borderWidth: 1,
+        paddingTop: '2%',
+        paddingBottom: '2%',
     },
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
+    buttonWrapperIcon: {
+        width: '18%',
+        borderRadius: 25,
+        borderColor: 'white',
+        borderWidth: 3,
+        paddingTop: '2%',
+        paddingBottom: '2%',
+        borderRadius: 1000,
     },
-    fill: {
-        flex: 1,
-        margin: 16
+    buttonWrapperRed: {
+        width: '18%',
+        borderRadius: 1000,
+        backgroundColor: 'red',
+        borderWidth: 1,
+        paddingTop: '2%',
+        paddingBottom: '2%',
     },
-    button: {
-        margin: 16
-    }
+    input: {
+    textAlign: 'center',
+    fontSize: 15,
+    width: '100%',
+    },
 })
 
 export default AudioRecorder
