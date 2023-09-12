@@ -18,7 +18,7 @@ export default function Home({navigation: { navigate }}) {
         <Text style={styles.subheading}>Take control of your personal data</Text>
         <View style={styles.wrapperContainer}>
           <View style={styles.buttonWrapper}>
-            <TouchableOpacity onPress={() => console.log('Sign In')}>
+            <TouchableOpacity onPress={() => navigate('Sign In/Sign Up')}>
               <Text style={styles.input}>Sign In/Sign Up</Text>
             </TouchableOpacity>
           </View>

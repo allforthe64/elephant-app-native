@@ -89,6 +89,7 @@ const ContactForm = ({ navigateFunc }) => {
               value={userEmail}
               placeholder={'Your Email'}
               style={(validEmail || userEmail === '') ? styles.formInput : styles.invalid}
+              autoCapitalize='none'
               placeholderTextColor='grey'
               />
               <Text style={(validEmail || userEmail === '') ? {display: 'none'} : {display: 'flex', color: 'red', textAlign:'left', width: '90%', marginBottom: '2.2%'}}>Please Enter A Valid Email</Text>

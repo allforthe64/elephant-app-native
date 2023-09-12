@@ -8,6 +8,7 @@ import About from './screens/about';
 import Contact from './screens/contact';
 import Dashboard from './screens/dashboard';
 import Settings from './screens/settings';
+import Login from './screens/login';
 
 const Drawer = createDrawerNavigator();
 
@@ -16,6 +17,7 @@ export default function App() {
     <NavigationContainer>
       <Drawer.Navigator initialRouteName="Home">
         <Drawer.Screen name="Home" component={Home} />
+        <Drawer.Screen name="Sign In/Sign Up" component={Login} />
         <Drawer.Screen name="About" component={About} />
         <Drawer.Screen name="Contact" component={Contact} />
         <Drawer.Screen name="Dashboard" component={Dashboard} />
