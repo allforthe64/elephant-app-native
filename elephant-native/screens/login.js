@@ -1,14 +1,16 @@
 import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import { firebaseAuth } from '../firebaseConfig'
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 
 const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
-const Login = () => {
+const Login = ({navigation: {navigate}}) => {
     const [userEmail, setUserEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [validEmail, setValidEmail] = useState(false)
+    const [signUpMode, setSignUpMode] = useState(false)
     const auth = firebaseAuth
 
     useEffect(() => {
@@ -19,10 +21,11 @@ const Login = () => {
     const login = async () => {
         setLoading(true)
         try {
-            const response = await auth.signInWithEmailAndPassword(userEmail, password)
+            const response = await signInWithEmailAndPassword(auth, userEmail, password)
             console.log(response)
         } catch (err) {
             console.log(err)
+            alert('Sign In failed: ', err.message)
         } finally {
             setLoading(false)
         }
@@ -31,10 +34,12 @@ const Login = () => {
     const signUp = async () =>{
         setLoading(true)
         try {
-            const response = await auth.createUserWithEmailAndPassword(email, password)
+            const response = await createUserWithEmailAndPassword(auth, userEmail, password)
             console.log(response)
+            alert('Check your emails!')
         } catch (err) {
             console.log(err)
+            alert('Sign Up Failed: ', err.message)
         } finally {
             setLoading(false)
         }
@@ -44,7 +49,7 @@ const Login = () => {
     <View style={styles.container}>
         <Image style={styles.bgImg } source={require('../assets/elephant-dashboard.jpg')} />
         <View style={styles.innerContainer}>
-            <Text style={styles.bigHeader}>Sign In/Sign Up</Text>
+            <Text style={styles.bigHeader}>{signUpMode ? 'Register account' : 'Sign in'}</Text>
             <View style={styles.formCon}>
                 <Text style={styles.subheading}>Enter Email:</Text>
                 <TextInput style={(validEmail || userEmail === '') ? styles.input : styles.inputInvalid} placeholder='Enter Email' autoCapitalize='none' placeholderTextColor={'rgb(0, 0, 0)'} value={userEmail} onChangeText={(e) => setUserEmail(e)}/>
@@ -54,10 +59,27 @@ const Login = () => {
             </View>
             <View style={styles.wrapperContainer}>
                 <View style={styles.buttonWrapper}>
+                    {signUpMode ? 
+                        <TouchableOpacity onPress={() => signUp()}>
+                            <Text style={styles.inputButton}>Register</Text>
+                        </TouchableOpacity>
+                    :
                     <TouchableOpacity onPress={() => login()}>
-                        <Text style={styles.inputButton}>Sign In/Sign Up</Text>
+                        <Text style={styles.inputButton}>Sign In</Text>
                     </TouchableOpacity>
+                    }
                 </View>
+                <Text style={{color: 'white', width: '80%', textAlign: 'center'}}>
+                    {signUpMode ? "Already have an account?" : "Don't have an Account?"}
+                    <TouchableOpacity onPress={() => {
+                            setUserEmail('')
+                            setPassword('')
+                            setSignUpMode(prev => !prev)
+                        }}>
+                        <Text style={styles.inputText}> Click here </Text>
+                    </TouchableOpacity>
+                    {signUpMode ? "to login." : "to Register for a new one."}
+                </Text>
             </View>
         </View>
     </View>
@@ -129,6 +151,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         paddingTop: '2%',
         paddingBottom: '2%',
+        marginBottom: '5%'
     },
     buttonWrapperSm: {
         width: '40%',
@@ -161,6 +184,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 15,
         width: '100%',
+    },
+    inputText: {
+        textAlign: 'center',
+        fontSize: 15,
+        color: 'white',
+        textDecorationColor: 'white',
+        textDecorationLine: 'underline'
     },
     invalid: {
         display: 'flex', 
