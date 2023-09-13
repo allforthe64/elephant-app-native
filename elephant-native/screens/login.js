@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity } from 'react-native'
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { firebaseAuth } from '../firebaseConfig'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
+import { LoginContext } from '../context/loginContext'
 
 const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
@@ -12,6 +13,10 @@ const Login = ({navigation: {navigate}}) => {
     const [validEmail, setValidEmail] = useState(false)
     const [signUpMode, setSignUpMode] = useState(false)
     const auth = firebaseAuth
+
+    const {setLoggedIn} = useContext(LoginContext)
+
+    console.log(setLoggedIn)
 
     useEffect(() => {
         const emailResult = EMAIL_REGEX.test(userEmail)
@@ -28,6 +33,8 @@ const Login = ({navigation: {navigate}}) => {
             alert('Sign In failed: ', err.message)
         } finally {
             setLoading(false)
+            setLoggedIn(true)
+            navigate('Dashboard')
         }
     }
 

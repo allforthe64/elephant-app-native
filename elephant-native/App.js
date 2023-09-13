@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Button, View } from 'react-native';
+import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
+import { firebaseAuth } from './firebaseConfig';
 
 import Home from './screens/home';
 import About from './screens/about';
@@ -11,20 +11,18 @@ import Settings from './screens/settings';
 import Login from './screens/login';
 import ThankYou from './screens/thankYou';
 
+import { LoginContextProvider } from './context/loginContext';
+import Main from './screens/main';
+
 const Drawer = createDrawerNavigator();
 
 export default function App() {
+
+  const auth = firebaseAuth
+
   return (
-    <NavigationContainer>
-      <Drawer.Navigator initialRouteName="Home">
-        <Drawer.Screen name="Home" component={Home} />
-        <Drawer.Screen name="Sign In/Sign Up" component={Login} />
-        <Drawer.Screen name="About" component={About} />
-        <Drawer.Screen name="Contact" component={Contact} />
-        <Drawer.Screen name="Dashboard" component={Dashboard} />
-        <Drawer.Screen name="Settings" component={Settings} />
-        <Drawer.Screen name="Registration Complete" component={ThankYou} options={{drawerItemStyle: {height: 0}, title: ''}}/>
-      </Drawer.Navigator>
-    </NavigationContainer>
+      <LoginContextProvider>
+        <Main />
+      </LoginContextProvider> 
   );
 }
