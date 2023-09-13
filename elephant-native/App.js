@@ -9,6 +9,7 @@ import Contact from './screens/contact';
 import Dashboard from './screens/dashboard';
 import Settings from './screens/settings';
 import Login from './screens/login';
+import ThankYou from './screens/thankYou';
 
 const Drawer = createDrawerNavigator();
 
@@ -22,6 +23,7 @@ export default function App() {
         <Drawer.Screen name="Contact" component={Contact} />
         <Drawer.Screen name="Dashboard" component={Dashboard} />
         <Drawer.Screen name="Settings" component={Settings} />
+        <Drawer.Screen name="Registration Complete" component={ThankYou} options={{drawerItemStyle: {height: 0}, title: ''}}/>
       </Drawer.Navigator>
     </NavigationContainer>
   );

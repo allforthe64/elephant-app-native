@@ -40,8 +40,12 @@ const Login = ({navigation: {navigate}}) => {
         } catch (err) {
             console.log(err)
             alert('Sign Up Failed: ', err.message)
+            return
         } finally {
             setLoading(false)
+            setUserEmail('')
+            setPassword('')
+            navigate('Registration Complete')
         }
     }
 
@@ -128,8 +132,6 @@ const styles = StyleSheet.create({
         transform: [{scaleX: -1}]
     },
     formCon: {
-        borderWidth: 1,
-        borderColor: 'red',
         width: '100%',
         height: '60%',
         marginBottom: '10%',
