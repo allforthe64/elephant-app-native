@@ -3,6 +3,7 @@ import React, {useState, useEffect, useContext} from 'react'
 import { firebaseAuth } from '../firebaseConfig'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 import { AuthContext } from '../context/authContext'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
@@ -14,9 +15,6 @@ const Login = ({navigation: {navigate}}) => {
     const [signUpMode, setSignUpMode] = useState(false)
     const auth = firebaseAuth
 
-    const {setAuthUser} = useContext(AuthContext)
-
-
     useEffect(() => {
         const emailResult = EMAIL_REGEX.test(userEmail)
         setValidEmail(emailResult)
@@ -27,9 +25,11 @@ const Login = ({navigation: {navigate}}) => {
         setLoading(true)
         try {
             response = await signInWithEmailAndPassword(auth, userEmail, password)
+            await AsyncStorage.setItem('loggedIn', JSON.stringify(response)) 
         } catch (err) {
             console.log(err)
             alert('Sign In failed: ', err.message)
+            return
         } finally {
             setLoading(false)
             setUserEmail('')
@@ -55,6 +55,7 @@ const Login = ({navigation: {navigate}}) => {
             navigate('Registration Complete')
         }
     }
+
 
   return (
     <View style={styles.container}>

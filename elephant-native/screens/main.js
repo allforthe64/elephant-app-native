@@ -13,6 +13,7 @@ import Login from './login';
 import ThankYou from './thankYou';
 import { AuthContext } from '../context/authContext';
 import { onAuthStateChanged } from '@firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Drawer = createDrawerNavigator();
 
@@ -22,18 +23,30 @@ export default function App() {
 
   const {authUser, setAuthUser} = useContext(AuthContext)
 
-  console.log(authUser)
-
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
         setAuthUser(user)
       })
-  }, [auth])
+    
+  }, [])
+
+  useEffect(() => {
+
+    const getStorage = async () => {
+      const currentUser = await AsyncStorage.getItem('loggedIn')
+      console.log(currentUser)
+      if (currentUser !== 'false') {
+        console.log('in false loop')
+        setAuthUser(currentUser)
+      }
+    }
+    getStorage()
+  }, [])
 
   return (
         <NavigationContainer>
             <Drawer.Navigator initialRouteName="Home">
-              <Drawer.Screen name="Home" component={Home} />
+              <Drawer.Screen name="Home" component={Home} options={authUser && {drawerItemStyle: {display: 'none'}, title: ''}}/>
               <Drawer.Screen name="About" component={About} />
               <Drawer.Screen name="Contact" component={Contact} />
               <Drawer.Screen name="Dashboard" component={Dashboard} options={!authUser && {drawerItemStyle: {display: 'none'}, title: ''}} />

@@ -4,6 +4,7 @@ import { firebaseAuth } from '../../firebaseConfig';
 import DashCollectContainer from '../../components/dashCollectContainer';
 import { useContext } from 'react';
 import { AuthContext } from '../../context/authContext';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function DashMain({navigation: { navigate }}) {
 
@@ -28,8 +29,9 @@ export default function DashMain({navigation: { navigate }}) {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.buttonWrapperLogout}>
-                    <TouchableOpacity onPress={() => {
+                    <TouchableOpacity onPress={async () => {
                       auth.signOut()
+                      await AsyncStorage.setItem('loggedIn', JSON.stringify(false))
                       navigate('Home')
                       }}>
                         <Text style={styles.inputLogout}>Sign Out</Text>

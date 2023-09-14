@@ -1,14 +1,26 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, TouchableOpacity, Image } from 'react-native';
-import { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useEffect, useState } from 'react';
 
-export default function Home({navigation: { navigate }}) {
+export default function Home({navigation}) {
 
-  const [clicked, setClicked] = useState('Not Clicked')
+  const [persist, setPersist] = useState()
 
-  const testHandler = () => {
-    clicked === 'Not Clicked' ? setClicked('Clicked') : setClicked('Not Clicked')
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', async () => {
+      const loggedIn = await AsyncStorage.getItem('loggedIn')
+      console.log('logged in: ', loggedIn)
+      loggedIn !== 'false' ? setPersist(true) : setPersist(false)
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  if (persist) {
+    navigation.navigate('Dashboard')
   }
+
 
   return (
     <View style={styles.container}>
@@ -18,12 +30,12 @@ export default function Home({navigation: { navigate }}) {
         <Text style={styles.subheading}>Take control of your personal data</Text>
         <View style={styles.wrapperContainer}>
           <View style={styles.buttonWrapper}>
-            <TouchableOpacity onPress={() => navigate('Sign In/Sign Up')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Sign In/Sign Up')}>
               <Text style={styles.input}>Sign In/Sign Up</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.buttonWrapper}>
-            <TouchableOpacity onPress={() => navigate('About')}>
+            <TouchableOpacity onPress={() => navigation.navigate('About')}>
               <Text style={styles.input}>More About Us</Text>
             </TouchableOpacity>
           </View>
