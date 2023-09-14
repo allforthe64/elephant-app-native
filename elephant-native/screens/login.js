@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity } from 'reac
 import React, {useState, useEffect, useContext} from 'react'
 import { firebaseAuth } from '../firebaseConfig'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
-import { LoginContext } from '../context/loginContext'
+import { AuthContext } from '../context/authContext'
 
 const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
@@ -14,9 +14,8 @@ const Login = ({navigation: {navigate}}) => {
     const [signUpMode, setSignUpMode] = useState(false)
     const auth = firebaseAuth
 
-    const {setLoggedIn} = useContext(LoginContext)
+    const {setAuthUser} = useContext(AuthContext)
 
-    console.log(setLoggedIn)
 
     useEffect(() => {
         const emailResult = EMAIL_REGEX.test(userEmail)
@@ -24,16 +23,17 @@ const Login = ({navigation: {navigate}}) => {
     }, [userEmail])
 
     const login = async () => {
+        let response
         setLoading(true)
         try {
-            const response = await signInWithEmailAndPassword(auth, userEmail, password)
-            console.log(response)
+            response = await signInWithEmailAndPassword(auth, userEmail, password)
         } catch (err) {
             console.log(err)
             alert('Sign In failed: ', err.message)
         } finally {
             setLoading(false)
-            setLoggedIn(true)
+            setUserEmail('')
+            setPassword('')
             navigate('Dashboard')
         }
     }

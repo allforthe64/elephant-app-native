@@ -6,10 +6,15 @@ import Screen2 from './settingsStackScreens/screen2';
 import Screen3 from './settingsStackScreens/screen3';
 import Screen4 from './settingsStackScreens/screen4';
 import Screen5 from './settingsStackScreens/screen5';
-
+import { AuthContext } from '../context/authContext';
+import { useContext } from 'react';
 const Stack = createStackNavigator()
 
-export default function Settings() {
+export default function Settings({navigation: {navigate}}) {
+
+  const {authUser} = useContext(AuthContext)
+
+  if (!authUser) navigate('Home')
 
   return (
     <Stack.Navigator>

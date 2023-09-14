@@ -77,34 +77,34 @@ const ContactForm = ({ navigateFunc }) => {
               value={fName}
               placeholder={'First Name'}
               style={styles.formInput}
-              placeholderTextColor='grey'
+              placeholderTextColor='rgba(0, 0, 0)'
               />
               <TextInput onChangeText={(e) => setlName(e)}
               value={lName}
               placeholder={'Last Name'}
               style={styles.formInput}
-              placeholderTextColor='grey'
+              placeholderTextColor='rgba(0, 0, 0)'
               />
               <TextInput onChangeText={(e) => setUserEmail(e)}
               value={userEmail}
               placeholder={'Your Email'}
               style={(validEmail || userEmail === '') ? styles.formInput : styles.invalid}
               autoCapitalize='none'
-              placeholderTextColor='grey'
+              placeholderTextColor='rgba(0, 0, 0)'
               />
               <Text style={(validEmail || userEmail === '') ? {display: 'none'} : {display: 'flex', color: 'red', textAlign:'left', width: '90%', marginBottom: '2.2%'}}>Please Enter A Valid Email</Text>
               <TextInput onChangeText={(e) => setPhone(e)}
               value={phone}
               placeholder={'Phone Number'}
               style={(validPhone || phone === '') ? styles.formInput : styles.invalid}
-              placeholderTextColor='grey'
+              placeholderTextColor='rgba(0, 0, 0)'
               />
               <Text style={(validPhone || phone === '') ? {display: 'none'} : {display: 'flex', color: 'red', textAlign:'left', width: '90%', marginBottom: '2.2%'}}>Please Enter A Valid Phone Number</Text>
               <TextInput onChangeText={(e) => setPosition(e)}
               value={position}
               placeholder={'Professional Position (optional)'}
               style={styles.formInput}
-              placeholderTextColor='grey'
+              placeholderTextColor='rgba(0, 0, 0)'
               />
               <TextInput onChangeText={(e) => setMessage(e)}
               value={message}
@@ -113,7 +113,7 @@ const ContactForm = ({ navigateFunc }) => {
               editable
               multiline
               numberOfLines={5}
-              placeholderTextColor='grey'
+              placeholderTextColor='rgba(0, 0, 0)'
               />
               <View style={styles.buttonWrapper}>
                 <TouchableOpacity onPress={() => sendEmail()}>
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
       fontSize: 18,
       width: '90%',
       marginBottom: '10%',
-      color: 'black'
+      color: 'black',
     },
     formInputMessage: {
       backgroundColor: 'white',
