@@ -6,6 +6,7 @@ import { useState } from 'react';
 export default function Contact({navigation: { navigate }}) {
 
   const [clicked, setClicked] = useState('Not Clicked')
+  const [success, setSuccess] = useState(false)
 
   const testHandler = () => {
     clicked === 'Not Clicked' ? setClicked('Clicked') : setClicked('Not Clicked')
@@ -14,8 +15,8 @@ export default function Contact({navigation: { navigate }}) {
   return (
     <View style={styles.container}>
       <Image source={require('../assets/elephant-about.jpg')} style={styles.bgImg}/>
-      <View style={styles.modal}>
-        <ContactForm navigateFunc={navigate}/>
+      <View style={success ? styles.successModal : styles.modal}>
+        <ContactForm navigateFunc={navigate} modalStyle={setSuccess}/>
       </View>
       <StatusBar style="auto" />
     </View>
@@ -34,8 +35,16 @@ const styles = StyleSheet.create({
     width: '90%',
     backgroundColor: 'rgba(0, 0, 0, .5)',
     position: 'absolute',
+    height: '85%',
+    borderWidth: 1,
+    borderColor: 'blue'
+  },
+  successModal: {
+    width: '90%',
+    backgroundColor: 'rgba(0, 0, 0, .5)',
+    position: 'absolute',
     padding: 10,
-    height: '80%'
+    height: '40%'
   },
   subheading: {
     color: 'white',
