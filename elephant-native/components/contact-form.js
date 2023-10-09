@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {View, ScrollView, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native'
+import {View, KeyboardAvoidingView, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native'
 import emailjs from '@emailjs/browser'
 import {EMAILJS_API_KEY, EMAILJS_TEMPLATE_ID, EMAILJS_SERVICE_ID} from '../secrets'
 
