@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
 
 const Notepad = () => {
 
@@ -12,103 +12,54 @@ const Notepad = () => {
     }
 
   return (
-    <View style={styles.container}>
-        <Text style={styles.bigHeader}>Add A Note:</Text>
-        <View style={styles.form}>
-            <Text style={styles.subheading}>Note subject:</Text>
-            <TextInput onChangeText={(e) => setSubject(e)}
-                value={subject}
-                placeholder={'Subject'}
-                style={styles.formInput}
-                placeholderTextColor='grey'
-                />
-            <Text style={styles.subheading}>Add a location:</Text>
-            <TextInput onChangeText={(e) => setLocation(e)}
-                value={location}
-                placeholder={'Location'}
-                style={styles.formInput}
-                placeholderTextColor='grey'
-                />
-            <Text style={styles.subheading}>Note Body:</Text>
-            <TextInput onChangeText={(e) => setBody(e)}
-                value={body}
-                placeholder={'Notes:'}
-                style={styles.noteBody}
-                editable
-                multiline
-                numberOfLines={8}
-                placeholderTextColor='grey'
-                />
-        </View>
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
+          <TextInput onChangeText={(e) => setBody(e)}
+                    value={body}
+                    placeholder={'Add a note...'}
+                    style={styles.noteBody}
+                    editable
+                    multiline
+                    numberOfLines={2}
+                    placeholderTextColor='grey'
+                    autoFocus={true}
+                    />
         <View style={styles.wrapperContainer}>
             <View style={styles.buttonWrapper}>
                 <TouchableOpacity onPress={() => saveNote()}>
-                    <Text style={styles.input}>Save Note</Text>
+                    <Text style={styles.input}>Save</Text>
                 </TouchableOpacity>
             </View>
         </View>
-    </View>
+    </KeyboardAvoidingView>
   )
 }
 
 const styles = StyleSheet.create({
     container: {
-        height: '100%',
         backgroundColor: 'rgb(23,23,23)'
     }, 
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center'
-    },     
-    bigHeader: {
-      color: 'white',
-      fontSize: 45,
-      textAlign: 'center',
-      fontWeight: '700',
-      marginTop: '5%',
-      marginBottom: '5%'
-    },
-    subheading: {
-        color: 'white',
-        textAlign: 'center',
-        fontSize: 25,
-        fontWeight: '500',
-        width: '90%',
-        textAlign: 'left',
-        marginBottom: '2%'
-      },
-    formInput: {
-      backgroundColor: 'white',
-      paddingLeft: 4,
-      paddingRight: 4,
-      paddingTop: 2,
-      paddingBottom: 2,
-      fontSize: 18,
-      width: '90%',
-      marginBottom: '10%'
-    },
     noteBody: {
         backgroundColor: 'white',
-        paddingLeft: 4,
-        paddingRight: 4,
-        paddingTop: 2,
-        paddingBottom: 2,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 10,
+        paddingBottom: 50,
         fontSize: 18,
         textAlignVertical: 'top',
-        width: '90%',
-        height: '35%'
+        width: '100%',
+        height: '75%'
     },
     wrapperContainer: {
-      flex: 1,
-      alignItems: 'center',
-      width: '100%'
+      width: '30%',
+      position: 'absolute',
+      top: '65%',
+      right: '5%'
     },
     buttonWrapper: {
-      width: '60%',
+      width: '100%',
       borderColor: '#777',
       borderRadius: 25,
-      backgroundColor: 'white',
+      backgroundColor: 'black',
       borderWidth: 1,
       paddingTop: '2%',
       paddingBottom: '2%',
@@ -117,6 +68,7 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       fontSize: 18,
       width: '100%',
+      color: 'white'
     },
 })
 
