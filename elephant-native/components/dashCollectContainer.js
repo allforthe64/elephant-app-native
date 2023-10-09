@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faCamera, faMicrophone, faQrcode, faPencil, faFile, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faCamera, faMicrophone, faQrcode, faPencil, faFolder, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 export default function DashCollectContainer({ navigate }) {
 
@@ -11,8 +11,8 @@ export default function DashCollectContainer({ navigate }) {
             <View style={styles.column}>
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity onPress={() => navigate('Add Local File')}>
-                        <FontAwesomeIcon icon={faFile} size={50} style={{marginLeft: '25%'}}/>
-                        <Text style={styles.input}>Add Local File</Text>
+                        <FontAwesomeIcon icon={faFolder} size={50} style={{marginLeft: '30%'}}/>
+                        <Text style={styles.input}>Get Document</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.buttonWrapper}>
