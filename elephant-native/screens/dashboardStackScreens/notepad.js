@@ -18,6 +18,10 @@ const Notepad = () => {
       setOpen(true)
     }
 
+    const addToStorage = () => {
+      console.log('Adding note to storage')
+    }
+
     useEffect(() => {
       if (open === false) Keyboard.dismiss() 
       else ref.current.focus() 
@@ -38,6 +42,13 @@ const Notepad = () => {
                       autoFocus
                       />
         <View style={open ? styles.wrapperContainer : styles.wrapperContainerFull}>
+           {!open && 
+              <View style={styles.buttonWrapperText}>
+                <TouchableOpacity onPress={() => addToStorage()}>
+                  <Text style={styles.input}>Add To Storage</Text>
+                </TouchableOpacity>
+              </View>
+            }
             <View style={open ? styles.buttonWrapper : styles.buttonWrapperFull}>
                 <TouchableOpacity onPress={() => {open === false ? startEdit() : saveNote()}}>
                   {open ? (
@@ -78,37 +89,54 @@ const styles = StyleSheet.create({
       height: '100%'
   },
     wrapperContainer: {
-      width: '16%',
+      width: '100%',
       position: 'absolute',
       top: '58%',
-      right: '5%'
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      paddingRight: '5%',
     },
 
     wrapperContainerFull: {
-      width: '16%',
+      width: '100%',
       position: 'absolute',
       top: '88%',
-      right: '5%',
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      paddingRight: '5%'
     },
     buttonWrapper: {
-      width: '100%',
+      width: '16%',
       borderColor: '#777',
       borderRadius: 100,
       backgroundColor: 'black',
       borderWidth: 1,
-      paddingBottom: '15%',
-      paddingTop: '15%',
-      paddingLeft: '15%'
+      paddingLeft: '2%',
+      paddingTop: '2%',
+      paddingBottom: '2%'
     },
     buttonWrapperFull: {
-      width: '100%',
+      width: '18%',
       borderColor: '#777',
       borderRadius: 100,
       backgroundColor: 'black',
       borderWidth: 1,
-      paddingBottom: '15%',
-      paddingTop: '15%',
-      paddingLeft: '18%'
+      paddingLeft: '3.5%',
+      paddingTop: '3%',
+      paddingBottom: '3%'
+    },
+    buttonWrapperText: {
+      width: '45%',
+      height: '65%',
+      borderColor: '#777',
+      borderRadius: 100,
+      backgroundColor: 'black',
+      borderWidth: 1,
+      paddingTop: '2%',
+      marginRight: '5%'
     },
     input: {
       textAlign: 'center',
