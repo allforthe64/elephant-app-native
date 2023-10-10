@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Keyboard, KeyboardAvoidingView } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faPencil } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faPencil } from '@fortawesome/free-solid-svg-icons'
 
 const Notepad = () => {
 
@@ -23,11 +23,9 @@ const Notepad = () => {
       else ref.current.focus() 
     },[open])
 
-    console.log(open)
-
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <KeyboardAvoidingView behavior="padding">
           <TextInput onChangeText={(e) => setBody(e)}
                       value={body}
                       placeholder={'Add a note...'}
@@ -43,7 +41,7 @@ const Notepad = () => {
             <View style={open ? styles.buttonWrapper : styles.buttonWrapperFull}>
                 <TouchableOpacity onPress={() => {open === false ? startEdit() : saveNote()}}>
                   {open ? (
-                      <Text style={styles.input}>Stop Editing</Text>
+                      <FontAwesomeIcon icon={faCheck} size={40} color='white'/>
                     )
                     : (
                       <FontAwesomeIcon icon={faPencil} size={40} color='white'/>
@@ -57,15 +55,12 @@ const Notepad = () => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: 'rgb(23,23,23)'
-    }, 
     noteBody: {
         backgroundColor: 'white',
         paddingLeft: 10,
         paddingRight: 10,
         paddingTop: 10,
-        paddingBottom: 50,
+        paddingBottom: 70,
         fontSize: 18,
         textAlignVertical: 'top',
         width: '100%',
@@ -83,9 +78,9 @@ const styles = StyleSheet.create({
       height: '100%'
   },
     wrapperContainer: {
-      width: '35%',
+      width: '16%',
       position: 'absolute',
-      top: '65%',
+      top: '58%',
       right: '5%'
     },
 
@@ -98,11 +93,12 @@ const styles = StyleSheet.create({
     buttonWrapper: {
       width: '100%',
       borderColor: '#777',
-      borderRadius: 25,
+      borderRadius: 100,
       backgroundColor: 'black',
       borderWidth: 1,
-      paddingTop: '2%',
-      paddingBottom: '2%',
+      paddingBottom: '15%',
+      paddingTop: '15%',
+      paddingLeft: '15%'
     },
     buttonWrapperFull: {
       width: '100%',
