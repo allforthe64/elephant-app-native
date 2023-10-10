@@ -17,12 +17,6 @@ export default function DashMain({navigation: { navigate }}) {
     navigate('Home')
   }
 
-  try {
-    fetch('http://192.168.1.60:3000/api/hello').then(res => res.json()).then(data => console.log(data.message))
-  } catch (err) {
-    console.log(err)
-  }
-
   return (
     <View>
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />

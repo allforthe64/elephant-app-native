@@ -52,6 +52,23 @@ const CameraComponent = () => {
         }
 
         const saveToElephant = () => {
+
+            console.log(photo.uri)
+
+            try {
+                fetch('http://192.168.1.60:3000/api/upload-image', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(photo),
+                })
+                .then(res => res.json()).then(data => console.log(data.imageSent))
+              } catch (err) {
+                console.log(err)
+              }
+
             setPhoto(undefined)
         }
 
