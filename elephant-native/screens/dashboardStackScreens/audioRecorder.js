@@ -137,6 +137,16 @@ const AudioRecorder = () => {
     <View style={styles.container}>
         <Image style={styles.bgImg } source={require('../../assets/elephant-dashboard.jpg')} />
         <View style={styles.innerContainer}>
+            {success && 
+                    <View style={styles.successContainer}>
+                        <View style={styles.innerSuccessContainer}>
+                            <Text style={{color: 'green'}}>Upload Successful!</Text>
+                            <TouchableOpacity onPress={() => setSuccess(false)}>
+                                <FontAwesomeIcon icon={faXmark} size={20} color={'black'} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+            }
             <Text style={styles.bigHeader}>Audio Recordings:</Text>
             {recordings.length === 0 ? 
                 <View style={styles.noRecCon}>
@@ -248,6 +258,23 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 15,
     width: '100%',
+    },
+    successContainer: {
+        position: 'absolute',
+        top: 0,
+        backgroundColor: 'white',
+        width: '100%',
+        height: '5%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center'
+    },
+    innerSuccessContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        width: '50%',
     },
 })
 
