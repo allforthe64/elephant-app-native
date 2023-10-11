@@ -3,17 +3,23 @@ import {View, Text, Button, StyleSheet, Image, ScrollView, TouchableOpacity} fro
 import FileRow from '../../components/fileRow'
 import * as DocumentPicker from 'expo-document-picker'
 import * as ImagePicker from 'expo-image-picker'
+import { firebase } from '../../firebaseConfig'
+import { format } from 'date-fns'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 const FilePicker = () => {
 
     const [files, setFiles] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [success, setSuccess] = useState(false)
 
     const selectFile = async () => {
         let updatedFiles = [...files]
         try {
             const file = await DocumentPicker.getDocumentAsync({copyToCacheDirectory: false})
 
-            updatedFiles.push({name: file.assets[0].name, uri: file.assets[0].uri, size: file.assets[0].size})
+            updatedFiles.push({name: file.assets[0].name, uri: file.assets[0].uri, size: file.assets[0].size, fileType: file.assets[0].name.split('.')[1]})
             setFiles(updatedFiles)
         } catch (err) {
             console.log(err)
@@ -32,7 +38,7 @@ const FilePicker = () => {
         });
     
         if (!img.canceled) {
-            updatedFiles.push({name: img.assets[0].fileName, uri: img.assets[0].uri, size: img.assets[0].fileSize})
+            updatedFiles.push({name: img.assets[0].fileName, uri: img.assets[0].uri, size: img.assets[0].fileSize, fileType: img.assets[0].fileName.split('.')[1]})
             setFiles(updatedFiles)
         }
     };
@@ -40,7 +46,7 @@ const FilePicker = () => {
     const renderFiles = () => {
         return files.map((file, index) => {
             return (
-                <FileRow file={file} files={files} index={index} deleteFunc={filterFiles}/>
+                <FileRow file={file} files={files} index={index} key={index} deleteFunc={filterFiles}/>
             )
         })
     }
@@ -56,10 +62,62 @@ const FilePicker = () => {
         setFiles(arr)
     }
 
+    console.log(files)
+
+    const saveFiles = () => {
+        setLoading(true)
+
+        //create new formatted date for file
+        const formattedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'")
+        
+        files.map(async (el) => {
+
+            try {
+                const blob = await new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest()
+                    xhr.onload = () => {
+                        resolve(xhr.response) 
+                    }
+                    xhr.onerror = (e) => {
+                        reject(e)
+                        reject(new TypeError('Network request failed'))
+                    }
+                    xhr.responseType = 'blob'
+                    xhr.open('GET', el.uri, true)
+                    xhr.send(null)
+                })
+    
+                const filename = `${formattedDate}/${el.name}`
+                const ref = firebase.storage().ref().child(filename)
+    
+                await ref.put(blob)
+    
+            } catch (err) {
+                console.log(err)
+            }
+
+        })
+        const empty = []
+        setFiles(empty)
+        setSuccess(true)
+        setLoading(false)
+          
+    }
+
   return (
     <View style={styles.container}>
         <Image style={styles.bgImg } source={require('../../assets/elephant-dashboard.jpg')} />
         <View style={styles.innerContainer}>
+            {success && 
+                <View style={styles.successContainer}>
+                    <View style={styles.innerSuccessContainer}>
+                        <Text style={{color: 'green'}}>Upload Successful!</Text>
+                        <TouchableOpacity onPress={() => setSuccess(false)}>
+                            <FontAwesomeIcon icon={faXmark} size={20} color={'black'} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            }
             <Text style={styles.bigHeader}>Files to upload:</Text>
             {files.length === 0 ? 
                 <View style={styles.noFileCon}>
@@ -91,8 +149,8 @@ const FilePicker = () => {
             </View>
             <View style={styles.wrapperContainer}>
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => console.log('saving files...')}>
-                    <Text style={styles.input}>Save All</Text>
+                    <TouchableOpacity onPress={() => saveFiles()}>
+                    <Text style={styles.input}>Upload Files</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -182,6 +240,23 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    successContainer: {
+        position: 'absolute',
+        top: 0,
+        backgroundColor: 'white',
+        width: '100%',
+        height: '5%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center'
+    },
+    innerSuccessContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        width: '50%',
     },
 })
 
