@@ -1,10 +1,14 @@
 import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlay } from '@fortawesome/free-solid-svg-icons'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 
-const AudioEditor = ({recordingLine, index, deleteFunc, recordings}) => {
+const AudioEditor = ({recordingLine, index, deleteFunc, /* editName, */ recordings}) => {
     const [recordingTitle, setRecordingTitle] = useState(recordingLine.name)
+
+    /* useEffect(() => {
+        editName(recordingTitle, recordingLine.file)
+    }, recordingTitle) */
   return (
     <View key={index} style={styles.bigCon}>
         <View style={styles.container}>

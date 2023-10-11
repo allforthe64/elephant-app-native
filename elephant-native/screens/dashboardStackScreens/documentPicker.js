@@ -11,7 +11,6 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons'
 const FilePicker = () => {
 
     const [files, setFiles] = useState([])
-    const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
 
     const selectFile = async () => {
@@ -61,8 +60,6 @@ const FilePicker = () => {
     
         setFiles(arr)
     }
-
-    console.log(files)
 
     const saveFiles = () => {
         setLoading(true)

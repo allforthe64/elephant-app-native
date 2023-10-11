@@ -2,13 +2,17 @@ import { Audio } from 'expo-av'
 import React, { useState } from 'react'
 import { Text, View , TouchableOpacity, ScrollView, StyleSheet, Image} from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faMicrophone, faSquare } from '@fortawesome/free-solid-svg-icons'
+import { faMicrophone, faSquare, faXmark } from '@fortawesome/free-solid-svg-icons'
 import AudioEditor from '../../components/audioEditor'
+import { firebase } from '../../firebaseConfig'
+import { format } from 'date-fns'
+
 
 const AudioRecorder = () => {
 
     const [recording, setRecording] = useState()
     const [recordings, setRecordings] = useState([])
+    const [success, setSuccess] = useState(false)
 
     const startRecording = async () => {
         try {
@@ -63,7 +67,7 @@ const AudioRecorder = () => {
     const getRecordingLines = () => {
         return recordings.map((recordingLine, index) => {
             return (
-            <AudioEditor recordingLine={recordingLine} index={index} recordings={recordings} deleteFunc={filterRecordings} />
+            <AudioEditor recordingLine={recordingLine} index={index} /* editName={editName} */ recordings={recordings} deleteFunc={filterRecordings} />
         ) 
             
         })
@@ -78,6 +82,55 @@ const AudioRecorder = () => {
         })
 
         setRecordings(arr)
+    }
+
+    /* const editName = (input, incomingRec) => {
+        const target = recordings.filter(el => el.file === incomingRec)
+        target.name = input
+
+        let holder = recordings.filter(el => JSON.stringify(el) !== JSON.stringify(target))
+        holder = [...holder, target]
+        setRecordings(holder)
+    }
+ */
+    console.log(recordings)
+
+    const saveFiles = () => {
+
+        //create new formatted date for file
+        const formattedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'")
+        
+        recordings.map(async (el) => {
+
+            try {
+                const blob = await new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest()
+                    xhr.onload = () => {
+                        resolve(xhr.response) 
+                    }
+                    xhr.onerror = (e) => {
+                        reject(e)
+                        reject(new TypeError('Network request failed'))
+                    }
+                    xhr.responseType = 'blob'
+                    xhr.open('GET', el.file, true)
+                    xhr.send(null)
+                })
+    
+                const filename = `${formattedDate}/${el.file}`
+                const ref = firebase.storage().ref().child(filename)
+    
+                await ref.put(blob)
+    
+            } catch (err) {
+                console.log(err)
+            }
+
+        })
+        const empty = []
+        setRecordings(empty)
+        setSuccess(true)
+          
     }
 
   return (
@@ -105,7 +158,7 @@ const AudioRecorder = () => {
             </View>
             <View style={styles.wrapperContainer}>
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => console.log('saving urls...')}>
+                    <TouchableOpacity onPress={() => saveFiles()}>
                     <Text style={styles.input}>Save All</Text>
                     </TouchableOpacity>
                 </View>
