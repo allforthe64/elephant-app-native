@@ -7,7 +7,7 @@ export default function Home({navigation}) {
 
   const [persist, setPersist] = useState()
 
-  useEffect(() => {
+  /* useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
       const loggedIn = await AsyncStorage.getItem('loggedIn')
       console.log('logged in: ', loggedIn)
@@ -15,7 +15,7 @@ export default function Home({navigation}) {
     });
 
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation]); */
 
   if (persist) {
     navigation.navigate('Dashboard')

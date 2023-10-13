@@ -4,6 +4,7 @@ import { firebaseAuth } from '../firebaseConfig'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 import { AuthContext } from '../context/authContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { getUser } from '../storage'
 
 const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
@@ -26,15 +27,14 @@ const Login = ({navigation: {navigate}}) => {
         try {
             response = await signInWithEmailAndPassword(auth, userEmail, password)
             await AsyncStorage.setItem('loggedIn', JSON.stringify(response)) 
+            navigate('Dashboard')
         } catch (err) {
             console.log(err)
             alert('Sign In failed: ', err.message)
-            return
         } finally {
             setLoading(false)
             setUserEmail('')
             setPassword('')
-            navigate('Dashboard')
         }
     }
 
@@ -43,6 +43,7 @@ const Login = ({navigation: {navigate}}) => {
         try {
             const response = await createUserWithEmailAndPassword(auth, userEmail, password)
             console.log(response)
+            const userData = await getUser(response._tokenResponse)
             alert('Check your emails!')
         } catch (err) {
             console.log(err)
@@ -52,6 +53,7 @@ const Login = ({navigation: {navigate}}) => {
             setLoading(false)
             setUserEmail('')
             setPassword('')
+            setSignUpMode(false)
             navigate('Registration Complete')
         }
     }
