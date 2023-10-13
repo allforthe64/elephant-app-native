@@ -7,14 +7,14 @@ import 'firebase/compat/storage'
 
 //configure firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyBxOJmWONqaEABmUqbItzSLCNn4USBrGSA",
-    authDomain: "elephant-app-22121.firebaseapp.com",
-    projectId: "elephant-app-22121",
-    storageBucket: "elephant-app-22121.appspot.com",
-    messagingSenderId: "525718553886",
-    appId: "1:525718553886:web:8a517b63afcbce967bf50f",
-    measurementId: "G-PHXPHEHBQW"
-  };
+  apiKey: "AIzaSyC8DpSdkz3VSvDh6xUbyA83xtFoUaa6HUQ",
+  authDomain: "elephantapp-21e34.firebaseapp.com",
+  projectId: "elephantapp-21e34",
+  storageBucket: "elephantapp-21e34.appspot.com",
+  messagingSenderId: "572276226266",
+  appId: "1:572276226266:web:e32e1b8d79b50c3cbd8de3",
+  measurementId: "G-V18K1CK9N5"
+};
   
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
