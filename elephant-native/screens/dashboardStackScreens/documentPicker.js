@@ -7,6 +7,7 @@ import { firebase } from '../../firebaseConfig'
 import { format } from 'date-fns'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
+import { addfile } from '../../storage'
 
 const FilePicker = () => {
 
@@ -62,7 +63,6 @@ const FilePicker = () => {
     }
 
     const saveFiles = () => {
-        setLoading(true)
 
         //create new formatted date for file
         const formattedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'")
@@ -88,6 +88,7 @@ const FilePicker = () => {
                 const ref = firebase.storage().ref().child(filename)
     
                 await ref.put(blob)
+                addfile(el)
     
             } catch (err) {
                 console.log(err)
@@ -97,7 +98,6 @@ const FilePicker = () => {
         const empty = []
         setFiles(empty)
         setSuccess(true)
-        setLoading(false)
           
     }
 

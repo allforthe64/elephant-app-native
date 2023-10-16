@@ -34,3 +34,7 @@ export function addUser(user) {
     sharedWith: {}
 })
 }
+
+export function addfile(file) {
+    console.log(file)
+}
