@@ -1,7 +1,10 @@
 import {
     setDoc,
     getDoc,
-    doc
+    addDoc,
+    updateDoc,
+    doc,
+    collection
 } from 'firebase/firestore'
 import { db } from '../elephant-native/firebaseConfig'
 
@@ -21,7 +24,6 @@ export async function getUser(user) {
 }
 
 export function addUser(user) {
-    console.log('this is the error')
     const userRef = setDoc(doc(db, 'users', user.localId), {
     email: user.email,
     displayName: user.email,
@@ -30,11 +32,44 @@ export function addUser(user) {
     folder3: {},
     folder4: {},
     folder5: {},
-    staging: {},
+    staging: [],
     sharedWith: {}
 })
 }
 
-export function addfile(file) {
-    console.log(file)
+export async function addfile(file) {
+
+    const fileRef = await addDoc(collection(db, 'files'), {
+        fileName: file.name,
+        documentType: file.fileType,
+        size: file.size,
+        uri: file.uri
+    })
+
+    const reference = {
+        fileId: fileRef.id,
+        fileName: file.name
+    }
+
+    return reference
+}
+
+export const updateStaging = async (files, currentUser) => {
+
+    console.log('files: ', files)
+
+    const docSnap = await getDoc(doc(db, 'users', currentUser))
+
+    let staging = []
+
+    docSnap.staging ? staging = [...docSnap.staging, ...files] : staging = [...files]
+
+    console.log('staging: ', staging)
+
+    updateDoc(doc(db, 'users', currentUser),
+        {
+            staging: staging
+        }
+    )
+
 }

@@ -7,12 +7,15 @@ import { firebase } from '../../firebaseConfig'
 import { format } from 'date-fns'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
-import { addfile } from '../../storage'
+import { addfile, updateStaging } from '../../storage'
+import { firebaseAuth } from '../../firebaseConfig'
 
 const FilePicker = () => {
 
     const [files, setFiles] = useState([])
     const [success, setSuccess] = useState(false)
+
+    const currentUser = firebaseAuth.currentUser.uid
 
     const selectFile = async () => {
         let updatedFiles = [...files]
@@ -62,12 +65,14 @@ const FilePicker = () => {
         setFiles(arr)
     }
 
-    const saveFiles = () => {
+    const saveFiles = async () => {
 
         //create new formatted date for file
         const formattedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'")
         
-        files.map(async (el) => {
+
+        const references =  await Promise.all(files.map(async (el) => {
+
 
             try {
                 const blob = await new Promise((resolve, reject) => {
@@ -88,13 +93,20 @@ const FilePicker = () => {
                 const ref = firebase.storage().ref().child(filename)
     
                 await ref.put(blob)
-                addfile(el)
-    
+                const reference = await addfile(el)
+                
+                return reference
+
             } catch (err) {
                 console.log(err)
             }
 
-        })
+        }))
+
+        console.log('references: ', references)
+
+        updateStaging(references, currentUser)
+
         const empty = []
         setFiles(empty)
         setSuccess(true)

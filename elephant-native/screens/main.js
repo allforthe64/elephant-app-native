@@ -43,6 +43,8 @@ export default function App() {
     getStorage()
   }, [])
 
+  console.log(auth)
+
   return (
         <NavigationContainer>
             <Drawer.Navigator initialRouteName="Home">
