@@ -27,12 +27,8 @@ export function addUser(user) {
     const userRef = setDoc(doc(db, 'users', user.localId), {
     email: user.email,
     displayName: user.email,
-    folder1: {},
-    folder2: {},
-    folder3: {},
-    folder4: {},
-    folder5: {},
-    staging: [],
+    files: ['File 1', 'File 2', 'File 3', 'File 4', 'File 5'],
+    fileRefs: [],
     sharedWith: {}
 })
 }
@@ -48,7 +44,8 @@ export async function addfile(file) {
 
     const reference = {
         fileId: fileRef.id,
-        fileName: file.name
+        fileName: file.name,
+        flag: 'Staging'
     }
 
     return reference
@@ -60,15 +57,15 @@ export const updateStaging = async (files, currentUser) => {
 
     const docSnap = await getDoc(doc(db, 'users', currentUser))
 
-    let staging = []
+    let fileArr = []
 
-    docSnap.staging ? staging = [...docSnap.staging, ...files] : staging = [...files]
+    docSnap.fileRefs ? fileArr = [...docSnap.fileRefs, ...files] : fileArr = [...files]
 
-    console.log('staging: ', staging)
+    console.log('fileArr: ', fileArr)
 
     updateDoc(doc(db, 'users', currentUser),
         {
-            staging: staging
+            fileRefs: fileArr
         }
     )
 
