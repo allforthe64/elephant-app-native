@@ -1,37 +1,43 @@
 {
-    "expo": {
-        "ios": {
-            "usesIcloudStorage": true,
-            "bundleIdentifier": "com.yourname.yourapp"
-        },
-        "plugins": [
-            [   
-                "expo-media-library",
-                {
-                    "photosPermission": "Allow Elephant App to access your photos.",
-                    "savePhotosPermission": "Allow Elephant App to save photos.",
-                    "microphonePermission": "Allow Elephant App to access your microphone",
-                    "isAccessMediaLocationEnabled": "true"
-                }
-            ],
-            [
-                "expo-document-picker",
-                {
-                  "iCloudContainerEnvironment": "Production"
-                }
-            ],
-            [
-                "expo-image-picker",
-                {
-                  "photosPermission": "Allow Elephant App to access your photos."
-                }
-            ],
-            [
-                "expo-barcode-scanner",
-                {
-                    "cameraPermission": "Allow Elephant App to access camera."
-                }
-            ]
-        ]
-    }
+  "expo": {
+    "ios": {
+      "usesIcloudStorage": true,
+      "bundleIdentifier": "com.yourname.yourapp"
+    },
+    "plugins": [
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow Elephant App to access your photos.",
+          "savePhotosPermission": "Allow Elephant App to save photos.",
+          "microphonePermission": "Allow Elephant App to access your microphone",
+          "isAccessMediaLocationEnabled": "true"
+        }
+      ],
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Elephant App to access your photos."
+        }
+      ],
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Allow Elephant App to access camera."
+        }
+      ],
+      [
+        "react-native-document-scanner-plugin",
+        {
+          "cameraPermission": "Allow Elephant App to access camera."
+        }
+      ]
+    ]
+  }
 }
