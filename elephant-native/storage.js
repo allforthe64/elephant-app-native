@@ -4,7 +4,8 @@ import {
     addDoc,
     updateDoc,
     doc,
-    collection
+    collection,
+    onSnapshot
 } from 'firebase/firestore'
 import { db } from '../elephant-native/firebaseConfig'
 
@@ -31,6 +32,18 @@ export function addUser(user) {
     fileRefs: [],
     sharedWith: {}
 })
+}
+
+export function userListener(setCurrentUser, setStaging, user) {
+    const unsub = onSnapshot(doc(db, 'users', user.uid), (doc) => {
+        //filter file references from the current user that are in staging
+        const stagingRefs = doc.data().fileRefs.filter(el => el.flag === 'Staging')
+        console.log('staging refs: ', stagingRefs)
+        setStaging(stagingRefs)
+        setCurrentUser({...doc.data(), uid: user.uid})
+    })
+
+    return unsub
 }
 
 export async function addfile(file) {

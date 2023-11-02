@@ -1,9 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, TouchableOpacity, Image } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { userListener } from '../../storage';
 
 export default function Files() {
 
+  //initialize state 
+  const [currentUser, setCurrentUser] = useState()
+  cosnt [staging, setStaging] = useState([])
+
+
+  
   return (
     <View style={styles.container}>
       <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
