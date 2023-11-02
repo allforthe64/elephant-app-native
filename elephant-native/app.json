@@ -2,7 +2,13 @@
   "expo": {
     "ios": {
       "usesIcloudStorage": true,
-      "bundleIdentifier": "com.yourname.yourapp"
+      "bundleIdentifier": "com.yourname.yourapp",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Allow Elephant App to access your photos.",
+        "NSPhotoLibraryAddUsageDescription": "Allow Elephant App to save photos.",
+        "NSCameraUsageDescription": "Allow Elephant App to access camera.",
+        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
+      }
     },
     "plugins": [
       [
@@ -38,6 +44,16 @@
           "cameraPermission": "Allow Elephant App to access camera."
         }
       ]
-    ]
+    ],
+    "android": {
+      "permissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_MEDIA_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA"
+      ],
+      "package": "com.yourname.yourapp"
+    }
   }
 }

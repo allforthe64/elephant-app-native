@@ -25,7 +25,7 @@ const AudioRecorder = () => {
                 })
 
                 const {recording} = await Audio.Recording.createAsync(
-                    Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+                    Audio.RecordingOptionsPresets.HIGH_QUALITY
                 )
     
                 setRecording(recording)
@@ -42,6 +42,8 @@ const AudioRecorder = () => {
     const stopRecording = async () => {
         setRecording(undefined)
         await recording.stopAndUnloadAsync()
+
+        console.log(recording)
 
         const updatedRecordings = [...recordings]
         const {sound, status} = await recording.createNewLoadedSoundAsync()
@@ -67,7 +69,7 @@ const AudioRecorder = () => {
     const getRecordingLines = () => {
         return recordings.map((recordingLine, index) => {
             return (
-            <AudioEditor recordingLine={recordingLine} index={index} /* editName={editName} */ recordings={recordings} deleteFunc={filterRecordings} />
+            <AudioEditor recordingLine={recordingLine} index={index} key={index} recordings={recordings} deleteFunc={filterRecordings} />
         ) 
             
         })
