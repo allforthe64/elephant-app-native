@@ -34,7 +34,8 @@ export function addUser(user) {
 })
 }
 
-export function userListener(setCurrentUser, setStaging, user) {
+export async function userListener(setCurrentUser, setStaging, user) {
+    console.log('user inside function: ', user)
     const unsub = onSnapshot(doc(db, 'users', user.uid), (doc) => {
         //filter file references from the current user that are in staging
         const stagingRefs = doc.data().fileRefs.filter(el => el.flag === 'Staging')
