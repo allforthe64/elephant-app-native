@@ -66,11 +66,7 @@ const FilePicker = () => {
     }
 
     const saveFiles = async () => {
-
-        //create new formatted date for file
-        const formattedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'")
         
-
         const references =  await Promise.all(files.map(async (el) => {
 
 
@@ -89,7 +85,7 @@ const FilePicker = () => {
                     xhr.send(null)
                 })
     
-                const filename = `${formattedDate}/${el.name}`
+                const filename = `${el.name}`
                 const ref = firebase.storage().ref().child(filename)
     
                 await ref.put(blob)

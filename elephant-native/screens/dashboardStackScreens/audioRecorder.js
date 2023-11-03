@@ -99,9 +99,6 @@ const AudioRecorder = () => {
 
     const saveFiles = () => {
 
-        //create new formatted date for file
-        const formattedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'")
-        
         recordings.map(async (el) => {
 
             try {
@@ -119,7 +116,7 @@ const AudioRecorder = () => {
                     xhr.send(null)
                 })
     
-                const filename = `${formattedDate}/${el.file}`
+                const filename = `${el.file}`
                 const ref = firebase.storage().ref().child(filename)
     
                 await ref.put(blob)

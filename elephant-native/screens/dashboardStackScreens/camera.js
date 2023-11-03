@@ -62,7 +62,7 @@ const CameraComponent = () => {
             setLoading(true)
 
             //create new formatted date for file
-            const formattedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'")
+            const formattedDate = format(new Date(), "yyyy-MM-dd")
 
               try {
                 const blob = await new Promise((resolve, reject) => {
