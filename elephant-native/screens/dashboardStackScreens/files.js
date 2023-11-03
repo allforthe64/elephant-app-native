@@ -39,12 +39,13 @@ export default function Files() {
   //once a current user has been pushed into state, allow component to render files/folders
   useEffect(() => {
     if (currentUser) setLoading(false)
-  }, [currentUser]) 
+  }, [currentUser])  
 
-  const getTargetFolder = (targetName, nested) => {
-    const targetFiles = currentUser.fileRefs.filter(file => {if(file.flag === targetName) return file})
-    const targetFolders = currentUser.files.filter(file => {if(file.nestedUnder === targetName) return file})
-    setFocusedFolder({name: targetName, files: targetFiles, folders: targetFolders})
+  //get the files and folders nested under a particular folder
+  const getTargetFolder = (input) => {
+    const targetFiles = currentUser.fileRefs.filter(file => {if(file.flag === input.fileName) return file})
+    const targetFolders = currentUser.files.filter(file => {if(file.nestedUnder === input.id) return file})
+    setFocusedFolder({folder: input, files: targetFiles, folders: targetFolders})
   }
 
   return ( 
@@ -52,7 +53,7 @@ export default function Files() {
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
         {!loading ? 
           <View style={focusedFolder ? styles.focusedModal : styles.modal}>
-              {focusedFolder ? <FocusedFolder folder={focusedFolder} clear={setFocusedFolder} getTargetFolder={getTargetFolder}/> 
+              {focusedFolder ? <FocusedFolder folder={focusedFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder}/> 
               : stagingMode ? <Staging reset={setStagingMode} staging={staging}/> 
               :
               (
@@ -67,7 +68,7 @@ export default function Files() {
                     <ScrollView>
                       {currentUser.files.map((file, i) => {
                         if (file.nestedUnder === '') {
-                          return <Folder key={i + file.fileName} pressable={true} folder={file.file} getTargetFolder={getTargetFolder}/>
+                          return <Folder key={i + file.fileName} pressable={true} folder={file} getTargetFolder={getTargetFolder}/>
                         }
                       })}
                     </ScrollView>
