@@ -4,12 +4,12 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowRight, faFolder } from '@fortawesome/free-solid-svg-icons';
 
-const Folder = ({folderName, getTargetFolder, pressable}) => {
+const Folder = ({folder, getTargetFolder, pressable}) => {
   return (
     <TouchableOpacity style={styles.folder} onPress={() => getTargetFolder(folderName)}>
         <View style={styles.folderTitle}>
             <FontAwesomeIcon icon={faFolder} color={'white'} size={32}/>
-            <Text style={styles.folderName}>{folderName}</Text>
+            <Text style={styles.folderName}>{folder.fileName}</Text>
         </View>
         <FontAwesomeIcon icon={faArrowRight} size={26} color={'white'} style={styles.folderArrow}/>
     </TouchableOpacity>

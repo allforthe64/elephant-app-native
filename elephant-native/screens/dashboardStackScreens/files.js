@@ -67,7 +67,7 @@ export default function Files() {
                     <ScrollView>
                       {currentUser.files.map((file, i) => {
                         if (file.nestedUnder === '') {
-                          return <Folder key={i + file.fileName} pressable={true} folderName={file.fileName} getTargetFolder={getTargetFolder}/>
+                          return <Folder key={i + file.fileName} pressable={true} folder={file.file} getTargetFolder={getTargetFolder}/>
                         }
                       })}
                     </ScrollView>
