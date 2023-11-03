@@ -6,28 +6,26 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import Folder from './folder'
 import File from './file'
 
-const FocusedFolder = ({folder, clear, getTargetFolder}) => {
-    console.log(folder)
+const Staging = ({staging, reset}) => {
 
   return (
     <View style={styles.container}>
         <View style={styles.title}>
-            <Text style={styles.header}>{folder.name}</Text>
-            <TouchableOpacity onPressOut={() => clear(null)} style={{width: '100%',}}>
+            <Text style={styles.header}>Files In Staging</Text>
+            <TouchableOpacity style={{marginLeft: '10%'}} onPressOut={() => reset(false)}>
                 <FontAwesomeIcon icon={faXmark} size={35} color='white' />
             </TouchableOpacity>
         </View>
         <View>
-            <ScrollView >
-                {folder.folders.map((folder, i) => {return <Folder key={folder + i} getTargetFolder={getTargetFolder} folderName={folder.fileName} />})}
-                {folder.files.map((file, i) => {return <File key={file + i} fileName={file.fileName} />})}
+            <ScrollView>
+                {staging.map((file, i) => {return <File key={file + i}  fileName={file.fileName}/>})}        
             </ScrollView> 
         </View>
     </View>
   )
 }
 
-export default FocusedFolder
+export default Staging
 
 const styles = StyleSheet.create({
     container:{
@@ -38,20 +36,13 @@ const styles = StyleSheet.create({
     title: {
         display: 'flex', 
         flexDirection: 'row',
-        justifyContent: 'flex-end',
-        paddingTop: '2.5%',
-        paddingBottom: '2.5%',
-        paddingRight: '5%',
         marginBottom: '15%'
     },
     header: {
         color: 'white',
         fontSize: 30,
         fontWeight: '500',
-        position: 'absolute',
-        textAlign: 'center',
-        width: '100%',
-        paddingTop: '2.5%',
-        paddingRight: '5%'
+        marginLeft: '25%',
+        width: '60%',
     }
 })

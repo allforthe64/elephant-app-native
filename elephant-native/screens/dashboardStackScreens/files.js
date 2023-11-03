@@ -1,8 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, TouchableOpacity, Image } from 'react-native';
 
-import { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../../context/authContext';
+import { useState, useEffect } from 'react';
 
 import { userListener } from '../../storage';
 
@@ -10,12 +9,16 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Folder from '../../components/file_system/folder';
 import { firebaseAuth } from '../../firebaseConfig';
 import FocusedFolder from '../../components/file_system/focusedFolder';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faBox } from '@fortawesome/free-solid-svg-icons';
+import Staging from '../../components/file_system/staging';
 
 export default function Files() {
 
   //initialize state 
   const [currentUser, setCurrentUser] = useState()
   const [staging, setStaging] = useState([])
+  const [stagingMode, setStagingMode] = useState(false)
   const [loading, setLoading] = useState(true)
   const [focusedFolder, setFocusedFolder] = useState()
 
@@ -44,16 +47,23 @@ export default function Files() {
     setFocusedFolder({name: targetName, files: targetFiles, folders: targetFolders})
   }
 
-  console.log('current user: ', auth.currentUser)
-
   return ( 
       <View style={styles.container}>
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
         {!loading ? 
           <View style={focusedFolder ? styles.focusedModal : styles.modal}>
               {focusedFolder ? <FocusedFolder folder={focusedFolder} clear={setFocusedFolder} getTargetFolder={getTargetFolder}/> 
-              : (
+              : stagingMode ? <Staging reset={setStagingMode} staging={staging}/> 
+              :
+              (
                   <View>
+                    <View style={styles.header}>
+                      <TouchableOpacity style={{display: 'flex', flexDirection: 'row'}} onPress={() => setStagingMode(true)}>
+                        <Text style={styles.subheading}>Go To Staging</Text>
+                        <FontAwesomeIcon icon={faBox} color='white' size={40}/>
+                      </TouchableOpacity>
+                    </View>
+                    
                     <ScrollView>
                       {currentUser.files.map((file, i) => {
                         if (file.nestedUnder === '') {
@@ -87,7 +97,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'rgba(0, 0, 0, .8)',
-    paddingTop: '30%',
+    paddingTop: '5%',
     position: 'absolute'
   },
   focusedModal: {
@@ -106,7 +116,20 @@ const styles = StyleSheet.create({
   subheading: {
     color: 'white',
     textAlign: 'center',
-    fontSize: 18
+    fontWeight: '600',
+    fontSize: 22,
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    marginRight: '2%'
+  },
+  header: {
+    display: 'flex', 
+    flexDirection: 'row',
+    justifyContent: 'flex-end', 
+    width: '90%', 
+    marginLeft: 'auto', 
+    marginRight: 'auto',
+    marginBottom: '10%',
   },
   wrapperContainer: {
     flex: 1,
