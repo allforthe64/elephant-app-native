@@ -4,12 +4,12 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowRight, faFolder } from '@fortawesome/free-solid-svg-icons';
 
-const Folder = ({folderName, getTargetFolder, pressable}) => {
+const Folder = ({folder, getTargetFolder, pressable}) => {
   return (
-    <TouchableOpacity style={styles.folder} onPress={() => getTargetFolder(folderName)}>
+    <TouchableOpacity style={styles.folder} onPress={() => getTargetFolder(folder)}>
         <View style={styles.folderTitle}>
-            <FontAwesomeIcon icon={faFolder} color={'white'} size={32}/>
-            <Text style={styles.folderName}>{folderName}</Text>
+            <FontAwesomeIcon icon={faFolder} color={'white'} size={32} />
+            <Text style={styles.folderName}>{folder.fileName}</Text>
         </View>
         <FontAwesomeIcon icon={faArrowRight} size={26} color={'white'} style={styles.folderArrow}/>
     </TouchableOpacity>
@@ -36,17 +36,17 @@ const styles = StyleSheet.create({
         marginBottom: '8%'
     },
     folderTitle: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: '80%',
+      display: 'flex',
+      flexDirection: 'row',
+      width: '80%',
     },
     folderName: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 22,
-    fontWeight: '500',
-    paddingTop: '4%',
-    marginLeft: '6%'
+      color: 'white',
+      textAlign: 'center',
+      fontSize: 22,
+      fontWeight: '500',
+      paddingTop: '3%',
+      marginLeft: '6%'
     },
     folderArrow: {
     marginTop: 'auto'
