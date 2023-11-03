@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   },
 
   container: {
-    backgroundColor: 'rgb(41 37 36)',
+    backgroundColor: 'rgb(23 23 23)',
     paddingBottom: 50,
     paddingTop: 50
   },
