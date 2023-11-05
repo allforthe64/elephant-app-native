@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button, TouchableOpacity, Image } from 'react-n
 
 import { useState, useEffect } from 'react';
 
-import { userListener } from '../../storage';
+import { userListener, updateUser } from '../../storage';
 
 import { ScrollView } from 'react-native-gesture-handler';
 import Folder from '../../components/file_system/folder';
@@ -43,9 +43,31 @@ export default function Files() {
 
   //get the files and folders nested under a particular folder
   const getTargetFolder = (input) => {
-    const targetFiles = currentUser.fileRefs.filter(file => {if(file.flag === input.fileName) return file})
+    const targetFiles = currentUser.fileRefs.filter(file => {if(file.flag === input.id) return file})
     const targetFolders = currentUser.files.filter(file => {if(file.nestedUnder === input.id) return file})
     setFocusedFolder({folder: input, files: targetFiles, folders: targetFolders})
+  }
+
+  //function to handle editing the user
+  const editUser = async (mode, input, index) => {
+    if (mode === 'folder') {
+      //remove the file ref from the existing file refs and return the array
+      //set the updatedUsers's fileref field to the newRefs array
+      //update the user using the updatedUser object
+      //reset the delete array
+      if (index === 'delete') {
+        const updatedUser = {...currentUser, files: input.newFolders, fileRefs: input.refsToKeep} 
+        await updateUser(updatedUser)
+      }
+
+
+    }
+  }
+
+  const deleteFolder = (target) => {
+    const refsToKeep = currentUser.fileRefs.filter(ref => ref.flag !== target)
+    const newFolders = currentUser.files.filter(file => file.id !== target)
+    editUser('folder', {refsToKeep: refsToKeep, newFolders: newFolders}, 'delete')
   }
 
   return ( 
@@ -53,7 +75,7 @@ export default function Files() {
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
         {!loading ? 
           <View style={focusedFolder ? styles.focusedModal : styles.modal}>
-              {focusedFolder ? <FocusedFolder folder={focusedFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder}/> 
+              {focusedFolder ? <FocusedFolder folder={focusedFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder}/> 
               : stagingMode ? <Staging reset={setStagingMode} staging={staging}/> 
               :
               (
@@ -68,7 +90,7 @@ export default function Files() {
                     <ScrollView>
                       {currentUser.files.map((file, i) => {
                         if (file.nestedUnder === '') {
-                          return <Folder key={i + file.fileName} pressable={true} folder={file} getTargetFolder={getTargetFolder}/>
+                          return <Folder key={i + file.fileName} pressable={true} folder={file} getTargetFolder={getTargetFolder} deleteFolder={deleteFolder}/>
                         }
                       })}
                     </ScrollView>

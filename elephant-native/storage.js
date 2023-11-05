@@ -34,6 +34,12 @@ export function addUser(user) {
 })
 }
 
+export async function updateUser(updatedUser) {
+    console.log(updatedUser)
+    const userRef = doc(db, 'users', updatedUser.uid)
+    await updateDoc(userRef, {...updatedUser})
+}
+
 export async function userListener(setCurrentUser, setStaging, user) {
     console.log('user inside function: ', user)
     const unsub = onSnapshot(doc(db, 'users', user.uid), (doc) => {

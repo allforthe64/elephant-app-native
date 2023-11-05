@@ -4,34 +4,95 @@ import React, {useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEllipsisVertical, faFolder, faXmark } from '@fortawesome/free-solid-svg-icons';
 
-const Folder = ({folder, getTargetFolder}) => {
+const Folder = ({folder, getTargetFolder, deleteFolder}) => {
 
   const [visible, setVisible] = useState(false)
+  const [preDelete, setPreDelete] = useState(false)
+
+  const deleteFolderFunction = () => {
+    deleteFolder(folder.id)
+    setPreDelete(false)
+    setVisible(false)
+  }
 
   return (
     <View style={{position: 'relative'}}>
       {visible ?
-      <View style={{width: '90%', marginLeft: 'auto', marginRight: 'auto', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: '55%', right: '5%', zIndex: 10}}>
           <Modal animationType='slide' presentationStyle='pageSheet'>
-            <View style={{ paddingTop: '10%', backgroundColor: 'rgb(23 23 23)', paddingLeft: '5%', height: '100%', borderWidth: 1, borderColor: 'red'}}>
-              <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%'}}>
-                <Pressable onPress={() => setVisible(false)}>
-                  <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
-                </Pressable>
-              </View>
-              <Text style={{fontSize: '40px', fontWeight: 'bold', color: 'white', marginTop: '5%'}}>{folder.fileName}</Text>
-              <TouchableOpacity style={{ marginTop: '10%'}}>
-                <Text style={{fontSize: '20px', color: 'white'}}>Rename Folder</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={{ marginTop: '10%'}}>
-                <Text style={{fontSize: '20px', color: 'white'}}>Delete Folder</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={{ marginTop: '10%'}}>
-                <Text style={{fontSize: '20px', color: 'white'}}>Move Folder To...</Text>
-            </TouchableOpacity>
-            </View>
+              {preDelete ? 
+                <Modal animationType='slide' presentationStyle='pageSheet' >
+                    <View style={{height: '100%', width: '100%', backgroundColor: 'rgb(23 23 23)'}}>
+                    
+                      <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '10%', width: '100%'}}>
+                        <Pressable onPress={() => setPreDelete(false)}>
+                          <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
+                        </Pressable>
+                      </View>
+                    <View style={{width: '100%', height: '95%', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                      <Text style={{fontSize: 22, color: 'white', textAlign: 'center'}}>Are you sure you want to delete {folder.fileName} and all of its contents?</Text>
+
+                      <View style={{width: '50%',
+                            borderRadius: 25,
+                            backgroundColor: 'red',
+                            paddingTop: '2%',
+                            paddingBottom: '2%',
+                            marginTop: '10%',
+                            marginLeft: '2%'}}>
+                        <TouchableOpacity onPress={deleteFolderFunction} style={{
+                          display: 'flex', 
+                          flexDirection: 'row', 
+                          width: '100%', 
+                          justifyContent: 'center',
+                        }}>
+                            <Text style={{fontSize: 15, color: 'white', fontWeight: '600'}}>Delete</Text>
+                        </TouchableOpacity>
+                      </View>
+
+                      <View style={{width: '50%',
+                          borderColor: '#777',
+                          borderRadius: 25,
+                          backgroundColor: 'white',
+                          borderWidth: 1,
+                          paddingTop: '2%',
+                          paddingBottom: '2%',
+                          marginTop: '7%',
+                          marginBottom: '10%',
+                          marginLeft: '2%'}}>
+                        <TouchableOpacity onPress={() => setPreDelete(false)} style={{
+                          display: 'flex', 
+                          flexDirection: 'row', 
+                          width: '100%', 
+                          justifyContent: 'center',
+                        }}>
+                            <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Cancel</Text>
+                        </TouchableOpacity>
+                      </View>
+
+
+                    </View>
+                  </View>
+                </Modal>
+                : 
+                  <View style={{ paddingTop: '10%', backgroundColor: 'rgb(23 23 23)', paddingLeft: '5%', height: '100%'}}>
+                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%'}}>
+                      <Pressable onPress={() => setVisible(false)}>
+                        <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
+                      </Pressable>
+                    </View>
+                    <Text style={{fontSize: '40px', fontWeight: 'bold', color: 'white', marginTop: '5%'}}>{folder.fileName}</Text>
+                    <TouchableOpacity style={{ marginTop: '10%'}}>
+                      <Text style={{fontSize: 20, color: 'white'}}>Rename Folder</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ marginTop: '10%'}}>
+                      <Text style={{fontSize: 20, color: 'white'}}>Move Folder To...</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ marginTop: '10%'}} onPress={() =>
+                      setPreDelete(true)}>
+                      <Text style={{fontSize: 20, color: 'red'}}>Delete Folder</Text>
+                    </TouchableOpacity>
+                  </View>
+                }
           </Modal>
-      </View>
       : <></>}
       <View style={visible ? styles.folderVisibleMenu : styles.folder}>
         <TouchableOpacity onPress={() => getTargetFolder(folder)} style={{width: '85%'}}>
