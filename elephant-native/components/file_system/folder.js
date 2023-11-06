@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Modal, Pressable } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Modal, Pressable, TextInput } from 'react-native';
 import React, {useState} from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -8,6 +8,8 @@ const Folder = ({folder, getTargetFolder, deleteFolder}) => {
 
   const [visible, setVisible] = useState(false)
   const [preDelete, setPreDelete] = useState(false)
+  const [editName, setEditName] = useState(false)
+  const [newName, setNewName] = useState(folder.fileName)
 
   const deleteFolderFunction = () => {
     deleteFolder(folder.id)
@@ -73,23 +75,74 @@ const Folder = ({folder, getTargetFolder, deleteFolder}) => {
                   </View>
                 </Modal>
                 : 
-                  <View style={{ paddingTop: '10%', backgroundColor: 'rgb(23 23 23)', paddingLeft: '5%', height: '100%'}}>
+                  <View style={{ paddingTop: '10%', backgroundColor: 'rgb(23 23 23)', height: '100%'}}>
                     <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%'}}>
-                      <Pressable onPress={() => setVisible(false)}>
+                      <Pressable onPress={() => {
+                          setEditName(false)
+                          setVisible(false)
+                        }}>
                         <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
                       </Pressable>
                     </View>
-                    <Text style={{fontSize: '40px', fontWeight: 'bold', color: 'white', marginTop: '5%'}}>{folder.fileName}</Text>
-                    <TouchableOpacity style={{ marginTop: '10%'}}>
-                      <Text style={{fontSize: 20, color: 'white'}}>Rename Folder</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ marginTop: '10%'}}>
-                      <Text style={{fontSize: 20, color: 'white'}}>Move Folder To...</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ marginTop: '10%'}} onPress={() =>
-                      setPreDelete(true)}>
-                      <Text style={{fontSize: 20, color: 'red'}}>Delete Folder</Text>
-                    </TouchableOpacity>
+                    {editName ? <>
+                        <TextInput value={newName} style={{color: 'white', fontSize: 40, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '80%', marginTop: '5%', marginLeft: '5%'}} onChangeText={(e) => setNewName(e)}/>
+                        <View style={{display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-around', marginTop: '4%'}}>
+                          <View style={{width: '40%',
+                            borderColor: '#777',
+                            borderRadius: 25,
+                            backgroundColor: 'white',
+                            borderWidth: 1,
+                            paddingTop: '2%',
+                            paddingBottom: '2%',
+                            marginTop: '7%',
+                            marginBottom: '10%',
+                            marginLeft: '2%'}}>
+                            <TouchableOpacity onPress={() => alert('saved name')} style={{
+                              display: 'flex', 
+                              flexDirection: 'row', 
+                              width: '100%', 
+                              justifyContent: 'center',
+                            }}>
+                                <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save</Text>
+                            </TouchableOpacity>
+                          </View>
+
+                          <View style={{width: '40%',
+                            borderColor: '#777',
+                            borderRadius: 25,
+                            backgroundColor: 'white',
+                            borderWidth: 1,
+                            paddingTop: '2%',
+                            paddingBottom: '2%',
+                            marginTop: '7%',
+                            marginBottom: '10%',
+                            marginLeft: '2%'}}>
+                            <TouchableOpacity onPress={() => alert('saved name')} style={{
+                              display: 'flex', 
+                              flexDirection: 'row', 
+                              width: '100%', 
+                              justifyContent: 'center',
+                            }}>
+                                <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Cancel</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                    </> 
+                    :
+                      <View style={{paddingLeft: '5%'}}>
+                        <Text style={{fontSize: 40, fontWeight: 'bold', color: 'white', marginTop: '5%'}}>{folder.fileName}</Text>
+                        <TouchableOpacity style={{ marginTop: '10%'}} onPress={() => setEditName(true)}>
+                          <Text style={{fontSize: 20, color: 'white'}}>Rename Folder</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ marginTop: '10%'}}>
+                          <Text style={{fontSize: 20, color: 'white'}}>Move Folder To...</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ marginTop: '10%'}} onPress={() =>
+                          setPreDelete(true)}>
+                          <Text style={{fontSize: 20, color: 'red'}}>Delete Folder</Text>
+                        </TouchableOpacity>
+                      </View>
+                    }
                   </View>
                 }
           </Modal>
