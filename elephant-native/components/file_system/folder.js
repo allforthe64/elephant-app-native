@@ -4,17 +4,28 @@ import React, {useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEllipsisVertical, faFolder, faXmark } from '@fortawesome/free-solid-svg-icons';
 
-const Folder = ({folder, getTargetFolder, deleteFolder}) => {
+const Folder = ({folder, getTargetFolder, deleteFolder, renameFolder}) => {
 
   const [visible, setVisible] = useState(false)
   const [preDelete, setPreDelete] = useState(false)
   const [editName, setEditName] = useState(false)
   const [newName, setNewName] = useState(folder.fileName)
 
+  //call the delete folder function from the main component and hide both modals
   const deleteFolderFunction = () => {
     deleteFolder(folder.id)
     setPreDelete(false)
     setVisible(false)
+  }
+
+  //pass an object containing data from the current file obj + the new filename to the main component 
+  const handleNameChange = () => {
+    const newFolder = {
+      ...folder,
+      fileName: newName
+    }
+    renameFolder(newFolder)
+    setEditName(false)
   }
 
   return (
@@ -85,7 +96,7 @@ const Folder = ({folder, getTargetFolder, deleteFolder}) => {
                       </Pressable>
                     </View>
                     {editName ? <>
-                        <TextInput value={newName} style={{color: 'white', fontSize: 40, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '80%', marginTop: '5%', marginLeft: '5%'}} onChangeText={(e) => setNewName(e)}/>
+                        <TextInput value={newName} style={{color: 'white', fontSize: 40, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '80%', marginTop: '5%', marginLeft: '5%'}} onChangeText={(e) => setNewName(e)} autoFocus/>
                         <View style={{display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-around', marginTop: '4%'}}>
                           <View style={{width: '40%',
                             borderColor: '#777',
@@ -97,7 +108,7 @@ const Folder = ({folder, getTargetFolder, deleteFolder}) => {
                             marginTop: '7%',
                             marginBottom: '10%',
                             marginLeft: '2%'}}>
-                            <TouchableOpacity onPress={() => alert('saved name')} style={{
+                            <TouchableOpacity onPress={handleNameChange} style={{
                               display: 'flex', 
                               flexDirection: 'row', 
                               width: '100%', 
@@ -117,7 +128,7 @@ const Folder = ({folder, getTargetFolder, deleteFolder}) => {
                             marginTop: '7%',
                             marginBottom: '10%',
                             marginLeft: '2%'}}>
-                            <TouchableOpacity onPress={() => alert('saved name')} style={{
+                            <TouchableOpacity onPress={() => setEditName(false)} style={{
                               display: 'flex', 
                               flexDirection: 'row', 
                               width: '100%', 

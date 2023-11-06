@@ -58,6 +58,15 @@ export default function Files() {
       if (index === 'delete') {
         const updatedUser = {...currentUser, files: input.newFolders, fileRefs: input.refsToKeep} 
         await updateUser(updatedUser)
+      } else if (index === 'rename') {
+          //get index of the target folder to be renamed
+          //edit the entry of the current files based on the index and preserve the order of the array
+          //update the user
+          const index = currentUser.files.map(file => file.id).indexOf(input.id)
+          let newFiles = [...currentUser.files]
+          newFiles[index] = input
+          const updatedUser = {...currentUser, files: newFiles}
+          await updateUser(updatedUser)
       }
 
 
@@ -70,12 +79,16 @@ export default function Files() {
     editUser('folder', {refsToKeep: refsToKeep, newFolders: newFolders}, 'delete')
   }
 
+  const renameFolder = (target) => {
+    editUser('folder', target, 'rename')
+  }
+
   return ( 
       <View style={styles.container}>
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
         {!loading ? 
           <View style={focusedFolder ? styles.focusedModal : styles.modal}>
-              {focusedFolder ? <FocusedFolder folder={focusedFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder}/> 
+              {focusedFolder ? <FocusedFolder folder={focusedFolder} renameFolder={renameFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder}/> 
               : stagingMode ? <Staging reset={setStagingMode} staging={staging}/> 
               :
               (
@@ -90,7 +103,7 @@ export default function Files() {
                     <ScrollView>
                       {currentUser.files.map((file, i) => {
                         if (file.nestedUnder === '') {
-                          return <Folder key={i + file.fileName} pressable={true} folder={file} getTargetFolder={getTargetFolder} deleteFolder={deleteFolder}/>
+                          return <Folder key={i + file.fileName} renameFolder={renameFolder} pressable={true} folder={file} getTargetFolder={getTargetFolder} deleteFolder={deleteFolder}/>
                         }
                       })}
                     </ScrollView>
