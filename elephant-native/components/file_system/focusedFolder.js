@@ -2,9 +2,10 @@ import { StyleSheet, Text, View } from 'react-native'
 import React, {useEffect, useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowLeft, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { ScrollView, TouchableOpacity, TextInput } from 'react-native-gesture-handler'
+import { ScrollView, TouchableOpacity, TextInput, Modal } from 'react-native-gesture-handler'
 import Folder from './folder'
 import File from './file'
+import FocusedFileComp from './focusedFile'
 import { faFolder } from '@fortawesome/free-solid-svg-icons'
 
 const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, renameFolder, moveFolder, deleteFolder}) => {
@@ -14,6 +15,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
     const [loading, setLoading] = useState(true)
     const [add, setAdd] = useState(false)
     const [newFolderName, setNewFolderName] = useState('')
+    const [focusedFile, setFocusedFile] = useState()
 
     //get the folder above this one so the user can navigate up a level
     useEffect(() => {
@@ -41,6 +43,8 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
   return (
     <View style={styles.container}>
         {loading ? <></> 
+        : focusedFile ?
+            <FocusedFileComp file={focusedFile} focus={setFocusedFile}/>
         :
             <>
                 <View style={styles.buttonContainer}>
@@ -58,7 +62,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
                     <View style={{height: '60%'}}>
                         <ScrollView >
                             {folder.folders.map((f, i) => {return <Folder key={f + i} getTargetFolder={getTargetFolder} folders={folders} renameFolder={renameFolder} moveFolderFunc={moveFolder} folder={f} deleteFolder={deleteFolder}/>})}
-                            {folder.files.map((file, i) => {return <File key={file + i} fileName={file.fileName} />})}
+                            {folder.files.map((file, i) => {return <File key={file + i} focus={setFocusedFile} file={file} />})}
                         </ScrollView> 
                     </View>
                         {add ? 

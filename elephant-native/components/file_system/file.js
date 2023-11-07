@@ -4,12 +4,12 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFile } from '@fortawesome/free-solid-svg-icons';
 
-const File = ({fileName}) => {
+const File = ({file, focus}) => {
   return (
-    <TouchableOpacity style={styles.file} >
+    <TouchableOpacity style={styles.file} onPress={() => focus(file)}>
         <View style={styles.fileTitle}>
             <FontAwesomeIcon icon={faFile} color={'white'} size={32} />
-            <Text numberOfLines={1} style={styles.fileName}>{fileName}</Text>
+            <Text numberOfLines={1} style={styles.fileName}>{file.fileName}</Text>
         </View>
     </TouchableOpacity>
   )
