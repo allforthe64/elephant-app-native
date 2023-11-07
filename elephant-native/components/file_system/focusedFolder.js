@@ -7,7 +7,7 @@ import Folder from './folder'
 import File from './file'
 import { faFolder } from '@fortawesome/free-solid-svg-icons'
 
-const FocusedFolder = ({folder, folders, clear, getTargetFolder, renameFolder, moveFolder, deleteFolder}) => {
+const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, renameFolder, moveFolder, deleteFolder}) => {
 
 
     const [nestedFolder, setNestedFolder] = useState()
@@ -79,7 +79,11 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, renameFolder, m
                                             width: '100%', 
                                             justifyContent: 'center',
                                             }}
-                                            onPress={() => alert('run function')}
+                                            onPress={() => {
+                                                addFolder(newFolderName, folder.folder.id)
+                                                setNewFolderName('')
+                                                setAdd(false)
+                                            }}
                                             >
                                                 <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save</Text>
                                             </TouchableOpacity>

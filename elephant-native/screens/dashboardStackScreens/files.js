@@ -70,6 +70,11 @@ export default function Files() {
           newFiles[index] = input
           const updatedUser = {...currentUser, files: newFiles}
           await updateUser(updatedUser)
+      } else if (index === 'add') {
+        //add the new file to the user
+        const newFiles = [...currentUser.files, input]
+        const updatedUser = {...currentUser, files: newFiles}
+        await updateUser(updatedUser)
       }
     }
   }
@@ -89,12 +94,34 @@ export default function Files() {
     editUser('folder', input, 'move')
   }
 
+  const addFolder = (folderName, targetNest) => {
+    if (targetNest === '') {
+      const newFile = {
+        id: currentUser.files.length + 1,
+        fileName: folderName,
+        nestedUnder: ''
+      }
+
+      editUser('folder', newFile, 'add')
+      setNewFolderName('')
+      setAdd(false)
+    } else {
+      const newFile = {
+        id: currentUser.files.length + 1,
+        fileName: folderName,
+        nestedUnder: targetNest
+      }
+
+      editUser('folder', newFile, 'add')
+    }
+  }
+
   return ( 
       <View style={styles.container}>
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
         {!loading ? 
           <View style={focusedFolder ? styles.focusedModal : styles.modal}>
-              {focusedFolder ? <FocusedFolder folder={focusedFolder} renameFolder={renameFolder} moveFolder={moveFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder}/> 
+              {focusedFolder ? <FocusedFolder folder={focusedFolder} renameFolder={renameFolder} moveFolder={moveFolder} addFolder={addFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder}/> 
               : stagingMode ? <Staging reset={setStagingMode} staging={staging}/> 
               :
               (
@@ -132,7 +159,7 @@ export default function Files() {
                                   width: '100%', 
                                   justifyContent: 'center',
                                 }}
-                                  onPress={() => alert('run function')}
+                                  onPress={() => addFolder(newFolderName, '')}
                                 >
                                     <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save</Text>
                                 </TouchableOpacity>
