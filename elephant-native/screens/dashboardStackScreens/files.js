@@ -53,7 +53,14 @@ export default function Files() {
 
   //function to handle editing the user
   const editUser = async (mode, input, index) => {
-    if (mode === 'folder') {
+    if (mode === 'file') {
+      if (index === 'delete') {
+        //update the user with the new file refs array sent through the input param
+        const updatedUser = {...currentUser, fileRefs: input}
+        await updateUser(updatedUser)
+      }
+    }
+    else if (mode === 'folder') {
       //remove the file ref from the existing file refs and return the array
       //set the updatedUsers's fileref field to the newRefs array
       //update the user using the updatedUser object
@@ -77,6 +84,12 @@ export default function Files() {
         await updateUser(updatedUser)
       }
     }
+  }
+
+  //filter for all files that don't match the incoming file id
+  const deleteFile = (target) => {
+    const newFiles = currentUser.fileRefs.filter(file => {if (file.fileId !== target) return file})
+    editUser('file', newFiles, 'delete')
   }
 
   const deleteFolder = (target) => {
@@ -121,7 +134,7 @@ export default function Files() {
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
         {!loading ? 
           <View style={focusedFolder ? styles.focusedModal : styles.modal}>
-              {focusedFolder ? <FocusedFolder folder={focusedFolder} renameFolder={renameFolder} moveFolder={moveFolder} addFolder={addFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder}/> 
+              {focusedFolder ? <FocusedFolder folder={focusedFolder} renameFolder={renameFolder} moveFolder={moveFolder} addFolder={addFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder} deleteFile={deleteFile}/> 
               : stagingMode ? <Staging reset={setStagingMode} staging={staging}/> 
               :
               (
