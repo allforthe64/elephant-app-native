@@ -1,16 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 
 import { useState, useEffect } from 'react';
 
 import { userListener, updateUser } from '../../storage';
 
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Folder from '../../components/file_system/folder';
 import { firebaseAuth } from '../../firebaseConfig';
 import FocusedFolder from '../../components/file_system/focusedFolder';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faBox } from '@fortawesome/free-solid-svg-icons';
+import { faBox, faFolder } from '@fortawesome/free-solid-svg-icons';
 import Staging from '../../components/file_system/staging';
 
 export default function Files() {
@@ -21,6 +21,9 @@ export default function Files() {
   const [stagingMode, setStagingMode] = useState(false)
   const [loading, setLoading] = useState(true)
   const [focusedFolder, setFocusedFolder] = useState()
+  const [add, setAdd] = useState(false)
+  const [newFolderName, setNewFolderName] = useState('')
+
 
   //get the auth user context object
   const auth = firebaseAuth
@@ -102,14 +105,64 @@ export default function Files() {
                         <FontAwesomeIcon icon={faBox} color='white' size={40}/>
                       </TouchableOpacity>
                     </View>
-                    
-                    <ScrollView>
-                      {currentUser.files.map((file, i) => {
-                        if (file.nestedUnder === '') {
-                          return <Folder key={i + file.fileName} files={currentUser.files} renameFolder={renameFolder} pressable={true} moveFolderFunc={moveFolder} folders={currentUser.files} folder={file} getTargetFolder={getTargetFolder} deleteFolder={deleteFolder}/>
-                        }
-                      })}
-                    </ScrollView>
+                    <View style={{height: '65%', marginBottom: '10%'}}>
+                      <ScrollView>
+                        {currentUser.files.map((file, i) => {
+                          if (file.nestedUnder === '') {
+                            return <Folder key={i + file.fileName} files={currentUser.files} renameFolder={renameFolder} pressable={true} moveFolderFunc={moveFolder} folders={currentUser.files} folder={file} getTargetFolder={getTargetFolder} deleteFolder={deleteFolder}/>
+                          }
+                        })}
+                      </ScrollView>
+                    </View>
+                    {add ? 
+                      <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
+                        <FontAwesomeIcon icon={faFolder} size={30} color='white'/>
+                        <TextInput value={newFolderName} style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '40%'}} onChangeText={(e) => setNewFolderName(e)} autoFocus/>
+                        <View style={{width: '25%',
+                                  borderColor: '#777',
+                                  borderRadius: 25,
+                                  backgroundColor: 'white',
+                                  borderWidth: 1,
+                                  paddingTop: '2%',
+                                  paddingBottom: '2%',
+                                  marginLeft: '2%'}}>
+                                <TouchableOpacity style={{
+                                  display: 'flex', 
+                                  flexDirection: 'row', 
+                                  width: '100%', 
+                                  justifyContent: 'center',
+                                }}
+                                  onPress={() => alert('run function')}
+                                >
+                                    <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save</Text>
+                                </TouchableOpacity>
+                        </View>
+                      </View>
+                    : 
+                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+                      <FontAwesomeIcon icon={faFolder} size={30} color='white'/>
+                      <View style={{width: '50%',
+                                borderColor: '#777',
+                                borderRadius: 25,
+                                backgroundColor: 'white',
+                                borderWidth: 1,
+                                paddingTop: '2%',
+                                paddingBottom: '2%',
+                                marginBottom: '10%',
+                                marginLeft: '2%'}}>
+                              <TouchableOpacity style={{
+                                display: 'flex', 
+                                flexDirection: 'row', 
+                                width: '100%', 
+                                justifyContent: 'center',
+                              }}
+                                onPress={() => setAdd(true)}
+                              >
+                                  <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Add New Folder</Text>
+                              </TouchableOpacity>
+                      </View>
+                    </View>
+                    }
                   </View>
                 )
               }

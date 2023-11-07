@@ -260,7 +260,7 @@ const Folder = ({folder, getTargetFolder, deleteFolder, renameFolder, moveFolder
         <TouchableOpacity onPress={() => setVisible(prev => !prev)} style={visible ? {backgroundColor: 'rgba(38, 38, 38, .75)', width: '15%', display: 'flex', justifyContent: 'center', paddingBottom: '1%', flexDirection: 'row'} : {width: '15%', display: 'flex', justifyContent: 'center', flexDirection: 'row', paddingBottom: '1%'}}>
           <FontAwesomeIcon icon={faEllipsisVertical} size={26} color={'white'} style={styles.folderArrow}/>
         </TouchableOpacity>
-    </View>
+      </View>
     </View>
   )
 }
