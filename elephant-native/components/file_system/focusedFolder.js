@@ -6,7 +6,7 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import Folder from './folder'
 import File from './file'
 
-const FocusedFolder = ({folder, folders, clear, getTargetFolder, renameFolder, deleteFolder}) => {
+const FocusedFolder = ({folder, folders, clear, getTargetFolder, renameFolder, moveFolder, deleteFolder}) => {
 
 
     const [nestedFolder, setNestedFolder] = useState()
@@ -54,7 +54,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, renameFolder, d
                     </View>
                     <View>
                         <ScrollView >
-                            {folder.folders.map((f, i) => {return <Folder key={f + i} getTargetFolder={getTargetFolder} renameFolder={renameFolder} folder={f} deleteFolder={deleteFolder}/>})}
+                            {folder.folders.map((f, i) => {return <Folder key={f + i} getTargetFolder={getTargetFolder} folders={folders} renameFolder={renameFolder} moveFolderFunc={moveFolder} folder={f} deleteFolder={deleteFolder}/>})}
                             {folder.files.map((file, i) => {return <File key={file + i} fileName={file.fileName} />})}
                         </ScrollView> 
                     </View>

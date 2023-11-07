@@ -1,15 +1,24 @@
 import { StyleSheet, Text, View, TouchableOpacity, Modal, Pressable, TextInput } from 'react-native';
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEllipsisVertical, faFolder, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { ScrollView } from 'react-native-gesture-handler';
 
-const Folder = ({folder, getTargetFolder, deleteFolder, renameFolder}) => {
+const Folder = ({folder, getTargetFolder, deleteFolder, renameFolder, moveFolderFunc, folders}) => {
 
   const [visible, setVisible] = useState(false)
   const [preDelete, setPreDelete] = useState(false)
   const [editName, setEditName] = useState(false)
+  const [moveFolder, setMoveFolder] = useState(false)
   const [newName, setNewName] = useState(folder.fileName)
+  const [destination, setDestination] = useState()
+  const [validFolders, setValidFolders] = useState()
+
+  useEffect(() => {
+    if (folder.nestedUnder === '') setValidFolders(folders.filter(f => {if (f.nestedUnder === '') return f}))
+    else setValidFolders(folders)
+  }, [folders])
 
   //call the delete folder function from the main component and hide both modals
   const deleteFolderFunction = () => {
@@ -28,11 +37,36 @@ const Folder = ({folder, getTargetFolder, deleteFolder, renameFolder}) => {
     setEditName(false)
   }
 
+  //pass an object containing data from the current file obj + the new nestedUnder property to the main component 
+  const handleMove = () => {
+    if (destination === 'home') {
+      const newFolder = {
+        ...folder,
+        nestedUnder: ''
+      }
+      setDestination(null)
+      setMoveFolder(false)
+      setVisible(false)
+      moveFolderFunc(newFolder)
+    } else {
+      const newFolder = {
+        ...folder,
+        nestedUnder: destination
+      }
+      setDestination(null)
+      setMoveFolder(false)
+      setVisible(false)
+      moveFolderFunc(newFolder)
+    }
+  }
+
+
   return (
     <View style={{position: 'relative'}}>
       {visible ?
           <Modal animationType='slide' presentationStyle='pageSheet'>
               {preDelete ? 
+                /*Code for deleting a folder */
                 <Modal animationType='slide' presentationStyle='pageSheet' >
                     <View style={{height: '100%', width: '100%', backgroundColor: 'rgb(23 23 23)'}}>
                     
@@ -95,7 +129,7 @@ const Folder = ({folder, getTargetFolder, deleteFolder, renameFolder}) => {
                         <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
                       </Pressable>
                     </View>
-                    {editName ? <>
+                    {editName ? /*Code for renaming a folder */ <>
                         <TextInput value={newName} style={{color: 'white', fontSize: 40, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '80%', marginTop: '5%', marginLeft: '5%'}} onChangeText={(e) => setNewName(e)} autoFocus/>
                         <View style={{display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-around', marginTop: '4%'}}>
                           <View style={{width: '40%',
@@ -139,15 +173,73 @@ const Folder = ({folder, getTargetFolder, deleteFolder, renameFolder}) => {
                           </View>
                         </View>
                     </> 
+                    /*Code for moving a folder */
+                    : moveFolder ? 
+                      <Modal animationType='slide' presentationStyle='pageSheet' >
+                          <View style={{height: '100%', width: '100%', backgroundColor: 'rgb(23 23 23)'}}>
+                          
+                            <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '10%', width: '100%'}}>
+                              <Pressable onPress={() => setMoveFolder(false)}>
+                                <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
+                              </Pressable>
+                            </View>
+                          <View style={{width: '100%', height: '95%', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                            <Text style={{fontSize: 40, color: 'white', fontWeight: 'bold', textAlign: 'left', width: '100%', paddingLeft: '5%', marginBottom: '10%'}}>Move To...</Text>
+      
+                            <View style={{width: '100%', height: '65%'}}>
+                                  <ScrollView>
+                                    {folders.map(f => {
+                                      if (f.id !== folder.id) return (
+                                        <Pressable style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => setDestination(f.id)}>
+                                          <View style={f.id === destination ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
+                                            <FontAwesomeIcon icon={faFolder} size={30} color={f.id === destination ? 'black' : 'white'}/>
+                                            <Text style={f.id === destination ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>{f.fileName}</Text>
+                                          </View>
+                                        </Pressable>)
+                                    })}
+                                    <Pressable style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => setDestination('home')}>
+                                          <View style={destination === 'home' ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
+                                            <FontAwesomeIcon icon={faFolder} size={30} color={destination === 'home' ? 'black' : 'white'}/>
+                                            <Text style={destination === 'home' ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>Home</Text>
+                                          </View>
+                                        </Pressable>
+                                  </ScrollView>
+                            </View>
+      
+                            <View style={{width: '50%',
+                                borderColor: '#777',
+                                borderRadius: 25,
+                                backgroundColor: 'white',
+                                borderWidth: 1,
+                                paddingTop: '2%',
+                                paddingBottom: '2%',
+                                marginBottom: '10%',
+                                marginLeft: '2%'}}>
+                              <TouchableOpacity onPress={handleMove} style={{
+                                display: 'flex', 
+                                flexDirection: 'row', 
+                                width: '100%', 
+                                justifyContent: 'center',
+                              }}>
+                                  <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Confirm Move</Text>
+                              </TouchableOpacity>
+                            </View>
+      
+      
+                          </View>
+                        </View>
+                      </Modal>
                     :
                       <View style={{paddingLeft: '5%'}}>
                         <Text style={{fontSize: 40, fontWeight: 'bold', color: 'white', marginTop: '5%'}}>{folder.fileName}</Text>
                         <TouchableOpacity style={{ marginTop: '10%'}} onPress={() => setEditName(true)}>
                           <Text style={{fontSize: 20, color: 'white'}}>Rename Folder</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ marginTop: '10%'}}>
-                          <Text style={{fontSize: 20, color: 'white'}}>Move Folder To...</Text>
-                        </TouchableOpacity>
+                        {validFolders.length > 1 &&
+                            <TouchableOpacity style={{ marginTop: '10%'}} onPress={() => setMoveFolder(true)}>
+                              <Text style={{fontSize: 20, color: 'white'}}>Move Folder To...</Text>
+                            </TouchableOpacity>
+                        }
                         <TouchableOpacity style={{ marginTop: '10%'}} onPress={() =>
                           setPreDelete(true)}>
                           <Text style={{fontSize: 20, color: 'red'}}>Delete Folder</Text>
