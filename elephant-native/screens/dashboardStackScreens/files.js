@@ -54,7 +54,7 @@ export default function Files() {
   //function to handle editing the user
   const editUser = async (mode, input, index) => {
     if (mode === 'file') {
-      if (index === 'delete' || index === 'rename') {
+      if (index === 'delete' || index === 'rename' || index === 'move') {
         //update the user with the new file refs array sent through the input param
         const updatedUser = {...currentUser, fileRefs: input}
         await updateUser(updatedUser)
@@ -93,11 +93,17 @@ export default function Files() {
   }
 
   const renameFile = (input) => {
-    console.log(input)
     const newFiles = currentUser.fileRefs.map(file => {
       if (file.fileId === input.fileId) {return input} else return file
     })
     editUser('file', newFiles, 'rename')
+  }
+  
+  const moveFile = (input) => {
+    const newFiles = currentUser.fileRefs.map(file => {
+      if (file.fileId === input.fileId) {return input} else return file
+    })
+    editUser('file', newFiles, 'move')
   }
 
   const deleteFolder = (target) => {
@@ -111,7 +117,6 @@ export default function Files() {
   }
 
   const moveFolder = (input) => {
-    console.log(input)
     editUser('folder', input, 'move')
   }
 
@@ -142,7 +147,7 @@ export default function Files() {
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
         {!loading ? 
           <View style={focusedFolder ? styles.focusedModal : styles.modal}>
-              {focusedFolder ? <FocusedFolder folder={focusedFolder} renameFolder={renameFolder} moveFolder={moveFolder} addFolder={addFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder} deleteFile={deleteFile} renameFile={renameFile}/> 
+              {focusedFolder ? <FocusedFolder folder={focusedFolder} renameFolder={renameFolder} moveFolder={moveFolder} addFolder={addFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder} deleteFile={deleteFile} renameFile={renameFile} moveFile={moveFile}/> 
               : stagingMode ? <Staging reset={setStagingMode} staging={staging}/> 
               :
               (

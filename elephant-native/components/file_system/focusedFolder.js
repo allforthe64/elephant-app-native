@@ -8,7 +8,7 @@ import File from './file'
 import FocusedFileComp from './focusedFile'
 import { faFolder } from '@fortawesome/free-solid-svg-icons'
 
-const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, renameFolder, moveFolder, deleteFolder, deleteFile, renameFile}) => {
+const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, renameFolder, moveFolder, deleteFolder, deleteFile, renameFile, moveFile}) => {
 
 
     const [nestedFolder, setNestedFolder] = useState()
@@ -21,7 +21,6 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
     useEffect(() => {
         const getNestedFolder = () => {
             const targetFolder = folders.filter(f => {
-                console.log(f.id)
             if(f.id === folder.folder.nestedUnder) return f})
             return targetFolder
         }   
@@ -33,7 +32,6 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
 
     //navigate up a level in the folder tree
     const navigateUp = () => {
-        console.log(folders)
         const targetFolder = folders.filter(f => {
             if(f.id === folder.folder.nestedUnder) return f}
         ) 
@@ -44,7 +42,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
     <View style={styles.container}>
         {loading ? <></> 
         : focusedFile ?
-            <FocusedFileComp file={focusedFile} focus={setFocusedFile} deleteFile={deleteFile} renameFileFunction={renameFile}/>
+            <FocusedFileComp file={focusedFile} focus={setFocusedFile} deleteFile={deleteFile} renameFileFunction={renameFile} folders={folders} handleFileMove={moveFile} setFocusedFile={setFocusedFile}/>
         :
             <>
                 <View style={styles.buttonContainer}>
