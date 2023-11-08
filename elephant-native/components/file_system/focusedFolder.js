@@ -8,7 +8,7 @@ import File from './file'
 import FocusedFileComp from './focusedFile'
 import { faFolder } from '@fortawesome/free-solid-svg-icons'
 
-const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, renameFolder, moveFolder, deleteFolder, deleteFile}) => {
+const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, renameFolder, moveFolder, deleteFolder, deleteFile, renameFile}) => {
 
 
     const [nestedFolder, setNestedFolder] = useState()
@@ -44,7 +44,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
     <View style={styles.container}>
         {loading ? <></> 
         : focusedFile ?
-            <FocusedFileComp file={focusedFile} focus={setFocusedFile} deleteFile={deleteFile}/>
+            <FocusedFileComp file={focusedFile} focus={setFocusedFile} deleteFile={deleteFile} renameFileFunction={renameFile}/>
         :
             <>
                 <View style={styles.buttonContainer}>
