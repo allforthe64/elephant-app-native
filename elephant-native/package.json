@@ -27,6 +27,7 @@
     "@react-navigation/drawer": "^6.6.3",
     "@react-navigation/stack": "^6.3.17",
     "date-fns": "^2.30.0",
+    "docx": "^8.2.4",
     "expo": "~49.0.8",
     "expo-av": "^13.4.1",
     "expo-barcode-scanner": "~12.5.3",

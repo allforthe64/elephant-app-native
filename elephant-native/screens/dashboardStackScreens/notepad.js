@@ -3,6 +3,11 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, Keyboard, Keyboard
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faCheck, faPencil } from '@fortawesome/free-solid-svg-icons'
 
+import {firebase} from '../../firebaseConfig'
+import * as FileSystem from 'expo-file-system';
+import { Document, Packer, Paragraph } from 'docx';
+import { format } from 'date-fns'
+
 const Notepad = () => {
 
     const [open, setOpen] = useState(true)
@@ -10,16 +15,28 @@ const Notepad = () => {
     const ref = useRef(null)
 
 
-    const saveNote = () => {
-        setOpen(false)
-    }
+    saveNote = () => {
+      setOpen(false)
+  }
 
     const startEdit = () => {
       setOpen(true)
     }
 
-    const addToStorage = () => {
-      console.log('Adding note to storage')
+    const addToStorage = async () => {
+      try {
+        const textFile = new Blob([`${body}`], {
+          type: "text/plain;charset=utf-8",
+       });
+        const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
+        const fileUri = `${formattedDate}.txt`
+        const ref = firebase.storage().ref().child(fileUri)
+        await ref.put(textFile)
+      } catch (err) {
+        console.log(err)
+      } finally {
+        alert('success!')
+      }
     }
 
     useEffect(() => {
