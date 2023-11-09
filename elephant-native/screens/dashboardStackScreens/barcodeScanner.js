@@ -2,14 +2,18 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { BarCodeScanner } from 'expo-barcode-scanner'
 import UrlEditor from '../../components/urlEditor'
-import { height } from '@mui/system'
 import { ScrollView } from 'react-native-gesture-handler'
+import { addfile, updateStaging } from '../../storage'
+import { firebaseAuth } from '../../firebaseConfig'
+import { firebase } from '../../firebaseConfig'
 
 const Scanner = () => {
 
     const [hasPermissions, setHasPermissions] = useState(false)
     const [scanData, setScanData] = useState()
     const [urls, setUrls] = useState([])
+
+    const currentUser = firebaseAuth.currentUser.uid
 
     useEffect(() => {
         (async() => {
@@ -46,6 +50,32 @@ const Scanner = () => {
         setUrls(arr)
     }
 
+    const submit = async () => {
+
+
+        const references = await Promise.all(urls.map(async (el, i) => {
+
+            const textFile = new Blob([`${el}`], {
+            type: "text/plain;charset=utf-8",
+                });
+            const fileUri = `${i} + foobar.txt`
+            const ref = firebase.storage().ref().child(fileUri)
+            await ref.put(textFile)
+
+
+            const reference = await addfile({
+                name: `URL for: ${el}.txt`,
+                fileType: 'txt',
+                size: textFile.size,
+                uri: `${fileUri}`
+            }, false)
+
+            return reference
+        }))
+        updateStaging(references, currentUser)
+        setUrls([])
+    }
+
   return (
     <View style={styles.container}>
         <Image style={styles.bgImg } source={require('../../assets/elephant-dashboard.jpg')} />
@@ -66,7 +96,7 @@ const Scanner = () => {
                 </View>
                 <View style={styles.wrapperContainer}>
                     <View style={styles.buttonWrapper}>
-                        <TouchableOpacity onPress={() => console.log('saving urls...')}>
+                        <TouchableOpacity onPress={() => submit()}>
                         <Text style={styles.input}>Save All</Text>
                         </TouchableOpacity>
                     </View>
