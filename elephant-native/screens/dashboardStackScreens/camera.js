@@ -8,6 +8,8 @@ import * as MediaLibrary from 'expo-media-library'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { firebase } from '../../firebaseConfig'
 import { format } from 'date-fns'
+import { addfile, updateStaging } from '../../storage'
+import { firebaseAuth } from '../../firebaseConfig'
 
 const CameraComponent = () => {
 
@@ -17,6 +19,8 @@ const CameraComponent = () => {
     const [photo, setPhoto] = useState()
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
+
+    const currentUser = firebaseAuth.currentUser.uid
 
     useEffect(() => {
         (async () => {
@@ -62,7 +66,7 @@ const CameraComponent = () => {
             setLoading(true)
 
             //create new formatted date for file
-            const formattedDate = format(new Date(), "yyyy-MM-dd")
+            const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
 
               try {
                 const blob = await new Promise((resolve, reject) => {
@@ -83,6 +87,17 @@ const CameraComponent = () => {
                 const ref = firebase.storage().ref().child(filename)
 
                 await ref.put(blob)
+
+                console.log('reference: ', photo)
+
+                const reference = await addfile({
+                        name: formattedDate,
+                        fileType: 'jpg',
+                        size: photo.width * photo.height,
+                        uri: photo.uri
+                    })
+                updateStaging([reference], currentUser)
+
                 setSuccess(true)
 
               } catch (err) {

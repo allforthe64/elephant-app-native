@@ -9,6 +9,8 @@ import {
 } from 'firebase/firestore'
 import { db } from '../elephant-native/firebaseConfig'
 
+const BUCKET_URL = 'gs://elephantapp-21e34.appspot.com'
+
 export async function getUser(user) {
 
     console.log(user)
@@ -55,11 +57,13 @@ export async function userListener(setCurrentUser, setStaging, user) {
 
 export async function addfile(file) {
 
+    console.log('incoming: ', file)
+
     const fileRef = await addDoc(collection(db, 'files'), {
         fileName: file.name,
         documentType: file.fileType,
         size: file.size,
-        uri: file.uri
+        uri: BUCKET_URL + '/' + file.name + '.jpg'
     })
 
     const reference = {

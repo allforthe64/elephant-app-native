@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMicrophone, faSquare, faXmark } from '@fortawesome/free-solid-svg-icons'
 import AudioEditor from '../../components/audioEditor'
 import { firebase } from '../../firebaseConfig'
-import { format } from 'date-fns'
+import { updateStaging, addFile, addfile } from '../../storage'
+import { firebaseAuth } from '../../firebaseConfig'
 
 
 const AudioRecorder = () => {
@@ -13,6 +14,8 @@ const AudioRecorder = () => {
     const [recording, setRecording] = useState()
     const [recordings, setRecordings] = useState([])
     const [success, setSuccess] = useState(false)
+
+    const currentUser = firebaseAuth.currentUser.uid
 
     const startRecording = async () => {
         try {
@@ -42,8 +45,6 @@ const AudioRecorder = () => {
     const stopRecording = async () => {
         setRecording(undefined)
         await recording.stopAndUnloadAsync()
-
-        console.log(recording)
 
         const updatedRecordings = [...recordings]
         const {sound, status} = await recording.createNewLoadedSoundAsync()
@@ -95,11 +96,10 @@ const AudioRecorder = () => {
         setRecordings(holder)
     }
  */
-    console.log(recordings)
 
-    const saveFiles = () => {
+    const saveFiles = async () => {
 
-        recordings.map(async (el) => {
+        const references = await Promise.all(recordings.map(async (el) => {
 
             try {
                 const blob = await new Promise((resolve, reject) => {
@@ -116,7 +116,7 @@ const AudioRecorder = () => {
                     xhr.send(null)
                 })
     
-                const filename = `${el.file}`
+                const filename = `${el.name}`
                 const ref = firebase.storage().ref().child(filename)
     
                 await ref.put(blob)
@@ -125,12 +125,26 @@ const AudioRecorder = () => {
                 console.log(err)
             }
 
-        })
+            const reference = await addfile({
+                name: el.name,
+                fileType: el.file.split('.')[1],
+                size: el.duration,
+                uri: el.file
+            })
+            return reference
+
+        }))
+
+        console.log('references: ', references)
+
+        updateStaging(references, currentUser)
         const empty = []
         setRecordings(empty)
         setSuccess(true)
           
     }
+
+    console.log(currentUser)
 
   return (
     <View style={styles.container}>
