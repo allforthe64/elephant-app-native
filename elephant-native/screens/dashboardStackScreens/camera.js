@@ -91,7 +91,7 @@ const CameraComponent = () => {
                 console.log('reference: ', photo)
 
                 const reference = await addfile({
-                        name: formattedDate,
+                        name: formattedDate + '.jpg',
                         fileType: 'jpg',
                         size: photo.width * photo.height,
                         uri: photo.uri

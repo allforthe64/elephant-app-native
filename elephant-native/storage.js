@@ -48,14 +48,14 @@ export async function userListener(setCurrentUser, setStaging, user) {
         //filter file references from the current user that are in staging
         const stagingRefs = doc.data().fileRefs.filter(el => el.flag === 'Staging')
         console.log('staging refs: ', stagingRefs)
-        setStaging(stagingRefs)
+        if (setStaging) setStaging(stagingRefs)
         setCurrentUser({...doc.data(), uid: user.uid})
     })
 
     return unsub
 }
 
-export async function addfile(file) {
+export async function addfile(file, destination) {
 
     console.log('incoming: ', file)
 
@@ -63,13 +63,13 @@ export async function addfile(file) {
         fileName: file.name,
         documentType: file.fileType,
         size: file.size,
-        uri: BUCKET_URL + '/' + file.name + '.jpg'
+        uri: BUCKET_URL + '/' + file.name
     })
 
     const reference = {
         fileId: fileRef.id,
         fileName: file.name,
-        flag: 'Staging'
+        flag: destination ? destination : 'Staging'
     }
 
     return reference

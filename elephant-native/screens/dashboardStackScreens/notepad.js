@@ -1,18 +1,41 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Keyboard, KeyboardAvoidingView } from 'react-native'
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Keyboard, KeyboardAvoidingView, Modal, Pressable, ScrollView } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faCheck, faPencil } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faPencil, faXmark, faFolder } from '@fortawesome/free-solid-svg-icons'
 
 import {firebase} from '../../firebaseConfig'
-import * as FileSystem from 'expo-file-system';
-import { Document, Packer, Paragraph } from 'docx';
 import { format } from 'date-fns'
+import { firebaseAuth } from '../../firebaseConfig';
+import { addfile, userListener, updateStaging } from '../../storage'
 
 const Notepad = () => {
 
     const [open, setOpen] = useState(true)
     const [body, setBody] = useState('')
     const ref = useRef(null)
+    const [preAdd, setPreAdd] = useState(false)
+    const [destination, setDestination] = useState()
+    const [currentUser, setCurrentUser] = useState()
+    const [loading, setLoading] = useState(false)
+
+    //get the auth user context object
+    const auth = firebaseAuth
+
+    //get the current user 
+    useEffect(() => {
+      setLoading(true) //prevent component to attempting to render files/folders before they exist
+      const getCurrentUser = async () => {
+        const unsubscribe = await userListener(setCurrentUser, false, auth.currentUser)
+
+        return () => unsubscribe()
+      }
+      getCurrentUser()
+    }, [])
+
+    //once a current user has been pushed into state, allow component to render files/folders
+    useEffect(() => {
+      if (currentUser) setLoading(false)
+    }, [currentUser])  
 
 
     saveNote = () => {
@@ -24,18 +47,28 @@ const Notepad = () => {
     }
 
     const addToStorage = async () => {
+      
       try {
+        const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
         const textFile = new Blob([`${body}`], {
           type: "text/plain;charset=utf-8",
        });
-        const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
         const fileUri = `${formattedDate}.txt`
         const ref = firebase.storage().ref().child(fileUri)
         await ref.put(textFile)
+
+
+        const reference = await addfile({
+          name: `Note From: ${formattedDate}.txt`,
+          fileType: 'txt',
+          size: textFile.size,
+          uri: `/${fileUri}`
+      }, destination)
+      updateStaging([reference], currentUser.uid)
+      setBody(null)
+      setDestination(null)
       } catch (err) {
         console.log(err)
-      } finally {
-        alert('success!')
       }
     }
 
@@ -46,39 +79,136 @@ const Notepad = () => {
 
 
   return (
-    <KeyboardAvoidingView behavior="padding">
-          <TextInput onChangeText={(e) => setBody(e)}
-                      value={body}
-                      placeholder={'Add a note...'}
-                      style={open ? styles.noteBody : styles.noteBodyFull}
-                      editable={open ? true : false}
-                      multiline
-                      numberOfLines={2}
-                      placeholderTextColor='grey'
-                      ref={ref}
-                      autoFocus
-                      />
-        <View style={open ? styles.wrapperContainer : styles.wrapperContainerFull}>
-           {!open && 
-              <View style={styles.buttonWrapperText}>
-                <TouchableOpacity onPress={() => addToStorage()}>
-                  <Text style={styles.input}>Add To Storage</Text>
-                </TouchableOpacity>
+    <>
+      {preAdd ? 
+
+        <Modal animationType='slide' presentationStyle='pageSheet'>
+          <View style={{ paddingTop: '10%', backgroundColor: 'rgb(23 23 23)', height: '100%', width: '100%'}}>
+              <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '10%',     width: '100%'}}>
+                  <Pressable onPress={() => {
+                    setPreAdd(false)
+                    setDestination(null)
+                    }}>
+                  <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
+                  </Pressable>
               </View>
-            }
-            <View style={open ? styles.buttonWrapper : styles.buttonWrapperFull}>
-                <TouchableOpacity onPress={() => {open === false ? startEdit() : saveNote()}}>
-                  {open ? (
-                      <FontAwesomeIcon icon={faCheck} size={40} color='white'/>
-                    )
-                    : (
-                      <FontAwesomeIcon icon={faPencil} size={40} color='white'/>
-                    )
-                  }
-                </TouchableOpacity>
-            </View>
-        </View>
-    </KeyboardAvoidingView>
+              <View style={{width: '100%', height: '95%', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <Text style={{fontSize: 25, color: 'white', textAlign: 'center', fontWeight: '800', marginBottom: '10%'}}>Select folder to save to:</Text>
+
+              <View style={{width: '100%', height: '55%'}}>
+                        <ScrollView>
+                        {currentUser.files.map(f => {
+                            return (
+                                <Pressable style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => setDestination(f.id)}>
+                                    <View style={f.id === destination ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
+                                    <FontAwesomeIcon icon={faFolder} size={30} color={f.id === destination ? 'black' : 'white'}/>
+                                    <Text style={f.id === destination ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>{f.fileName}</Text>
+                                    </View>
+                                </Pressable>)
+                            }
+                        )}
+                        {/* 
+                        
+                            IF EVENTUALLY THE USER WILL BE ABLE TO MOVE A FILE TO THE HOMEPAGE, THIS IS WHERE THAT COULD WOULD BE
+
+                        <Pressable style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => setDestination('home')}>
+                                <View style={destination === 'home' ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
+                                <FontAwesomeIcon icon={faFolder} size={30} color={destination === 'home' ? 'black' : 'white'}/>
+                                <Text style={destination === 'home' ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>Home</Text>
+                                </View>
+                            </Pressable> */}
+                        </ScrollView>
+                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+                            <View style={{width: '50%',
+                              borderColor: '#777',
+                              borderRadius: 25,
+                              backgroundColor: 'white',
+                              borderWidth: 1,
+                              paddingTop: '2%',
+                              paddingBottom: '2%',
+                              marginTop: '7%',
+                              marginBottom: '10%',
+                              marginLeft: '2%'}}>
+                              <TouchableOpacity onPress={() => {
+                                setPreAdd(false)
+                                addToStorage()}} style={{
+                              display: 'flex', 
+                              flexDirection: 'row', 
+                              width: '100%', 
+                              justifyContent: 'center',
+                              }}>
+                                  <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save to Folder</Text>
+                              </TouchableOpacity>
+                          </View>
+                        </View>
+                </View>
+                <Text style={{color: 'white', fontSize: 20}}>Or</Text>
+                <View style={{width: '50%',
+                    borderColor: '#777',
+                    borderRadius: 25,
+                    backgroundColor: 'white',
+                    borderWidth: 1,
+                    paddingTop: '2%',
+                    paddingBottom: '2%',
+                    marginTop: '10%',
+                    marginBottom: '10%',
+                    marginLeft: '2%'}}>
+                    <TouchableOpacity onPress={() => {
+                      setDestination(null)
+                      addToStorage()
+                      setPreAdd(false)
+                    }} style={{
+                    display: 'flex', 
+                    flexDirection: 'row', 
+                    width: '100%', 
+                    justifyContent: 'center',
+                    }}>
+                        <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save to staging</Text>
+                    </TouchableOpacity>
+                </View>
+
+
+              </View>
+          </View>
+        </Modal>
+        
+      : <>
+        <KeyboardAvoidingView behavior="padding">
+            <TextInput onChangeText={(e) => setBody(e)}
+                        value={body}
+                        placeholder={'Add a note...'}
+                        style={open ? styles.noteBody : styles.noteBodyFull}
+                        editable={open ? true : false}
+                        multiline
+                        numberOfLines={2}
+                        placeholderTextColor='grey'
+                        ref={ref}
+                        autoFocus
+                        />
+          <View style={open ? styles.wrapperContainer : styles.wrapperContainerFull}>
+            {!open && 
+                <View style={styles.buttonWrapperText}>
+                  <TouchableOpacity onPress={() => setPreAdd(true)}>
+                    <Text style={styles.input}>Add To Storage</Text>
+                  </TouchableOpacity>
+                </View>
+              }
+              <View style={open ? styles.buttonWrapper : styles.buttonWrapperFull}>
+                  <TouchableOpacity onPress={() => {open === false ? startEdit() : saveNote()}}>
+                    {open ? (
+                        <FontAwesomeIcon icon={faCheck} size={40} color='white'/>
+                      )
+                      : (
+                        <FontAwesomeIcon icon={faPencil} size={40} color='white'/>
+                      )
+                    }
+                  </TouchableOpacity>
+              </View>
+          </View>
+        </KeyboardAvoidingView>
+        </>
+      } 
+    </>
   )
 }
 
