@@ -20,15 +20,18 @@ const FilePicker = () => {
     const selectFile = async () => {
         let updatedFiles = [...files]
         try {
-            const file = await DocumentPicker.getDocumentAsync({copyToCacheDirectory: false})
+            const files = await DocumentPicker.getDocumentAsync({copyToCacheDirectory: false, multiple: true})
 
-            updatedFiles.push({name: file.assets[0].name, uri: file.assets[0].uri, size: file.assets[0].size, fileType: file.assets[0].name.split('.')[1]})
+            //map over incoming files and push them all into the file arr
+            files.assets.map(file => /* console.log(file) */updatedFiles.push({name: file.name, uri: file.uri, size: file.size, fileType: file.name.split('.')[1]}))
             setFiles(updatedFiles)
         } catch (err) {
             console.log(err)
         }
         
     }
+
+    console.log(files)
 
     const selectImage = async () => {
         let updatedFiles = [...files]
