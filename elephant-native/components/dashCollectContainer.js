@@ -10,41 +10,38 @@ export default function DashCollectContainer({ navigate }) {
 
             <View style={styles.column}>
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => navigate('Add Local File')}>
-                        <FontAwesomeIcon icon={faFolder} size={50} style={{marginLeft: '30%'}}/>
+                    <TouchableOpacity onPress={() => navigate('Add Local File')} style={{display: 'flex', flexDirection: 'row'}}>
+                        <FontAwesomeIcon icon={faFolder} size={30}/>
                         <Text style={styles.input}>Get Document</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => navigate('Camera')}>
-                    <FontAwesomeIcon icon={faCamera} size={50} style={{marginLeft: '10%'}}/>
+                    <TouchableOpacity onPress={() => navigate('Camera')} style={{display: 'flex', flexDirection: 'row'}}>
+                    <FontAwesomeIcon icon={faCamera} size={30}/>
                         <Text style={styles.input}>Camera</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => navigate('Record Audio')}>
-                    <FontAwesomeIcon icon={faMicrophone} size={50} style={{marginLeft: '28%'}}/>
+                    <TouchableOpacity onPress={() => navigate('Record Audio')} style={{display: 'flex', flexDirection: 'row'}}>
+                    <FontAwesomeIcon icon={faMicrophone} size={30}/>
                         <Text style={styles.input}>Record Audio</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
-            
-            <View style={styles.column}>
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => navigate('QR Scanner')}>
-                    <FontAwesomeIcon icon={faQrcode} size={50} style={{marginLeft: '23%'}}/>
+                    <TouchableOpacity onPress={() => navigate('QR Scanner')} style={{display: 'flex', flexDirection: 'row'}}>
+                    <FontAwesomeIcon icon={faQrcode} size={30}/>
                         <Text style={styles.input}>QR Scanner</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => navigate('Notepad')}>
-                    <FontAwesomeIcon icon={faPencil} size={50} style={{marginLeft: '13%'}}/>
+                    <TouchableOpacity onPress={() => navigate('Notepad')} style={{display: 'flex', flexDirection: 'row'}}>
+                    <FontAwesomeIcon icon={faPencil} size={30}/>
                         <Text style={styles.input}>Notepad</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => navigate('Scan Document')}>
-                    <FontAwesomeIcon icon={faFile} size={50} style={{marginLeft: '33%'}}/>
+                    <TouchableOpacity onPress={() => navigate('Scan Document')} style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
+                    <FontAwesomeIcon icon={faFile} size={30}/>
                         <Text style={styles.input}>Scan Document</Text>
                     </TouchableOpacity>
                 </View>
@@ -64,7 +61,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   column: {
-    width: '45%',
+    width: '85%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-around'
@@ -93,12 +90,14 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: '3%'
+    paddingTop: '2%',
+    paddingBottom: '2%'
   },
   input: {
-    padding: 8,
-    width: '100%',
+    /* padding: 8, */
     textAlign: 'center',
     fontSize: 20,
+    paddingTop: '1%',
+    marginLeft: '5%'
   }
 });
