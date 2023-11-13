@@ -54,6 +54,13 @@
         "android.permission.CAMERA"
       ],
       "package": "com.yourname.yourapp"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6dcbcca9-4f42-408b-ac95-a5ec043cc3be"
+      }
+    },
+    "owner": "elephantdev",
+    "slug": "elephant-app-native"
   }
 }
