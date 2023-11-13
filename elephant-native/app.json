@@ -2,7 +2,7 @@
   "expo": {
     "ios": {
       "usesIcloudStorage": true,
-      "bundleIdentifier": "com.yourname.yourapp",
+      "bundleIdentifier": "com.billiam.elephantapp",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Allow Elephant App to access your photos.",
         "NSPhotoLibraryAddUsageDescription": "Allow Elephant App to save photos.",
