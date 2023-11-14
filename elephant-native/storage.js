@@ -45,11 +45,13 @@ export async function updateUser(updatedUser) {
 export async function userListener(setCurrentUser, setStaging, user) {
     console.log('user inside function: ', user)
     const unsub = onSnapshot(doc(db, 'users', user.uid), (doc) => {
-        //filter file references from the current user that are in staging
-        const stagingRefs = doc.data().fileRefs.filter(el => el.flag === 'Staging')
-        console.log('staging refs: ', stagingRefs)
-        if (setStaging) setStaging(stagingRefs)
-        setCurrentUser({...doc.data(), uid: user.uid})
+        try {
+            //filter file references from the current user that are in staging
+            const stagingRefs = doc.data().fileRefs.filter(el => el.flag === 'Staging')
+            console.log('staging refs: ', stagingRefs)
+            if (setStaging) setStaging(stagingRefs)
+            setCurrentUser({...doc.data(), uid: user.uid})
+        } catch (err) {console.log(err)}
     })
 
     return unsub

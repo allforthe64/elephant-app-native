@@ -3,7 +3,9 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 
 import { useState, useEffect } from 'react';
 
-import { userListener, updateUser } from '../../storage';
+import { userListener, updateUser, getUser } from '../../storage';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/authContext';
 
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Folder from '../../components/file_system/folder';
@@ -26,18 +28,25 @@ export default function Files() {
 
 
   //get the auth user context object
-  const auth = firebaseAuth
+  const {authUser} = useContext(AuthContext)
+
+  console.log(currentUser)
 
   //get the current user 
   useEffect(() => {
     setLoading(true) //prevent component to attempting to render files/folders before they exist
-    const getCurrentUser = async () => {
-      const unsubscribe = await userListener(setCurrentUser, setStaging, auth.currentUser)
-
-      return () => unsubscribe()
-    }
-    getCurrentUser()
-  }, [])
+    if (authUser !== undefined) {
+      try {
+        const getCurrentUser = async () => {
+          const unsubscribe = await userListener(setCurrentUser, setStaging, authUser)
+    
+          return () => unsubscribe()
+        }
+        getCurrentUser()
+      } catch (err) {console.log(err)}
+    } else console.log('no user yet')
+    
+  }, [authUser])
 
   //once a current user has been pushed into state, allow component to render files/folders
   useEffect(() => {
@@ -145,7 +154,7 @@ export default function Files() {
   return ( 
       <View style={styles.container}>
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
-        {!loading ? 
+        {!loading && currentUser ? 
           <View style={focusedFolder ? styles.focusedModal : styles.modal}>
               {focusedFolder ? <FocusedFolder folder={focusedFolder} renameFolder={renameFolder} moveFolder={moveFolder} addFolder={addFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder} deleteFile={deleteFile} renameFile={renameFile} moveFile={moveFile}/> 
               : stagingMode ? <Staging reset={setStagingMode} staging={staging}/> 
