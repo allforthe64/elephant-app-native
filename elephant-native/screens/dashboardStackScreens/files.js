@@ -30,8 +30,6 @@ export default function Files() {
   //get the auth user context object
   const {authUser} = useContext(AuthContext)
 
-  console.log(currentUser)
-
   //get the current user 
   useEffect(() => {
     setLoading(true) //prevent component to attempting to render files/folders before they exist

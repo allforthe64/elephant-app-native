@@ -9,6 +9,10 @@ import {
 } from 'firebase/firestore'
 import { db } from '../elephant-native/firebaseConfig'
 
+import { getStorage, ref, getDownloadURL } from 'firebase/storage'
+
+const storage = getStorage()
+
 const BUCKET_URL = 'gs://elephantapp-21e34.appspot.com'
 
 export async function getUser(user) {
@@ -97,4 +101,14 @@ export const updateStaging = async (files, currentUser) => {
         }
     )
 
+}
+
+export const getFile = async (fileId) => {
+    const docSnap = await getDoc(doc(db, 'files', fileId))
+    return {...docSnap.data()}
+}
+
+export const getFileDownloadURL = async (docURL) => {
+    const fileURL = await getDownloadURL(ref(storage, docURL)).then(url => {return url})
+    return fileURL
 }

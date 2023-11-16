@@ -1,7 +1,8 @@
 import { View, Text, Modal, TouchableOpacity, Pressable, TextInput, ScrollView } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faXmark, faFile, faFolder } from '@fortawesome/free-solid-svg-icons'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
+import { getFile, getFileDownloadURL } from '../../storage'
 
 const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, handleFileMove, setFocusedFile}) => {
 
@@ -11,6 +12,9 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
     const [moveFile, setMoveFile] = useState(false)
     const [destination, setDestination] = useState()
 
+    const [fileURL, setFileURL] = useState()
+
+    //rename a file by overwriting the fileName property
     const renameFile = () => {
         const newFile = {
             ...file,
@@ -19,6 +23,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
         renameFileFunction(newFile)
     }
 
+    //move a file by changing its flag property
     const handleMove = () => {
         const newFile = {
             ...file,
@@ -28,6 +33,20 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
         setDestination(null)
         setMoveFile(false)
         handleFileMove(newFile)
+    }
+
+    //get the downloadable url from firebase storage from the file doc and save it in state
+    useEffect(() => {
+        const getFileDoc = async () => {
+            const fileInst = await getFile(file.fileId)
+            const url = await getFileDownloadURL(fileInst.uri)
+            setFileURL(url)
+        }
+        getFileDoc()
+    }, [])
+
+    const downloadFileFunction = () => {
+        alert(fileURL)
     }
 
   return (
@@ -104,7 +123,6 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                         <View style={{width: '100%', height: '65%'}}>
                                 <ScrollView>
                                 {folders.map(f => {
-                                    console.log(f)
                                     if (f.id !== file.flag) return (
                                         <Pressable style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => setDestination(f.id)}>
                                             <View style={f.id === destination ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
@@ -225,6 +243,27 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                         setPreDelete(true)}>
                                         <Text style={{fontSize: 20, color: 'red'}}>Delete File</Text>
                                     </TouchableOpacity>
+                                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '90%'}}>
+                                        <View style={{width: '70%',
+                                                borderColor: '#777',
+                                                borderRadius: 25,
+                                                backgroundColor: 'white',
+                                                borderWidth: 1,
+                                                paddingTop: '2%',
+                                                paddingBottom: '2%',
+                                                marginLeft: '2%'}}>
+                                                <TouchableOpacity style={{
+                                                display: 'flex', 
+                                                flexDirection: 'row', 
+                                                width: '100%', 
+                                                justifyContent: 'center',
+                                                }}
+                                                onPress={downloadFileFunction}
+                                                >
+                                                    <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>Download This File</Text>
+                                                </TouchableOpacity>
+                                        </View>
+                                    </View>
                                 </>
                             }
                     </View>
