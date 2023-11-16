@@ -3,6 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faXmark, faFile, faFolder } from '@fortawesome/free-solid-svg-icons'
 import React, {useEffect, useState} from 'react'
 import { getFile, getFileDownloadURL } from '../../storage'
+import { shareAsync } from 'expo-sharing'
+import * as MediaLibrary from 'expo-media-library'
+import * as FileSystem from 'expo-file-system'
 
 const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, handleFileMove, setFocusedFile}) => {
 
@@ -13,6 +16,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
     const [destination, setDestination] = useState()
 
     const [fileURL, setFileURL] = useState()
+    const [mediaPermissions, setMediaPermissions] = useState()
 
     //rename a file by overwriting the fileName property
     const renameFile = () => {
@@ -43,10 +47,24 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
             setFileURL(url)
         }
         getFileDoc()
+
+        const getPermissions = async () => {
+            //get shareAsync permissions
+            const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync()
+            setMediaPermissions(mediaLibraryPermission.status === "granted")
+        }
+        getPermissions()
     }, [])
 
-    const downloadFileFunction = () => {
-        alert(fileURL)
+    //call download async method on url passed from firebase storage bucket
+    const downloadFileFunction = async () => {
+        const fileName = file.fileName
+        const result = await FileSystem.downloadAsync(fileURL, FileSystem.documentDirectory + fileName)
+        save(result.uri)
+    }
+    
+    const save = (uri) => {
+        shareAsync(uri)
     }
 
   return (
