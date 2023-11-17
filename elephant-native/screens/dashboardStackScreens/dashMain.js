@@ -6,7 +6,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../../context/authContext';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faFolder } from '@fortawesome/free-solid-svg-icons';
+import { faFolder, faCamera } from '@fortawesome/free-solid-svg-icons';
 
 export default function DashMain({navigation: { navigate }}) {
 
@@ -21,18 +21,26 @@ export default function DashMain({navigation: { navigate }}) {
     <View>
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
         <View style={styles.buttonContainer}>
-            
+          
+          <View style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%'}}>
+              <View style={{width: '21%', backgroundColor: 'white', paddingTop: '3%', paddingBottom: '3%', borderRadius: 1000}}>
+                <TouchableOpacity onPress={() => navigate('Camera')} style={styles.file}>
+                    <FontAwesomeIcon icon={faCamera} size={50} />
+                </TouchableOpacity>
+              </View>
+          </View>
+
+            <Text style={styles.subheading}>Collect Other Data:</Text>
+            <DashCollectContainer navigate={navigate}/>
+
+
+            <View style={styles.wrapperContainer}>
               <View style={styles.buttonWrapper}>
                 <TouchableOpacity onPress={() => navigate('Files')} style={styles.file}>
                     <Text style={styles.input}>My Files</Text>
-                    <FontAwesomeIcon icon={faFolder} size={18} style={{marginLeft: '3%', marginTop: '1%'}}/>
+                    <FontAwesomeIcon icon={faFolder} size={30} style={{marginLeft: '3%', marginTop: '1%'}}/>
                 </TouchableOpacity>
               </View>
-
-            <Text style={styles.subheading}>Collect Data:</Text>
-            <DashCollectContainer navigate={navigate}/>
-
-            <View style={styles.wrapperContainer}>
               <View style={styles.buttonWrapperLogout}>
                     <TouchableOpacity onPress={async () => {
                       auth.signOut()
@@ -60,7 +68,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'rgba(0, 0, 0, .6)',
-    paddingTop: '5%',
+    paddingTop: '10%',
     position: 'absolute',
     display: 'flex',
   },
@@ -74,19 +82,20 @@ const styles = StyleSheet.create({
   subheading: {
     color: 'white',
     textAlign: 'center',
-    fontSize: 35,
+    fontSize: 40,
     fontWeight: '600',
-    marginBottom: '5%'
+    marginBottom: '10%',
+    marginTop: '12%'
   },
   wrapperContainer: {
     display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: 'column',
+    alignItems: 'center',
     width: '100%',
-    paddingTop: '10%'
+    paddingTop: '5%'
   },
   buttonWrapper: {
-    width: '50%',
+    width: '80%',
     borderColor: '#777',
     borderRadius: 25,
     backgroundColor: 'white',
@@ -94,11 +103,11 @@ const styles = StyleSheet.create({
     paddingTop: '2%',
     paddingBottom: '2%',
     marginTop: '10%',
-    marginBottom: '10%',
+    marginBottom: '8%',
     marginLeft: '2%'
   },
   buttonWrapperLogout: {
-    width: '75%',
+    width: '45%',
     borderRadius: 25,
     backgroundColor: 'red',
     borderWidth: 1,
@@ -107,12 +116,13 @@ const styles = StyleSheet.create({
   },
   input: {
     textAlign: 'left',
-    fontSize: 18,
+    fontSize: 26,
+    fontWeight: '500',
     marginRight: '3%'
   },
   inputLogout: {
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 12,
     width: '100%',
     color: 'white'
   },

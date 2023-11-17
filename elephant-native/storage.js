@@ -16,10 +16,7 @@ const storage = getStorage()
 const BUCKET_URL = 'gs://elephantapp-21e34.appspot.com'
 
 export async function getUser(user) {
-
-    console.log(user)
-
-    console.log('made it here')
+    
     const docSnap = await getDoc(doc(db, 'users', user.localId))
 
     if (!docSnap.exists()) {
@@ -41,18 +38,16 @@ export function addUser(user) {
 }
 
 export async function updateUser(updatedUser) {
-    console.log(updatedUser)
     const userRef = doc(db, 'users', updatedUser.uid)
     await updateDoc(userRef, {...updatedUser})
 }
 
 export async function userListener(setCurrentUser, setStaging, user) {
     console.log('user inside function: ', user)
-    const unsub = onSnapshot(doc(db, 'users', user.uid), (doc) => {
+    const unsub = onSnapshot(doc(db, 'users', user), (doc) => {
         try {
             //filter file references from the current user that are in staging
             const stagingRefs = doc.data().fileRefs.filter(el => el.flag === 'Staging')
-            console.log('staging refs: ', stagingRefs)
             if (setStaging) setStaging(stagingRefs)
             setCurrentUser({...doc.data(), uid: user.uid})
         } catch (err) {console.log(err)}

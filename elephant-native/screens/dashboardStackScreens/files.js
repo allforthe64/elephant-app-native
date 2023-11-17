@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBox, faFolder } from '@fortawesome/free-solid-svg-icons';
 import Staging from '../../components/file_system/staging';
 
-export default function Files() {
+export default function Files({navigation: { navigate }}) {
 
   //initialize state 
   const [currentUser, setCurrentUser] = useState()
@@ -36,7 +36,7 @@ export default function Files() {
     if (authUser !== undefined) {
       try {
         const getCurrentUser = async () => {
-          const unsubscribe = await userListener(setCurrentUser, setStaging, authUser)
+          const unsubscribe = await userListener(setCurrentUser, setStaging, JSON.parse(authUser).user.uid)
     
           return () => unsubscribe()
         }
@@ -165,7 +165,7 @@ export default function Files() {
                         <FontAwesomeIcon icon={faBox} color='white' size={40}/>
                       </TouchableOpacity>
                     </View>
-                    <View style={{height: '65%', marginBottom: '10%'}}>
+                    <View style={{height: '65%', marginBottom: '5%'}}>
                       <ScrollView>
                         {currentUser.files.map((file, i) => {
                           if (file.nestedUnder === '') {
@@ -199,27 +199,49 @@ export default function Files() {
                         </View>
                       </View>
                     : 
-                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-                      <FontAwesomeIcon icon={faFolder} size={30} color='white'/>
-                      <View style={{width: '50%',
+                    <View style={{display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%'}}>
+                      <View style={{display: 'flex', flexDirection: 'row'}}>
+                        <FontAwesomeIcon icon={faFolder} size={30} color='white'/>
+                        <View style={{width: '50%',
+                                  borderColor: '#777',
+                                  borderRadius: 25,
+                                  backgroundColor: 'white',
+                                  borderWidth: 1,
+                                  paddingTop: '2%',
+                                  paddingBottom: '2%',
+                                  marginBottom: '7%',
+                                  marginLeft: '2%'}}>
+                                <TouchableOpacity style={{
+                                  display: 'flex', 
+                                  flexDirection: 'row', 
+                                  width: '100%', 
+                                  justifyContent: 'center',
+                                }}
+                                  onPress={() => setAdd(true)}
+                                >
+                                    <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Add New Folder</Text>
+                                </TouchableOpacity>
+                        </View>
+                      </View>
+                      <View style={{width: '60%',
                                 borderColor: '#777',
                                 borderRadius: 25,
                                 backgroundColor: 'white',
                                 borderWidth: 1,
                                 paddingTop: '2%',
                                 paddingBottom: '2%',
-                                marginBottom: '10%',
+                                paddingRight: '8%',
+                                paddingLeft: '8%',
                                 marginLeft: '2%'}}>
-                              <TouchableOpacity style={{
+                          <TouchableOpacity onPress={() => navigate('Upload A File')} style={{
                                 display: 'flex', 
                                 flexDirection: 'row', 
                                 width: '100%', 
-                                justifyContent: 'center',
-                              }}
-                                onPress={() => setAdd(true)}
-                              >
-                                  <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Add New Folder</Text>
-                              </TouchableOpacity>
+                                justifyContent: 'space-around',
+                              }}>
+                              <FontAwesomeIcon icon={faFolder} size={20}/>
+                              <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Get Document</Text>
+                          </TouchableOpacity>
                       </View>
                     </View>
                     }

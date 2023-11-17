@@ -10,18 +10,6 @@ export default function DashCollectContainer({ navigate }) {
 
             <View style={styles.column}>
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => navigate('Add Local File')} style={{display: 'flex', flexDirection: 'row'}}>
-                        <FontAwesomeIcon icon={faFolder} size={30}/>
-                        <Text style={styles.input}>Get Document</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => navigate('Camera')} style={{display: 'flex', flexDirection: 'row'}}>
-                    <FontAwesomeIcon icon={faCamera} size={30}/>
-                        <Text style={styles.input}>Camera</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.buttonWrapper}>
                     <TouchableOpacity onPress={() => navigate('Record Audio')} style={{display: 'flex', flexDirection: 'row'}}>
                     <FontAwesomeIcon icon={faMicrophone} size={30}/>
                         <Text style={styles.input}>Record Audio</Text>
@@ -55,13 +43,13 @@ export default function DashCollectContainer({ navigate }) {
 const styles = StyleSheet.create({
 
   container: {
-    height: '40%',
+    height: '28%',
     display: 'flex',
     flexDirection: 'row', 
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
   },
   column: {
-    width: '85%',
+    width: '70%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-around'
@@ -91,7 +79,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     paddingTop: '2%',
-    paddingBottom: '2%'
+    paddingBottom: '2%',
   },
   input: {
     /* padding: 8, */
