@@ -28,15 +28,15 @@ export default function Files({navigation: { navigate }}) {
 
 
   //get the auth user context object
-  const {authUser} = useContext(AuthContext)
+  const auth = firebaseAuth
 
   //get the current user 
   useEffect(() => {
     setLoading(true) //prevent component to attempting to render files/folders before they exist
-    if (authUser !== undefined) {
+    if (auth) {
       try {
         const getCurrentUser = async () => {
-          const unsubscribe = await userListener(setCurrentUser, setStaging, JSON.parse(authUser).user.uid)
+          const unsubscribe = await userListener(setCurrentUser, setStaging, auth.currentUser.uid)
     
           return () => unsubscribe()
         }
@@ -44,7 +44,9 @@ export default function Files({navigation: { navigate }}) {
       } catch (err) {console.log(err)}
     } else console.log('no user yet')
     
-  }, [authUser])
+  }, [auth])
+
+  console.log(auth.currentUser.uid)
 
   //once a current user has been pushed into state, allow component to render files/folders
   useEffect(() => {
