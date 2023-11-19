@@ -1,4 +1,4 @@
-import { View, Text, Modal, TouchableOpacity, Pressable, TextInput, ScrollView } from 'react-native'
+import { View, Text, Modal, TouchableOpacity, Pressable, TextInput, ScrollView} from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faXmark, faFile, faFolder } from '@fortawesome/free-solid-svg-icons'
 import React, {useEffect, useState} from 'react'
@@ -6,8 +6,9 @@ import { getFile, getFileDownloadURL } from '../../storage'
 import { shareAsync } from 'expo-sharing'
 import * as MediaLibrary from 'expo-media-library'
 import * as FileSystem from 'expo-file-system'
+import { Image } from 'react-native'
 
-const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, handleFileMove, setFocusedFile}) => {
+const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, handleFileMove}) => {
 
     const [preDelete, setPreDelete] = useState(false)
     const [add, setAdd] = useState(false)
@@ -33,7 +34,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
             ...file,
             flag: destination
         }
-        setFocusedFile(false)
+        focus(false)
         setDestination(null)
         setMoveFile(false)
         handleFileMove(newFile)
@@ -66,6 +67,8 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
     const save = (uri) => {
         shareAsync(uri)
     }
+
+    console.log(fileURL)
 
   return (
         <Modal animationType='slide' presentationStyle='pageSheet'>
@@ -138,7 +141,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                     <View style={{width: '100%', height: '95%', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={{fontSize: 40, color: 'white', fontWeight: 'bold', textAlign: 'left', width: '100%', paddingLeft: '5%', marginBottom: '10%'}}>Move To...</Text>
 
-                        <View style={{width: '100%', height: '65%'}}>
+                        <View style={{width: '100%', height: '55%', marginBottom: '10%'}}>
                                 <ScrollView>
                                 {folders.map(f => {
                                     if (f.id !== file.flag) return (
@@ -250,6 +253,12 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                             </>            
                             : 
                                 <>
+                                    {(file.fileName.split('.')[1] === 'jpg' || file.fileName.split('.')[1] === 'png') && fileURL ? 
+                                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '10%', marginBottom: '10%'}}>
+                                            <Image source={{uri: `${fileURL}`}} width={150} height={150}/>
+                                        </View>
+                                    : <></>
+                                    }
                                     <Text style={{fontSize: 30, fontWeight: 'bold', color: 'white', marginTop: '5%'}}>{file.fileName}</Text>
                                     <TouchableOpacity style={{ marginTop: '10%'}} onPress={() => setAdd(true)}>
                                         <Text style={{fontSize: 20, color: 'white'}}>Rename File</Text>
@@ -261,7 +270,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                         setPreDelete(true)}>
                                         <Text style={{fontSize: 20, color: 'red'}}>Delete File</Text>
                                     </TouchableOpacity>
-                                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '90%'}}>
+                                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '30%'}}>
                                         <View style={{width: '70%',
                                                 borderColor: '#777',
                                                 borderRadius: 25,

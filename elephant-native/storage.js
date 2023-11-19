@@ -49,7 +49,7 @@ export async function userListener(setCurrentUser, setStaging, user) {
             //filter file references from the current user that are in staging
             const stagingRefs = doc.data().fileRefs.filter(el => el.flag === 'Staging')
             if (setStaging) setStaging(stagingRefs)
-            setCurrentUser({...doc.data(), uid: user.uid})
+            setCurrentUser({...doc.data(), uid: user})
         } catch (err) {console.log(err)}
     })
 

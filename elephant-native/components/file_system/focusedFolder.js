@@ -42,7 +42,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
     <View style={styles.container}>
         {loading ? <></> 
         : focusedFile ?
-            <FocusedFileComp file={focusedFile} focus={setFocusedFile} deleteFile={deleteFile} renameFileFunction={renameFile} folders={folders} handleFileMove={moveFile} setFocusedFile={setFocusedFile}/>
+            <FocusedFileComp file={focusedFile} focus={setFocusedFile} deleteFile={deleteFile} renameFileFunction={renameFile} folders={folders} handleFileMove={moveFile}/>
         :
             <>
                 <View style={styles.buttonContainer}>

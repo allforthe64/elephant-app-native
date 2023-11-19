@@ -46,7 +46,7 @@ export default function Files({navigation: { navigate }}) {
     
   }, [auth])
 
-  console.log(auth.currentUser.uid)
+  console.log(currentUser)
 
   //once a current user has been pushed into state, allow component to render files/folders
   useEffect(() => {
@@ -87,6 +87,7 @@ export default function Files({navigation: { navigate }}) {
           const updatedUser = {...currentUser, files: newFiles}
           await updateUser(updatedUser)
       } else if (index === 'add') {
+        console.log('current user in function: ', currentUser)
         //add the new file to the user
         const newFiles = [...currentUser.files, input]
         const updatedUser = {...currentUser, files: newFiles}
@@ -157,7 +158,7 @@ export default function Files({navigation: { navigate }}) {
         {!loading && currentUser ? 
           <View style={focusedFolder ? styles.focusedModal : styles.modal}>
               {focusedFolder ? <FocusedFolder folder={focusedFolder} renameFolder={renameFolder} moveFolder={moveFolder} addFolder={addFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder} deleteFile={deleteFile} renameFile={renameFile} moveFile={moveFile}/> 
-              : stagingMode ? <Staging reset={setStagingMode} staging={staging}/> 
+              : stagingMode ? <Staging reset={setStagingMode} staging={staging} folders={currentUser.files} deleteFile={deleteFile} renameFile={renameFile} moveFile={moveFile}/> 
               :
               (
                   <View>
