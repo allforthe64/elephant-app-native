@@ -102,6 +102,8 @@ export default function Files({navigation: { navigate }}) {
     editUser('file', newFiles, 'delete')
   }
 
+  //filter for all of the files that don't match the inoming file id, return the new file if the id is a match
+  //input will contain fileRef object with the new filename
   const renameFile = (input) => {
     const newFiles = currentUser.fileRefs.map(file => {
       if (file.fileId === input.fileId) {return input} else return file
@@ -109,6 +111,8 @@ export default function Files({navigation: { navigate }}) {
     editUser('file', newFiles, 'rename')
   }
   
+  //filter for all of the files that don't match the inoming file id, return the new file if the id is a match
+  //input will contain fileRef object with new flag
   const moveFile = (input) => {
     const newFiles = currentUser.fileRefs.map(file => {
       if (file.fileId === input.fileId) {return input} else return file
@@ -116,21 +120,27 @@ export default function Files({navigation: { navigate }}) {
     editUser('file', newFiles, 'move')
   }
 
+  //delete folder by filtering for folders that don't match the target
+  //filter for all fileRefs that don't have a flag matching the target
   const deleteFolder = (target) => {
     const refsToKeep = currentUser.fileRefs.filter(ref => ref.flag !== target)
     const newFolders = currentUser.files.filter(file => file.id !== target)
     editUser('folder', {refsToKeep: refsToKeep, newFolders: newFolders}, 'delete')
   }
 
+  //call the edit user function with a new folder object containing the new folder name
   const renameFolder = (target) => {
     editUser('folder', target, 'rename')
   }
 
+  //call the edit user function with a new folder object containing the new folder nestedUnder property
   const moveFolder = (input) => {
     editUser('folder', input, 'move')
   }
 
+  //add a folder
   const addFolder = (folderName, targetNest) => {
+    //if the incoming targetNest is empty string, create the new folder under the home directory
     if (targetNest === '') {
       const newFile = {
         id: currentUser.files.length + 1,
@@ -141,7 +151,7 @@ export default function Files({navigation: { navigate }}) {
       editUser('folder', newFile, 'add')
       setNewFolderName('')
       setAdd(false)
-    } else {
+    } else {           //if the incoming targetNest has a value, create the new folder with the nestedUnder property set to targetNest
       const newFile = {
         id: currentUser.files.length + 1,
         fileName: folderName,
