@@ -7,6 +7,9 @@ import { shareAsync } from 'expo-sharing'
 import * as MediaLibrary from 'expo-media-library'
 import * as FileSystem from 'expo-file-system'
 import { Image } from 'react-native'
+import WebView from 'react-native-webview'
+import RenderHTML from 'react-native-render-html'
+import { useWindowDimensions } from 'react-native'
 
 const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, handleFileMove}) => {
 
@@ -69,6 +72,14 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
     }
 
     console.log(fileURL)
+
+    const src1 = {
+        html:   `<div className='w-[50%]'>
+                    <object type="application/pdf" data={fileURL} width='100%' height='100%'></object>
+                </div>`
+    }
+
+    const {width} = useWindowDimensions()
 
   return (
         <Modal animationType='slide' presentationStyle='pageSheet'>
@@ -253,10 +264,13 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                             </>            
                             : 
                                 <>
-                                    {(file.fileName.split('.')[1] === 'jpg' || file.fileName.split('.')[1] === 'png') && fileURL ? 
+                                    {((file.fileName.split('.')[1] === 'jpg' || file.fileName.split('.')[1] === 'png')) ? 
                                         <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '10%', marginBottom: '10%'}}>
                                             <Image source={{uri: `${fileURL}`}} width={150} height={150}/>
                                         </View>
+                                    :(file.fileName.split('.')[1] === 'pdf') ? 
+                                        /* <WebView style={{borderWidth: 2, borderColor: 'red'}} source={{uri: `https://docs.google.com/gview?url=${fileURL}&embedded=true`}} onLoad={() => alert('loaded')}/> */
+                                        <RenderHTML contentWidth={width} source={src1} />
                                     : <></>
                                     }
                                     <Text style={{fontSize: 30, fontWeight: 'bold', color: 'white', marginTop: '5%'}}>{file.fileName}</Text>
