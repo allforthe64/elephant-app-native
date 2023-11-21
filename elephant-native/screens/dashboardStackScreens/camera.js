@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react'
-import { View, Text, StatusBar, StyleSheet, Button, Image, TouchableOpacity } from 'react-native'
+import { View, Text, StatusBar, StyleSheet, Button, Image, TouchableOpacity, Pressable } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faXmark, faRepeat } from '@fortawesome/free-solid-svg-icons'
 import { Camera } from 'expo-camera'
 import { shareAsync } from 'expo-sharing'
 import * as MediaLibrary from 'expo-media-library'
@@ -18,6 +18,7 @@ const CameraComponent = () => {
     const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState()
     const [photo, setPhoto] = useState()
     const [success, setSuccess] = useState(false)
+    const [session, setSession] = useState(false)
 
     const currentUser = firebaseAuth.currentUser.uid
 
@@ -48,6 +49,51 @@ const CameraComponent = () => {
     }
 
     if (photo) {
+        
+        if (session) {
+            const saveToElephant = async () => {
+
+                setPhoto(undefined)
+                setSuccess(true)
+    
+                //create new formatted date for file
+                const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
+    
+                  try {
+                    const blob = await new Promise((resolve, reject) => {
+                        const xhr = new XMLHttpRequest()
+                        xhr.onload = () => {
+                           resolve(xhr.response) 
+                        }
+                        xhr.onerror = (e) => {
+                            reject(new TypeError('Network request failed'))
+                        }
+                        xhr.responseType = 'blob'
+                        xhr.open('GET', photo.uri, true)
+                        xhr.send(null)
+                    })
+    
+    
+                    const filename = `${formattedDate}.jpg`
+                    const ref = firebase.storage().ref().child(filename)
+    
+                    await ref.put(blob)
+    
+                    const reference = await addfile({
+                            name: formattedDate + '.jpg',
+                            fileType: 'jpg',
+                            size: photo.width * photo.height,
+                            uri: photo.uri
+                        })
+                    updateStaging([reference], currentUser)
+    
+                  } catch (err) {
+                    console.log(err)
+                  }
+            }
+            saveToElephant()
+        }
+        
         const sharePic = () => {
             shareAsync(photo.uri).then(() => {
                 setPhoto(undefined)
@@ -125,6 +171,9 @@ const CameraComponent = () => {
                 </View>
             </View>
         }
+        <Pressable style={session ? {position: 'absolute', top: '5%', right: '6%', backgroundColor: 'white', width: '12%', height: '7%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'} : {position: 'absolute', top: '5%', right: '6%', width: '12%', height: '7%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}} onPress={() => setSession(prev => !prev)}>
+            <FontAwesomeIcon icon={faRepeat} color={session ? 'black' : 'white'} size={30} />
+        </Pressable>
         <View style={styles.buttonContainer}>
             <Button title='Take Pic' onPress={takePic}/>
         </View>
