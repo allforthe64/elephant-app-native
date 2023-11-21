@@ -83,10 +83,10 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
             : 
                 <Modal animationType='slide' presentationStyle='pageSheet'>
                     {preDelete ? 
-                        {/* if the user hits the delete button on a file, open a modal that confirms they want to delete the file*/}
-                        (
+                        (   
                             <Modal animationType='slide' presentationStyle='pageSheet'>
                                 <View style={{ paddingTop: '10%', backgroundColor: 'rgb(23 23 23)', height: '100%', width: '100%'}}>
+                                    {/* if the user hits the delete button on a file, open a modal that confirms they want to delete the file*/}
                                     <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '10%',     width: '100%'}}>
                                         <Pressable onPress={() => setPreDelete(false)}>
                                         <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
@@ -144,11 +144,10 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                         )
                     :
                     moveFile ? 
-                    {/* if the moveFile state is true, display the modal with the file movement code*/}
                     (
                         <Modal animationType='slide' presentationStyle='pageSheet' >
                             <View style={{height: '100%', width: '100%', backgroundColor: 'rgb(23 23 23)'}}>
-
+                                {/* if the moveFile state is true, display the modal with the file movement code*/}
                                 {/* xMark icon for closing out the moveFile modal */}
                                 <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '10%', width: '100%'}}>
                                     <Pressable onPress={() => setMoveFile(false)}>

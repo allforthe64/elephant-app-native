@@ -17,7 +17,6 @@ const CameraComponent = () => {
     const [hasCameraPermission, setHasCameraPermission] = useState()
     const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState()
     const [photo, setPhoto] = useState()
-    const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
 
     const currentUser = firebaseAuth.currentUser.uid
@@ -63,7 +62,7 @@ const CameraComponent = () => {
 
         const saveToElephant = async () => {
 
-            setLoading(true)
+            setPhoto(undefined)
 
             //create new formatted date for file
             const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
@@ -88,8 +87,6 @@ const CameraComponent = () => {
 
                 await ref.put(blob)
 
-                console.log('reference: ', photo)
-
                 const reference = await addfile({
                         name: formattedDate + '.jpg',
                         fileType: 'jpg',
@@ -103,26 +100,16 @@ const CameraComponent = () => {
               } catch (err) {
                 console.log(err)
               }
-            
-            setPhoto(undefined)
-            setLoading(false)
         }
 
         return (
-            loading ? (
-                    <View style={styles.containerCenter}>
-                        <Text style={{color: 'black'}}>Uploading Image...</Text>
-                    </View>
-                )
-                : (
-                    <SafeAreaView style={styles.container}>
-                        <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photo.base64}}/>
-                        <Button title='Share' onPress={sharePic} />
-                        { hasMediaLibraryPermission ? <Button title='Save to photos' onPress={savePhoto} /> : undefined} 
-                        <Button title='Discard' onPress={() => setPhoto(undefined)} />
-                        <Button title='Save to elephant storage' onPress={saveToElephant} />
-                    </SafeAreaView>
-                )
+                <SafeAreaView style={styles.container}>
+                    <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photo.base64}}/>
+                    <Button title='Share' onPress={sharePic} />
+                    { hasMediaLibraryPermission ? <Button title='Save to photos' onPress={savePhoto} /> : undefined} 
+                    <Button title='Save to elephant storage' onPress={saveToElephant} />
+                    <Button title='Discard' onPress={() => setPhoto(undefined)} />
+                </SafeAreaView>
         )
     }
 
