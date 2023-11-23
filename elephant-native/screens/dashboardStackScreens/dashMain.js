@@ -7,6 +7,7 @@ import { AuthContext } from '../../context/authContext';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFolder, faCamera } from '@fortawesome/free-solid-svg-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function DashMain({navigation: { navigate }}) {
 
@@ -17,12 +18,13 @@ export default function DashMain({navigation: { navigate }}) {
     navigate('Home')
   }
 
+  const insets = useSafeAreaInsets()
+
   return (
     <View>
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
         <View style={styles.buttonContainer}>
-          
-          <View style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%'}}>
+          <View style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: insets.top, paddingBottom: insets.bottom}}>
               <View style={{width: '21%', backgroundColor: 'white', paddingTop: '3%', paddingBottom: '3%', borderRadius: 1000}}>
                 <TouchableOpacity onPress={() => navigate('Camera')} style={styles.file}>
                     <FontAwesomeIcon icon={faCamera} size={50} />
@@ -51,7 +53,7 @@ export default function DashMain({navigation: { navigate }}) {
                     </TouchableOpacity>
               </View>
             </View>
-        </View>
+          </View>
     </View>
     
   );
@@ -68,7 +70,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'rgba(0, 0, 0, .6)',
-    paddingTop: '10%',
     position: 'absolute',
     display: 'flex',
   },
@@ -82,10 +83,9 @@ const styles = StyleSheet.create({
   subheading: {
     color: 'white',
     textAlign: 'center',
-    fontSize: 40,
+    fontSize: 35,
     fontWeight: '600',
-    marginBottom: '10%',
-    marginTop: '12%'
+    marginBottom: '10%'
   },
   wrapperContainer: {
     display: 'flex',

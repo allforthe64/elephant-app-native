@@ -8,6 +8,8 @@ import { format } from 'date-fns'
 import { firebaseAuth } from '../../firebaseConfig';
 import { addfile, userListener, updateStaging } from '../../storage'
 
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
 const Notepad = () => {
 
     const [open, setOpen] = useState(true)
@@ -77,6 +79,7 @@ const Notepad = () => {
       else ref.current.focus() 
     },[open])
 
+    const insets = useSafeAreaInsets() 
 
   return (
     <>
@@ -177,7 +180,27 @@ const Notepad = () => {
             <TextInput onChangeText={(e) => setBody(e)}
                         value={body}
                         placeholder={'Add a note...'}
-                        style={open ? styles.noteBody : styles.noteBodyFull}
+                        style={open ? {
+                            backgroundColor: 'white',
+                            paddingLeft: 10,
+                            paddingRight: 10,
+                            paddingTop: insets.top,
+                            paddingBottom: insets.bottom,
+                            fontSize: 18,
+                            textAlignVertical: 'top',
+                            width: '100%',
+                            height: '75%'
+                        } : {
+                          backgroundColor: 'white',
+                          paddingLeft: 10,
+                          paddingRight: 10,
+                          paddingTop: insets.top,
+                          paddingBottom: insets.bottom,
+                          fontSize: 18,
+                          textAlignVertical: 'top',
+                          width: '100%',
+                          height: '100%'
+                      }}
                         editable={open ? true : false}
                         multiline
                         numberOfLines={2}
@@ -213,12 +236,12 @@ const Notepad = () => {
 }
 
 const styles = StyleSheet.create({
-    noteBody: {
+    /* noteBody: {
         backgroundColor: 'white',
         paddingLeft: 10,
         paddingRight: 10,
-        paddingTop: 10,
-        paddingBottom: 70,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
         fontSize: 18,
         textAlignVertical: 'top',
         width: '100%',
@@ -228,13 +251,13 @@ const styles = StyleSheet.create({
       backgroundColor: 'white',
       paddingLeft: 10,
       paddingRight: 10,
-      paddingTop: 10,
-      paddingBottom: 60,
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
       fontSize: 18,
       textAlignVertical: 'top',
       width: '100%',
       height: '100%'
-  },
+  }, */
     wrapperContainer: {
       width: '100%',
       position: 'absolute',
@@ -248,12 +271,12 @@ const styles = StyleSheet.create({
     wrapperContainerFull: {
       width: '100%',
       position: 'absolute',
-      top: '88%',
+      top: '85%',
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'flex-end',
-      paddingRight: '5%'
+      paddingRight: '5%',
     },
     buttonWrapper: {
       width: '16%',

@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { addfile, updateStaging } from '../../storage'
 import { firebaseAuth } from '../../firebaseConfig'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const FilePicker = () => {
 
@@ -112,10 +113,20 @@ const FilePicker = () => {
           
     }
 
+    const insets = useSafeAreaInsets()
+
   return (
     <View style={styles.container}>
         <Image style={styles.bgImg } source={require('../../assets/elephant-dashboard.jpg')} />
-        <View style={styles.innerContainer}>
+        <View style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            position: 'absolute',
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom
+        }}>
             {success && 
                 <View style={styles.successContainer}>
                     <View style={styles.innerSuccessContainer}>
@@ -181,15 +192,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'rgb(23,23,23)',
         height: '100%'
-    },
-    innerContainer: {
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        position: 'absolute',
-        paddingTop: '10%',
-        paddingBottom: '10%'
     },
     bgImg: {
         objectFit: 'scale-down',

@@ -7,6 +7,7 @@ import AudioEditor from '../../components/audioEditor'
 import { firebase } from '../../firebaseConfig'
 import { updateStaging, addFile, addfile } from '../../storage'
 import { firebaseAuth } from '../../firebaseConfig'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 
 const AudioRecorder = () => {
@@ -144,12 +145,23 @@ const AudioRecorder = () => {
           
     }
 
-    console.log(currentUser)
+    const insets = useSafeAreaInsets()
 
   return (
-    <View style={styles.container}>
+    <View style={{
+        backgroundColor: 'rgb(23,23,23)',
+        height: '100%'}}>
         <Image style={styles.bgImg } source={require('../../assets/elephant-dashboard.jpg')} />
-        <View style={styles.innerContainer}>
+        <View style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'absolute',
+            paddingBottom: '10%',
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom}}>
             {success && 
                     <View style={styles.successContainer}>
                         <View style={styles.innerSuccessContainer}>
@@ -197,35 +209,21 @@ const styles = StyleSheet.create({
         fontSize: 25,
         textAlign: 'center',
         fontWeight: '700',
-        marginBottom: '8%'
+        marginBottom: '5%'
       },
-    container: {
-        backgroundColor: 'rgb(23,23,23)',
-        height: '100%'
-    },
-    innerContainer: {
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'absolute',
-        paddingTop: '10%',
-        paddingBottom: '10%'
-    },
     scrollCon: {
         height: '60%',
         width: '95%',
         borderBottomWidth: 1,
         borderColor: 'white',
-        marginBottom: '10%'
+        marginBottom: '5%',
     },
     noRecCon: {
         height: '60%',
         width: '95%',
         borderBottomWidth: 1,
         borderColor: 'white',
-        marginBottom: '10%',
+        marginBottom: '5%',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'

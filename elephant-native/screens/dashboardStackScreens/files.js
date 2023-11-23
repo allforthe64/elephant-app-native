@@ -15,6 +15,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBox, faFolder } from '@fortawesome/free-solid-svg-icons';
 import Staging from '../../components/file_system/staging';
 
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 export default function Files({navigation: { navigate }}) {
 
   //initialize state 
@@ -45,8 +47,6 @@ export default function Files({navigation: { navigate }}) {
     } else console.log('no user yet')
     
   }, [auth])
-
-  console.log(currentUser)
 
   //once a current user has been pushed into state, allow component to render files/folders
   useEffect(() => {
@@ -162,11 +162,27 @@ export default function Files({navigation: { navigate }}) {
     }
   }
 
+  const insets = useSafeAreaInsets()
+
   return ( 
       <View style={styles.container}>
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
         {!loading && currentUser ? 
-          <View style={focusedFolder ? styles.focusedModal : styles.modal}>
+          <View style={focusedFolder ? {
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, .8)',
+            position: 'absolute',
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom
+            } : {
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, .8)',
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom,
+            position: 'absolute'
+          }}>
               {focusedFolder ? <FocusedFolder folder={focusedFolder} renameFolder={renameFolder} moveFolder={moveFolder} addFolder={addFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder} deleteFile={deleteFile} renameFile={renameFile} moveFile={moveFile}/> 
               : stagingMode ? <Staging reset={setStagingMode} staging={staging} folders={currentUser.files} deleteFile={deleteFile} renameFile={renameFile} moveFile={moveFile}/> 
               :
@@ -279,19 +295,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  modal: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, .8)',
-    paddingTop: '5%',
-    position: 'absolute'
-  },
-  focusedModal: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, .8)',
-    position: 'absolute'
   },
   bigHeader: {
     color: 'white',

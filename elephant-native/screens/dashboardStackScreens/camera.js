@@ -149,18 +149,23 @@ const CameraComponent = () => {
         }
 
         return (
-                <SafeAreaView style={styles.container}>
+                <View style={styles.container}>
                     <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photo.base64}}/>
                     <Button title='Share' onPress={sharePic} />
                     { hasMediaLibraryPermission ? <Button title='Save to photos' onPress={savePhoto} /> : undefined} 
                     <Button title='Save to elephant storage' onPress={saveToElephant} />
                     <Button title='Discard' onPress={() => setPhoto(undefined)} />
-                </SafeAreaView>
+                </View>
         )
     }
 
   return (
-    <Camera style={styles.container} ref={cameraRef}>
+    <Camera style={{
+            flex: 1,
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+        }} ref={cameraRef}>
         {success && 
             <View style={styles.successContainer}>
                 <View style={styles.innerContainer}>
@@ -183,12 +188,6 @@ const CameraComponent = () => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'flex-end'
-    },
     containerCenter: {
         flex: 1,
         flexDirection: 'column',

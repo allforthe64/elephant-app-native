@@ -6,6 +6,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { addfile, updateStaging } from '../../storage'
 import { firebaseAuth } from '../../firebaseConfig'
 import { firebase } from '../../firebaseConfig'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const Scanner = () => {
 
@@ -76,11 +77,27 @@ const Scanner = () => {
         setUrls([])
     }
 
+    const insets = useSafeAreaInsets()
+
   return (
-    <View style={styles.container}>
+    <View style={{
+            backgroundColor: 'rgb(23,23,23)',
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom
+        }}>
         <Image style={styles.bgImg } source={require('../../assets/elephant-dashboard.jpg')} />
         {scanData ? 
-            <View style={styles.innerContainer}>
+            <View style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    position: 'absolute',
+                }}>
                 <Text style={styles.bigHeader}>Currently Captured QR URLS:</Text>
                 <View style={styles.scrollCon}>
                     <ScrollView contentContainerStyle={styles.scroll}>
@@ -116,22 +133,6 @@ const Scanner = () => {
 export default Scanner
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: 'rgb(23,23,23)',
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100%',
-        paddingTop: '10%',
-        paddingBottom: '10%'
-    },
-    innerContainer: {
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        position: 'absolute'
-    },
     bigHeader: {
         color: 'white',
         fontSize: 25,
