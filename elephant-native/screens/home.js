@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useEffect, useState } from 'react';
-
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Home({navigation}) {
 
@@ -22,9 +22,17 @@ export default function Home({navigation}) {
     navigation.navigate('Dashboard')
   }
 
+  const insets = useSafeAreaInsets()
 
   return (
-      <View style={styles.container}>
+      <View style={{
+        flex: 1,
+        backgroundColor: 'rgb(0, 0, 0)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom
+      }}>
         <Image source={require('../assets/elephant-home.jpg')} style={styles.bgImg}/>
         <View style={styles.modal}>
           <Text style={styles.bigHeader}>Welcome to My Elephant App</Text>
@@ -49,19 +57,13 @@ export default function Home({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  /* container: {
-    flex: 1,
-    backgroundColor: 'rgb(0, 0, 0)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }, */
   bgImg: {
     objectFit: 'scale-down',
     opacity: .6
   },
   modal: {
     width: '90%',
-    height: '75%',
+    height: '80%',
     backgroundColor: 'rgba(0, 0, 0, .65)',
     paddingTop: '30%',
     paddingBottom: 10,
