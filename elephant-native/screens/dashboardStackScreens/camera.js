@@ -5,7 +5,6 @@ import { faXmark, faRepeat } from '@fortawesome/free-solid-svg-icons'
 import { Camera } from 'expo-camera'
 import { shareAsync } from 'expo-sharing'
 import * as MediaLibrary from 'expo-media-library'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { firebase } from '../../firebaseConfig'
 import { format } from 'date-fns'
 import { addfile, updateStaging } from '../../storage'
@@ -49,50 +48,6 @@ const CameraComponent = () => {
     }
 
     if (photo) {
-        
-        if (session) {
-            const saveToElephant = async () => {
-
-                setPhoto(undefined)
-                setSuccess(true)
-    
-                //create new formatted date for file
-                const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
-    
-                  try {
-                    const blob = await new Promise((resolve, reject) => {
-                        const xhr = new XMLHttpRequest()
-                        xhr.onload = () => {
-                           resolve(xhr.response) 
-                        }
-                        xhr.onerror = (e) => {
-                            reject(new TypeError('Network request failed'))
-                        }
-                        xhr.responseType = 'blob'
-                        xhr.open('GET', photo.uri, true)
-                        xhr.send(null)
-                    })
-    
-    
-                    const filename = `${formattedDate}.jpg`
-                    const ref = firebase.storage().ref().child(filename)
-    
-                    await ref.put(blob)
-    
-                    const reference = await addfile({
-                            name: formattedDate + '.jpg',
-                            fileType: 'jpg',
-                            size: photo.width * photo.height,
-                            uri: photo.uri
-                        })
-                    updateStaging([reference], currentUser)
-    
-                  } catch (err) {
-                    console.log(err)
-                  }
-            }
-            saveToElephant()
-        }
         
         const sharePic = () => {
             shareAsync(photo.uri).then(() => {
@@ -148,24 +103,30 @@ const CameraComponent = () => {
               }
         }
 
-        return (
-                <View style={styles.container}>
+        if (session === true) {
+            console.log('in here')
+            saveToElephant()
+        } else {
+            return (
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
+                    paddingBottom: '10%'
+                }}>
                     <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photo.base64}}/>
                     <Button title='Share' onPress={sharePic} />
                     { hasMediaLibraryPermission ? <Button title='Save to photos' onPress={savePhoto} /> : undefined} 
                     <Button title='Save to elephant storage' onPress={saveToElephant} />
                     <Button title='Discard' onPress={() => setPhoto(undefined)} />
                 </View>
-        )
+                )
+        }
     }
 
   return (
-    <Camera style={{
-            flex: 1,
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-        }} ref={cameraRef}>
+    <Camera style={styles.containerCenter} ref={cameraRef}>
         {success && 
             <View style={styles.successContainer}>
                 <View style={styles.innerContainer}>
@@ -192,7 +153,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'flex-end'
     },
     successContainer: {
         position: 'absolute',
