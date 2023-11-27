@@ -32,8 +32,6 @@ const FilePicker = () => {
         
     }
 
-    console.log(files)
-
     const selectImage = async () => {
         let updatedFiles = [...files]
         // No permissions request is necessary for launching the image library
@@ -89,11 +87,11 @@ const FilePicker = () => {
                     xhr.send(null)
                 })
     
-                const filename = `${el.name}`
+                const filename = `${el.name.split('.')[0] + '-' + currentUser}.${el.name.split('.')[1]}`
                 const ref = firebase.storage().ref().child(filename)
     
                 await ref.put(blob)
-                const reference = await addfile(el)
+                const reference = await addfile({...el, name: `${el.name.split('.')[0] + '-' + currentUser}.${el.name.split('.')[1]}`})
                 
                 return reference
 
@@ -103,7 +101,8 @@ const FilePicker = () => {
 
         }))
 
-        console.log('references: ', references)
+        console.log(references)
+
 
         updateStaging(references, currentUser)
 
@@ -114,6 +113,7 @@ const FilePicker = () => {
     }
 
     const insets = useSafeAreaInsets()
+    console.log(files)
 
   return (
     <View style={styles.container}>

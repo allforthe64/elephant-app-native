@@ -9,7 +9,7 @@ const File = ({file, focus}) => {
     <TouchableOpacity style={styles.file} onPress={() => focus(file)}>
         <View style={styles.fileTitle}>
             <FontAwesomeIcon icon={faFile} color={'white'} size={32} />
-            <Text numberOfLines={1} style={styles.fileName}>{file.fileName}</Text>
+            <Text numberOfLines={1} style={styles.fileName}>{file.fileName.includes('-') ? (file.fileName.split('-')[0] + '.' + file.fileName.split('.')[1]) : file.fileName}</Text>
         </View>
     </TouchableOpacity>
   )

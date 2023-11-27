@@ -84,13 +84,13 @@ const CameraComponent = () => {
                 })
 
 
-                const filename = `${formattedDate}.jpg`
+                const filename = `${formattedDate}-${currentUser}.jpg`
                 const ref = firebase.storage().ref().child(filename)
 
                 await ref.put(blob)
 
                 const reference = await addfile({
-                        name: formattedDate + '.jpg',
+                        name: filename,
                         fileType: 'jpg',
                         size: photo.width * photo.height,
                         uri: photo.uri
