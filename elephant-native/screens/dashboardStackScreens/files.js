@@ -105,6 +105,7 @@ export default function Files({navigation: { navigate }}) {
   //filter for all of the files that don't match the inoming file id, return the new file if the id is a match
   //input will contain fileRef object with the new filename
   const renameFile = (input) => {
+    console.log(input)
     const newFiles = currentUser.fileRefs.map(file => {
       if (file.fileId === input.fileId) {return input} else return file
     })

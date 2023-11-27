@@ -15,7 +15,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
     //initialize state
     const [preDelete, setPreDelete] = useState(false)
     const [add, setAdd] = useState(false)
-    const [newFileName, setNewFileName] = useState(file.fileName.split('.')[0]) 
+    const [newFileName, setNewFileName] = useState() 
     const [moveFile, setMoveFile] = useState(false)
     const [destination, setDestination] = useState()
     const [expanded, setExpanded] = useState(false)
@@ -25,11 +25,13 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
     const [mediaPermissions, setMediaPermissions] = useState()
 
 
+    console.log(newFileName)
+
     //rename a file by overwriting the fileName property
     const renameFile = () => {
         const newFile = {
             ...file,
-            fileName: newFileName + '.' + file.fileName.split('.')[1]
+            fileName: newFileName + '^' + file.fileName.split('^')[1]
         }
         renameFileFunction(newFile)
     }
@@ -93,7 +95,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                         </Pressable>
                                     </View>
                                     <View style={{width: '100%', height: '95%', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                                    <Text style={{fontSize: 22, color: 'white', textAlign: 'center'}}>Are you sure you want to delete {file.fileName}?</Text>
+                                    <Text style={{fontSize: 22, color: 'white', textAlign: 'center'}}>Are you sure you want to delete {file.fileName.split('^')[0] + '.' + file.fileName.split('.')[1]}?</Text>
 
                                     {/* button with onPress function to delete the file */}
                                     <View style={{width: '50%',
@@ -223,7 +225,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                     <>
                                         <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',  marginTop: '10%'}}>
                                             <FontAwesomeIcon icon={faFile} size={30} color='white'/>
-                                            <TextInput value={newFileName} style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '70%', marginRight: '15%'}} onChangeText={(e) => setNewFileName(e)} autoFocus/>
+                                            <TextInput style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '70%', marginRight: '15%'}} onChangeText={(e) => setNewFileName(e)} autoFocus/>
                                         </View>
                                         <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', paddingRight: '5%', marginTop: '10%'}}>
                                             <View style={{width: '40%',
@@ -241,7 +243,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                     justifyContent: 'center',
                                                     }}
                                                     onPress={() => {
-                                                        if (newFileName !== file.fileName.split('.')[0]) {
+                                                        if (newFileName !== file.fileName.split('^')[0]) {
                                                             renameFile()
                                                             setNewFileName('')
                                                             setAdd(false)
@@ -307,7 +309,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                             : <></>
                                             }
                                             <View style={(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png') ? {height: '70%', width: '90%', marginTop: '5%'} : {height: '40%', width: '90%'}}>
-                                                <Text style={{fontSize: 22, fontWeight: 'bold', color: 'white', marginTop: '5%'}} numberOfLines={3}>{file.fileName}</Text>
+                                                <Text style={{fontSize: 22, fontWeight: 'bold', color: 'white', marginTop: '5%'}} numberOfLines={3}>{file.fileName.split('^')[0] + '.' + file.fileName.split('.')[1]}</Text>
                                                 <TouchableOpacity style={{ marginTop: '10%'}} onPress={() => setAdd(true)}>
                                                     <Text style={{fontSize: 18, color: 'white'}}>Rename File</Text>
                                                 </TouchableOpacity>
