@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef, useState, useContext} from 'react'
 import { View, Text, StatusBar, StyleSheet, Button, Image, TouchableOpacity, Pressable } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faXmark, faRepeat } from '@fortawesome/free-solid-svg-icons'
@@ -9,6 +9,7 @@ import { firebase } from '../../firebaseConfig'
 import { format } from 'date-fns'
 import { addfile, updateStaging } from '../../storage'
 import { firebaseAuth } from '../../firebaseConfig'
+import { AuthContext } from '../../context/authContext'
 
 const CameraComponent = () => {
     try {
@@ -18,8 +19,22 @@ const CameraComponent = () => {
         const [photo, setPhoto] = useState()
         const [success, setSuccess] = useState(false)
         const [session, setSession] = useState(false)
+        const [currentUser, setCurrentUser] = useState()
+        const [loading, setLoading] = useState(true)
 
-        const currentUser = firebaseAuth.currentUser.uid
+        const {authUser} = useContext(AuthContext)
+
+        useEffect(() => {
+            if (loading) {
+                console.log('running function')
+                if (authUser) {
+                    setCurrentUser(authUser.uid)
+                    setLoading(false)
+                } else {
+                    alert('Function is erroring out trying to assign the current user')
+                }
+            }
+        }, [authUser])
 
         useEffect(() => {
             (async () => {
@@ -107,6 +122,8 @@ const CameraComponent = () => {
             } 
         }
 
+        console.log(currentUser)
+
         return (
             <>
                 {photo ? 
@@ -126,6 +143,21 @@ const CameraComponent = () => {
             : 
                     <>
                         <Camera style={styles.containerCenter} ref={cameraRef}>
+                            <View style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    width: '100%',
+                                    height: '12.5%',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-end',
+                                    alignItems: 'flex-end',
+                                    paddingRight: '5%',
+                                }}>
+                                    <TouchableOpacity onPress={() => setSession(prev => !prev)} style={session ? {backgroundColor: 'white', width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'} : { width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                                        <FontAwesomeIcon icon={faRepeat} color={session ? 'black' : 'white'} size={30} />
+                                    </TouchableOpacity>
+                            </View>
                             {success && 
                                 <View style={styles.successContainer}>
                                     <View style={styles.innerContainer}>
@@ -136,21 +168,6 @@ const CameraComponent = () => {
                                     </View>
                                 </View>
                             }
-                            <View style={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    width: '100%',
-                                    height: '12.5%',
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    justifyContent: 'flex-end',
-                                    alignItems: 'flex-end',
-                                    paddingRight: '5%'
-                                }}>
-                                    <TouchableOpacity onPress={() => setSession(prev => !prev)} style={session ? {backgroundColor: 'white', width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'} : { width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                                        <FontAwesomeIcon icon={faRepeat} color={session ? 'black' : 'white'} size={30} />
-                                    </TouchableOpacity>
-                            </View>
                             <View style={styles.buttonContainer}>
                                 <Button title='Take Pic' onPress={takePic}/>
                             </View>
@@ -180,7 +197,7 @@ const styles = StyleSheet.create({
         height: '5%',
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     innerContainer: {
         display: 'flex',
