@@ -102,52 +102,65 @@ const CameraComponent = () => {
         }
 
         if (photo) {
-        if (session === true) {
-            console.log('in here')
-            saveToElephant()
-        } else {
-            return (
-                <View style={{
-                    flex: 1,
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'flex-end',
-                    paddingBottom: '10%'
-                }}>
-                    <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photo.base64}}/>
-                    <Button title='Share' onPress={sharePic} />
-                    { hasMediaLibraryPermission ? <Button title='Save to photos' onPress={savePhoto} /> : undefined} 
-                    <Button title='Save to elephant storage' onPress={saveToElephant} />
-                    <Button title='Discard' onPress={() => setPhoto(undefined)} />
-                </View>
-                )
-        }
+            if (session === true) {
+                saveToElephant()
+            } 
         }
 
         console.log(currentUser)
 
         return (
-            <Camera style={styles.containerCenter} ref={cameraRef}>
-                {success && 
-                    <View style={styles.successContainer}>
-                        <View style={styles.innerContainer}>
-                            <Text style={{color: 'green'}}>Upload Successful!</Text>
-                            <TouchableOpacity onPress={() => setSuccess(false)}>
-                                <FontAwesomeIcon icon={faXmark} size={20} color={'black'} />
-                            </TouchableOpacity>
-                        </View>
+            <>
+                {photo ? 
+                    <View style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        paddingBottom: '10%'
+                    }}>
+                        <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photo.base64}}/>
+                        <Button title='Share' onPress={sharePic} />
+                        { hasMediaLibraryPermission ? <Button title='Save to photos' onPress={savePhoto} /> : undefined} 
+                        <Button title='Save to elephant storage' onPress={saveToElephant} />
+                        <Button title='Discard' onPress={() => setPhoto(undefined)} />
                     </View>
-                }
-                <View style={session ? {position: 'absolute', top: 30, right: 20, backgroundColor: 'white', width: '12%', height: '7%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'} : {position: 'absolute', top: 30, right: 20, width: '12%', height: '7%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}} onPress={() => setSession(prev => !prev)}>
-                    <TouchableOpacity onPress={() => setSession(prev => !prev)}>
-                        <FontAwesomeIcon icon={faRepeat} color={session ? 'black' : 'white'} size={30} />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.buttonContainer}>
-                    <Button title='Take Pic' onPress={takePic}/>
-                </View>
-            <StatusBar style="auto" /> 
-            </Camera>
+            : 
+                    <>
+                        <Camera style={styles.containerCenter} ref={cameraRef}>
+                            {success && 
+                                <View style={styles.successContainer}>
+                                    <View style={styles.innerContainer}>
+                                        <Text style={{color: 'green'}}>Upload Successful!</Text>
+                                        <TouchableOpacity onPress={() => setSuccess(false)}>
+                                            <FontAwesomeIcon icon={faXmark} size={20} color={'black'} />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            }
+                            <View style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    width: '100%',
+                                    height: '12.5%',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-end',
+                                    alignItems: 'flex-end',
+                                    paddingRight: '5%'
+                                }}>
+                                    <TouchableOpacity onPress={() => setSession(prev => !prev)} style={session ? {backgroundColor: 'white', width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'} : { width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                                        <FontAwesomeIcon icon={faRepeat} color={session ? 'black' : 'white'} size={30} />
+                                    </TouchableOpacity>
+                            </View>
+                            <View style={styles.buttonContainer}>
+                                <Button title='Take Pic' onPress={takePic}/>
+                            </View>
+                            <StatusBar style="auto" /> 
+                        </Camera>
+                    </>
+            }
+            </>
         )
     } catch (err) {
         alert(err)
