@@ -107,8 +107,6 @@ const CameraComponent = () => {
             } 
         }
 
-        console.log(currentUser)
-
         return (
             <>
                 {photo ? 
