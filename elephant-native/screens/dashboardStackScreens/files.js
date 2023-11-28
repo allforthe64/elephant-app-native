@@ -19,6 +19,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Files({navigation: { navigate }}) {
 
+  try {
+
   //initialize state 
   const [currentUser, setCurrentUser] = useState()
   const [staging, setStaging] = useState([])
@@ -288,7 +290,11 @@ export default function Files({navigation: { navigate }}) {
     </View>
     
   );
+  } catch (err) {
+    alert(err)
+  }
 }
+
 
 const styles = StyleSheet.create({
   container: {

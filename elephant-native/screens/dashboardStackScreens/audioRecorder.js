@@ -12,7 +12,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const AudioRecorder = () => {
 
-    const [recording, setRecording] = useState()
+    try {
+        const [recording, setRecording] = useState()
     const [recordings, setRecordings] = useState([])
     const [success, setSuccess] = useState(false)
 
@@ -201,6 +202,10 @@ const AudioRecorder = () => {
         </View>
     </View>
   )
+
+    } catch (err) {
+        alert(err)
+    }
 }
 
 const styles = StyleSheet.create({
