@@ -3,12 +3,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlay } from '@fortawesome/free-solid-svg-icons'
 import React, {useEffect, useState} from 'react'
 
-const AudioEditor = ({recordingLine, index, deleteFunc, /* editName, */ recordings}) => {
+const AudioEditor = ({recordingLine, index, deleteFunc, editRecordings, recordings}) => {
     const [recordingTitle, setRecordingTitle] = useState(recordingLine.name)
 
-    /* useEffect(() => {
-        editName(recordingTitle, recordingLine.file)
-    }, recordingTitle) */
+    useEffect(() => {
+        editRecordings(prev => {
+            let arr = [...prev]
+            let targetRec = arr[index]
+            targetRec.name = recordingTitle
+            arr[index] = targetRec
+            return arr
+        })
+    }, [recordingTitle])
+
   return (
     <View key={index} style={styles.bigCon}>
         <View style={styles.container}>

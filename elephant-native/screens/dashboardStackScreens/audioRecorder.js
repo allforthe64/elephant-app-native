@@ -72,7 +72,7 @@ const AudioRecorder = () => {
     const getRecordingLines = () => {
         return recordings.map((recordingLine, index) => {
             return (
-            <AudioEditor recordingLine={recordingLine} index={index} key={index} recordings={recordings} deleteFunc={filterRecordings} />
+            <AudioEditor editRecordings={setRecordings} recordingLine={recordingLine} index={index} key={index} recordings={recordings} deleteFunc={filterRecordings} />
         ) 
             
         })
@@ -89,19 +89,12 @@ const AudioRecorder = () => {
         setRecordings(arr)
     }
 
-    /* const editName = (input, incomingRec) => {
-        const target = recordings.filter(el => el.file === incomingRec)
-        target.name = input
-
-        let holder = recordings.filter(el => JSON.stringify(el) !== JSON.stringify(target))
-        holder = [...holder, target]
-        setRecordings(holder)
-    }
- */
+    console.log(recordings)
 
     const saveFiles = async () => {
 
         const references = await Promise.all(recordings.map(async (el) => {
+            const filename = `${el.name}^${currentUser}.${el.file.split('.')[1]}`
 
             try {
                 const blob = await new Promise((resolve, reject) => {
@@ -118,7 +111,6 @@ const AudioRecorder = () => {
                     xhr.send(null)
                 })
     
-                const filename = `${el.name}`
                 const ref = firebase.storage().ref().child(filename)
     
                 await ref.put(blob)
@@ -128,7 +120,7 @@ const AudioRecorder = () => {
             }
 
             const reference = await addfile({
-                name: el.name,
+                name: filename,
                 fileType: el.file.split('.')[1],
                 size: el.duration,
                 uri: el.file

@@ -1,11 +1,23 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 
-const UrlEditor = ({url, deleteFunc}) => {
-    const [urlTitle, setUrlTitle] = useState('')
+const UrlEditor = ({url, deleteFunc, editUrls, index}) => {
+    const [urlTitle, setUrlTitle] = useState(url.title)
+
+    useEffect(() => {
+        editUrls(prev => {
+            let arr = [...prev]
+            let targetUrl = arr[index]
+            targetUrl.title = urlTitle
+            arr[index] = targetUrl
+            return arr
+        })
+    }, [urlTitle])
+
+
   return (
     <View style={styles.bigCon}>
-        <Text style={styles.url} numberOfLines={1}>Url: {url}</Text>
+        <Text style={styles.url} numberOfLines={1}>Url: {url.data}</Text>
         <View style={styles.container}>
             <TextInput value={urlTitle} onChangeText={(e) => setUrlTitle(e)} placeholder='Add title for url' placeholderTextColor={'rgb(0, 0, 0)'} style={styles.input} />
             <TouchableOpacity title='Delete' onPress={() => deleteFunc(url)}>

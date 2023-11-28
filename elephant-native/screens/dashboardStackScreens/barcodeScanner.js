@@ -33,16 +33,17 @@ const Scanner = () => {
     }
 
     const handleBarCodeScanned = ({data}) => {
+        
         let arr = [...urls]
         setScanData(data)
-        arr.push(data)
+        arr.push({data: data, title: ''})
+        console.log('edited arr: ', arr)
         setUrls(arr)
     }
 
     const mapUrls = () => {
         return urls.map((url, index) => {
-            console.log(url)
-            return <UrlEditor url={url} key={index} deleteFunc={deleteUrl}/>
+            return <UrlEditor url={url} editUrls={setUrls} key={index} index={index} deleteFunc={deleteUrl}/>
         })
     }
 
@@ -56,16 +57,18 @@ const Scanner = () => {
 
         const references = await Promise.all(urls.map(async (el, i) => {
 
-            const textFile = new Blob([`${el}`], {
+            const fileName = `URL for: ${el.title}^${currentUser}.txt`
+
+            const textFile = new Blob([`${el.data}`], {
             type: "text/plain;charset=utf-8",
                 });
-            const fileUri = `${i} + foobar.txt`
+            const fileUri = `${fileName}`
             const ref = firebase.storage().ref().child(fileUri)
             await ref.put(textFile)
 
 
             const reference = await addfile({
-                name: `URL for: ${el}.txt`,
+                name: fileName,
                 fileType: 'txt',
                 size: textFile.size,
                 uri: `${fileUri}`
