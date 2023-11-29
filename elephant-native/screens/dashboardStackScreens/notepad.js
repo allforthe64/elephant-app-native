@@ -27,12 +27,12 @@ const Notepad = () => {
     useEffect(() => {
       setLoading(true) //prevent component to attempting to render files/folders before they exist
       const getCurrentUser = async () => {
-        const unsubscribe = await userListener(setCurrentUser, false, auth.currentUser)
+        const unsubscribe = await userListener(setCurrentUser, false, auth.currentUser.uid)
 
         return () => unsubscribe()
       }
       getCurrentUser()
-    }, [])
+    }, [auth])
 
     //once a current user has been pushed into state, allow component to render files/folders
     useEffect(() => {
@@ -42,29 +42,32 @@ const Notepad = () => {
 
     saveNote = () => {
       setOpen(false)
-  }
+    
+    }
 
     const startEdit = () => {
       setOpen(true)
     }
 
     const addToStorage = async () => {
-      
+
+      const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
+      const fileName = formattedDate + '^' + currentUser.uid
+
       try {
-        const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
         const textFile = new Blob([`${body}`], {
           type: "text/plain;charset=utf-8",
        });
-        const fileUri = `${formattedDate}.txt`
+        const fileUri = `Note From: ${fileName}.txt`
         const ref = firebase.storage().ref().child(fileUri)
         await ref.put(textFile)
 
 
         const reference = await addfile({
-          name: `Note From: ${formattedDate}.txt`,
+          name: `Note From: ${fileName}.txt`,
           fileType: 'txt',
           size: textFile.size,
-          uri: `/${fileUri}`
+          uri: `${fileUri}`
       }, destination)
       updateStaging([reference], currentUser.uid)
       setBody(null)
