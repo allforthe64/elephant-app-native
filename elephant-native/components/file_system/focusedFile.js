@@ -370,7 +370,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                         }}
                                                         onPress={downloadFileFunction}
                                                         >
-                                                            <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>Download This File</Text>
+                                                            <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>Download Or Share File</Text>
                                                         </TouchableOpacity>
                                                 </View>
                                             </View>
