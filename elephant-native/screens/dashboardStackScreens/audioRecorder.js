@@ -4,11 +4,11 @@ import { Text, View , TouchableOpacity, ScrollView, StyleSheet, Image} from 'rea
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMicrophone, faSquare, faXmark } from '@fortawesome/free-solid-svg-icons'
 import AudioEditor from '../../components/audioEditor'
-import { firebase } from '../../firebaseConfig'
-import { updateStaging, addFile, addfile } from '../../storage'
+import { updateStaging, addfile } from '../../storage'
 import { firebaseAuth } from '../../firebaseConfig'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-
+import { storage } from '../../firebaseConfig'
+import {ref, uploadBytes} from 'firebase/storage'
 
 const AudioRecorder = () => {
 
@@ -111,9 +111,8 @@ const AudioRecorder = () => {
                     xhr.send(null)
                 })
     
-                const ref = firebase.storage().ref().child(filename)
-    
-                await ref.put(blob)
+                const fileRef = ref(storage, filename)
+                uploadBytes(fileRef, blob)
     
             } catch (err) {
                 console.log(err)

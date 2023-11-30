@@ -3,13 +3,14 @@ import {View, Text, Button, StyleSheet, Image, ScrollView, TouchableOpacity} fro
 import FileRow from '../../components/fileRow'
 import * as DocumentPicker from 'expo-document-picker'
 import * as ImagePicker from 'expo-image-picker'
-import { firebase } from '../../firebaseConfig'
 import { format } from 'date-fns'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { addfile, updateStaging } from '../../storage'
 import { firebaseAuth } from '../../firebaseConfig'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { storage } from '../../firebaseConfig'
+import {ref, uploadBytes} from 'firebase/storage'
 
 const FilePicker = () => {
 
@@ -88,9 +89,9 @@ const FilePicker = () => {
                 })
     
                 const filename = `${el.name.split('.')[0] + '^' + currentUser}.${el.name.split('.')[1]}`
-                const ref = firebase.storage().ref().child(filename)
-    
-                await ref.put(blob)
+                const fileRef = ref(storage, filename)
+                uploadBytes(fileRef, blob)
+                
                 const reference = await addfile({...el, name: `${el.name.split('.')[0] + '^' + currentUser}.${el.name.split('.')[1]}`})
                 
                 return reference

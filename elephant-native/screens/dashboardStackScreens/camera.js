@@ -5,11 +5,11 @@ import { faXmark, faRepeat } from '@fortawesome/free-solid-svg-icons'
 import { Camera } from 'expo-camera'
 import { shareAsync } from 'expo-sharing'
 import * as MediaLibrary from 'expo-media-library'
-import { firebase } from '../../firebaseConfig'
 import { format } from 'date-fns'
 import { addfile, updateStaging } from '../../storage'
-import { firebaseAuth } from '../../firebaseConfig'
 import { AuthContext } from '../../context/authContext'
+import { storage } from '../../firebaseConfig'
+import {ref, uploadBytes} from 'firebase/storage'
 
 const CameraComponent = () => {
     try {
@@ -83,11 +83,9 @@ const CameraComponent = () => {
                     xhr.send(null)
                 })
 
-
                 const filename = `${formattedDate}^${currentUser}.jpg`
-                const ref = firebase.storage().ref().child(filename)
-
-                await ref.put(blob)
+                const fileRef = ref(storage, `${filename}`)
+                uploadBytes(fileRef, blob)
 
                 const reference = await addfile({
                         name: filename,
@@ -121,8 +119,6 @@ const CameraComponent = () => {
                 saveToElephant()
             } 
         }
-
-        console.log(currentUser)
 
         return (
             <>

@@ -5,8 +5,9 @@ import UrlEditor from '../../components/urlEditor'
 import { ScrollView } from 'react-native-gesture-handler'
 import { addfile, updateStaging } from '../../storage'
 import { firebaseAuth } from '../../firebaseConfig'
-import { firebase } from '../../firebaseConfig'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { storage } from '../../firebaseConfig'
+import {ref, uploadBytes} from 'firebase/storage'
 
 const Scanner = () => {
 
@@ -63,12 +64,13 @@ const Scanner = () => {
             type: "text/plain;charset=utf-8",
                 });
             const fileUri = `${fileName}`
-            const ref = firebase.storage().ref().child(fileUri)
-            await ref.put(textFile)
+            const fileRef = ref(storage, fileName)
+            uploadBytes(fileRef, textFile)
 
 
             const reference = await addfile({
                 name: fileName,
+                linksTo: el.data,
                 fileType: 'txt',
                 size: textFile.size,
                 uri: `${fileUri}`
@@ -82,15 +84,15 @@ const Scanner = () => {
 
     const insets = useSafeAreaInsets()
 
+    console.log(urls)
+
   return (
     <View style={{
             backgroundColor: 'rgb(23,23,23)',
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
-            height: '100%',
-            paddingTop: insets.top,
-            paddingBottom: insets.bottom
+            height: '100%'
         }}>
         <Image style={styles.bgImg } source={require('../../assets/elephant-dashboard.jpg')} />
         {scanData ? 
@@ -100,6 +102,8 @@ const Scanner = () => {
                     display: 'flex',
                     alignItems: 'center',
                     position: 'absolute',
+                    paddingTop: insets.top,
+                    paddingBottom: insets.bottom
                 }}>
                 <Text style={styles.bigHeader}>Currently Captured QR URLS:</Text>
                 <View style={styles.scrollCon}>

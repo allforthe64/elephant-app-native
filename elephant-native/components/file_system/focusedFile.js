@@ -291,7 +291,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
 
                                         :
                                             <>
-                                                {((file.fileName.split('.')[1] === 'jpg' || file.fileName.split('.')[1] === 'png')) ? 
+                                                {((file.fileName.split('.')[1] === 'jpg' || file.fileName.split('.')[1] === 'png' || file.fileName.split('.')[1] === 'JPG' || file.fileName.split('.')[1] === 'PNG' || file.fileName.split('.')[1] === 'jpeg' || file.fileName.split('.')[1] === 'JPEG')) ? 
                                                     <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '10%', marginBottom: '10%'}}>
                                                         {fileURL ? 
                                                             <Pressable width={300} height={150} onPress={() => setExpanded(true)}>
@@ -308,7 +308,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                     <></>
                                                 : <></>
                                                 }
-                                                <View style={(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png') ? {height: '70%', width: '90%', marginTop: '5%'} : {height: '40%', width: '90%'}}>
+                                                <View style={(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {height: '70%', width: '90%', marginTop: '5%'} : {height: '40%', width: '90%'}}>
                                                     <Text style={{fontSize: 22, fontWeight: 'bold', color: 'white', marginTop: '5%'}} numberOfLines={3}>{file.fileName.split('^')[0] + '.' + file.fileName.split('.')[1]}</Text>
                                                     <TouchableOpacity style={{ marginTop: '10%'}} onPress={() => setAdd(true)}>
                                                         <Text style={{fontSize: 18, color: 'white'}}>Rename File</Text>
@@ -323,7 +323,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                 </View>
 
                                                 {/* button that links to a non jpg or png file */}
-                                                {(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png') ? 
+                                                {(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? 
                                                     <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '10%'}}>
                                                         <View style={{width: '70%',
                                                                 borderColor: '#777',
@@ -354,7 +354,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
 
 
                                                 {/* button for downloading the file on the phones storage */}
-                                                <View style={(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png') ? {display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'} : {display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '25%'}}>
+                                                <View style={(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'} : {display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '25%'}}>
                                                     <View style={{width: '70%',
                                                             borderColor: '#777',
                                                             borderRadius: 25,
