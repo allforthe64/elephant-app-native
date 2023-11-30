@@ -2,9 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { firebaseAuth } from '../../firebaseConfig';
 import DashCollectContainer from '../../components/dashCollectContainer';
-import { useContext } from 'react';
-import { AuthContext } from '../../context/authContext';
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFolder, faCamera } from '@fortawesome/free-solid-svg-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -12,13 +10,17 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export default function DashMain({navigation: { navigate }}) {
 
   const auth = firebaseAuth
-  const {authUser} = useContext(AuthContext)
 
-  if (!authUser) {
-    navigate('Home')
-  }
+  //if the user is not logged in, take them back to the homepage
+  useEffect(() => {
+    if (!auth.currentUser) {
+      navigate('Home')
+    }
+  }, [])
 
   const insets = useSafeAreaInsets()
+
+  console.log(auth.currentUser)
 
   return (
     <View>
@@ -46,7 +48,6 @@ export default function DashMain({navigation: { navigate }}) {
               <View style={styles.buttonWrapperLogout}>
                     <TouchableOpacity onPress={async () => {
                       auth.signOut()
-                      await AsyncStorage.setItem('loggedIn', JSON.stringify(false))
                       navigate('Home')
                       }}>
                         <Text style={styles.inputLogout}>Sign Out</Text>

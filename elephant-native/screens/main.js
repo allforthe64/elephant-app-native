@@ -30,20 +30,6 @@ export default function App() {
     
   }, [])
 
-  useEffect(() => {
-
-    const getStorage = async () => {
-      const currentUser = await AsyncStorage.getItem('loggedIn')
-      console.log(currentUser)
-      if (currentUser !== 'false') {
-        console.log('in false loop')
-        setAuthUser(currentUser)
-      }
-    }
-    getStorage()
-  }, [])
-
-  console.log(auth)
 
   return (
         <NavigationContainer>

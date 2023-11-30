@@ -26,7 +26,6 @@ const Login = ({navigation: {navigate}}) => {
         setLoading(true)
         try {
             response = await signInWithEmailAndPassword(auth, userEmail, password)
-            await AsyncStorage.setItem('loggedIn', JSON.stringify(response)) 
             navigate('Dashboard')
         } catch (err) {
             console.log(err)
