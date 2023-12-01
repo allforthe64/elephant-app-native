@@ -23,6 +23,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
 
     const [fileURL, setFileURL] = useState()
     const [mediaPermissions, setMediaPermissions] = useState()
+    const [navigateURL, setNavigateURL] = useState()
 
 
     console.log(newFileName)
@@ -54,6 +55,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
             const fileInst = await getFile(file.fileId)
             const url = await getFileDownloadURL(fileInst.uri)
             setFileURL(url)
+            setNavigateURL(fileInst.linksTo)
         }
         getFileDoc()
 
@@ -77,7 +79,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
         shareAsync(uri)
     }
 
-    console.log('fileURI: ', fileURL)
+    console.log('url: ', file)
 
 
   return (
@@ -308,7 +310,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                     <></>
                                                 : <></>
                                                 }
-                                                <View style={(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {height: '70%', width: '90%', marginTop: '5%'} : {height: '40%', width: '90%'}}>
+                                                <View style={(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {height: '65%', width: '90%', marginTop: '5%'} : {height: '40%', width: '90%'}}>
                                                     <Text style={{fontSize: 22, fontWeight: 'bold', color: 'white', marginTop: '5%'}} numberOfLines={3}>{file.fileName.split('^')[0] + '.' + file.fileName.split('.')[1]}</Text>
                                                     <TouchableOpacity style={{ marginTop: '10%'}} onPress={() => setAdd(true)}>
                                                         <Text style={{fontSize: 18, color: 'white'}}>Rename File</Text>
@@ -324,32 +326,64 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
 
                                                 {/* button that links to a non jpg or png file */}
                                                 {(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? 
-                                                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '10%'}}>
-                                                        <View style={{width: '70%',
-                                                                borderColor: '#777',
-                                                                borderRadius: 25,
-                                                                backgroundColor: 'white',
-                                                                borderWidth: 1,
-                                                                paddingTop: '2%',
-                                                                paddingBottom: '2%',
-                                                                marginLeft: '2%',
-                                                                paddingLeft: '2%',
-                                                                paddingRight: '3%'}}>
-                                                                <TouchableOpacity style={{
-                                                                display: 'flex', 
-                                                                flexDirection: 'row', 
-                                                                width: '100%', 
-                                                                justifyContent: 'space-around',
-
-                                                                }}
-                                                                disabled={fileURL ? false : true}
-                                                                onPress={() => Linking.openURL(fileURL)}
-                                                                >
-                                                                    <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>{fileURL ? 'View File In Browser' : 'Fetching File...'}</Text>
-                                                                    {fileURL ? <FontAwesomeIcon icon={faArrowUpRightFromSquare} size={20} style={{marginTop: '1%'}}/> : <></>}
-                                                                </TouchableOpacity>
+                                                    <>  
+                                                        {file.fileName.includes('URL for:') 
+                                                            ? 
+                                                            <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+                                                            <View style={{width: '70%',
+                                                                    borderColor: '#777',
+                                                                    borderRadius: 25,
+                                                                    backgroundColor: 'white',
+                                                                    borderWidth: 1,
+                                                                    paddingTop: '2%',
+                                                                    paddingBottom: '2%',
+                                                                    marginLeft: '2%',
+                                                                    paddingLeft: '2%',
+                                                                    paddingRight: '3%'}}>
+                                                                    <TouchableOpacity style={{
+                                                                    display: 'flex', 
+                                                                    flexDirection: 'row', 
+                                                                    width: '100%', 
+                                                                    justifyContent: 'space-around',
+                                                                    paddingLeft: '20%',
+                                                                    paddingRight: '20%'
+                                                                    }}
+                                                                    disabled={fileURL ? false : true}
+                                                                    onPress={() => Linking.openURL(navigateURL)}
+                                                                    >
+                                                                        <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>Go To URL</Text>
+                                                                        {fileURL ? <FontAwesomeIcon icon={faArrowUpRightFromSquare} size={20} style={{marginTop: '1%'}}/> : <></>}
+                                                                    </TouchableOpacity>
+                                                            </View>
                                                         </View>
-                                                    </View>
+                                                            : <></>}
+                                                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
+                                                            <View style={{width: '70%',
+                                                                    borderColor: '#777',
+                                                                    borderRadius: 25,
+                                                                    backgroundColor: 'white',
+                                                                    borderWidth: 1,
+                                                                    paddingTop: '2%',
+                                                                    paddingBottom: '2%',
+                                                                    marginLeft: '2%',
+                                                                    paddingLeft: '2%',
+                                                                    paddingRight: '3%'}}>
+                                                                    <TouchableOpacity style={{
+                                                                    display: 'flex', 
+                                                                    flexDirection: 'row', 
+                                                                    width: '100%', 
+                                                                    justifyContent: 'space-around',
+
+                                                                    }}
+                                                                    disabled={fileURL ? false : true}
+                                                                    onPress={() => Linking.openURL(fileURL)}
+                                                                    >
+                                                                        <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>{fileURL ? 'View File In Browser' : 'Fetching File...'}</Text>
+                                                                        {fileURL ? <FontAwesomeIcon icon={faArrowUpRightFromSquare} size={20} style={{marginTop: '1%'}}/> : <></>}
+                                                                    </TouchableOpacity>
+                                                            </View>
+                                                        </View>
+                                                    </>
                                                 : <></>}
 
 

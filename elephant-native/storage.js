@@ -101,6 +101,7 @@ export const updateStaging = async (files, currentUser) => {
 
 export const getFile = async (fileId) => {
     const docSnap = await getDoc(doc(db, 'files', fileId))
+    console.log(docSnap.data())
     return {...docSnap.data()}
 }
 
