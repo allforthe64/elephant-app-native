@@ -3,9 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 
 import { useState, useEffect } from 'react';
 
-import { userListener, updateUser, getUser } from '../../storage';
-import { useContext } from 'react';
-import { AuthContext } from '../../context/authContext';
+import { userListener, updateUser, deleteFileObj } from '../../storage';
 
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Folder from '../../components/file_system/folder';
@@ -67,8 +65,9 @@ export default function Files({navigation: { navigate }}) {
     if (mode === 'file') {
       if (index === 'delete' || index === 'rename' || index === 'move') {
         //update the user with the new file refs array sent through the input param
-        const updatedUser = {...currentUser, fileRefs: input}
+        const updatedUser = {...currentUser, fileRefs: input.newFiles}
         await updateUser(updatedUser)
+        await deleteFileObj(input.targetFile)
       }
     }
     else if (mode === 'folder') {
@@ -101,7 +100,7 @@ export default function Files({navigation: { navigate }}) {
   //filter for all files that don't match the incoming file id
   const deleteFile = (target) => {
     const newFiles = currentUser.fileRefs.filter(file => {if (file.fileId !== target) return file})
-    editUser('file', newFiles, 'delete')
+    editUser('file', {newFiles: newFiles, targetFile: target}, 'delete')
   }
 
   //filter for all of the files that don't match the inoming file id, return the new file if the id is a match

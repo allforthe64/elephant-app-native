@@ -5,11 +5,13 @@ import {
     updateDoc,
     doc,
     collection,
-    onSnapshot
+    onSnapshot,
+    deleteDoc
 } from 'firebase/firestore'
 import { db } from '../elephant-native/firebaseConfig'
 
 import { getStorage, ref, getDownloadURL } from 'firebase/storage'
+import { deleteFile } from './cloudStorage'
 
 const storage = getStorage()
 
@@ -103,6 +105,12 @@ export const getFile = async (fileId) => {
     const docSnap = await getDoc(doc(db, 'files', fileId))
     console.log(docSnap.data())
     return {...docSnap.data()}
+}
+
+export const deleteFileObj = async (id) => {
+    const file = await getDoc(doc(db, 'files', id))
+    deleteFile(file.data().uri)
+    await deleteDoc(doc(db, 'files', id))
 }
 
 export const getFileDownloadURL = async (docURL) => {
