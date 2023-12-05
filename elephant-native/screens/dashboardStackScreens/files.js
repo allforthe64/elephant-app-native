@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Keyboard } from 'react-native';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { userListener, updateUser, deleteFileObj } from '../../storage';
 
@@ -27,6 +27,7 @@ export default function Files({navigation: { navigate }}) {
   const [focusedFolder, setFocusedFolder] = useState()
   const [add, setAdd] = useState(false)
   const [newFolderName, setNewFolderName] = useState('')
+  const [keyBoardClosed, setKeyboardClosed] = useState(true)
 
 
   //get the auth user context object
@@ -143,48 +144,78 @@ export default function Files({navigation: { navigate }}) {
   //add a folder
   const addFolder = (folderName, targetNest) => {
     //if the incoming targetNest is empty string, create the new folder under the home directory
-    if (targetNest === '') {
-      const newFile = {
-        id: currentUser.files.length + 1,
-        fileName: folderName,
-        nestedUnder: ''
+    if (folderName.length > 0) {
+      if (targetNest === '') {
+        const newFile = {
+          id: currentUser.files.length + 1,
+          fileName: folderName,
+          nestedUnder: ''
+        }
+  
+        editUser('folder', newFile, 'add')
+        setNewFolderName('')
+        setAdd(false)
+      } else {           //if the incoming targetNest has a value, create the new folder with the nestedUnder property set to targetNest
+        const newFile = {
+          id: currentUser.files.length + 1,
+          fileName: folderName,
+          nestedUnder: targetNest
+        }
+  
+        editUser('folder', newFile, 'add')
       }
-
-      editUser('folder', newFile, 'add')
-      setNewFolderName('')
-      setAdd(false)
-    } else {           //if the incoming targetNest has a value, create the new folder with the nestedUnder property set to targetNest
-      const newFile = {
-        id: currentUser.files.length + 1,
-        fileName: folderName,
-        nestedUnder: targetNest
-      }
-
-      editUser('folder', newFile, 'add')
+    } else {
+      alert('Please enter a folder name')
     }
   }
 
   const insets = useSafeAreaInsets()
 
+  const scrollRef = useRef()
+  const formRef = useRef()
+
+  //Set an event listener to shrink down the scrollview once the keyboard has been closed
+  useEffect(() => {
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardWillHide',
+      () => {
+        setKeyboardClosed(true); // or some other action
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+    };
+  }, [])
+
   return ( 
       <View style={styles.container}>
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
         {!loading && currentUser ? 
-          <View style={focusedFolder ? {
-            width: '100%',
+          <ScrollView ref={scrollRef} style={focusedFolder ? {
+            width: '100%', /*Focused Folder Styles */
             height: '100%',
             backgroundColor: 'rgba(0, 0, 0, .8)',
             position: 'absolute',
             paddingTop: insets.top,
             paddingBottom: insets.bottom
+            } : add && !keyBoardClosed ? {
+              width: '100%', /*Expand height to allow the text input to scroll into view*/
+              height: '180%',
+              backgroundColor: 'rgba(0, 0, 0, .8)',
+              paddingTop: insets.top,
+              paddingBottom: insets.bottom,
+              position: 'absolute'
             } : {
-            width: '100%',
+            width: '100%', /* Default styling */
             height: '100%',
             backgroundColor: 'rgba(0, 0, 0, .8)',
             paddingTop: insets.top,
             paddingBottom: insets.bottom,
             position: 'absolute'
-          }}>
+          }}
+            scrollEnabled={add ? true : false}
+          >
               {focusedFolder ? <FocusedFolder folder={focusedFolder} renameFolder={renameFolder} moveFolder={moveFolder} addFolder={addFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder} deleteFile={deleteFile} renameFile={renameFile} moveFile={moveFile}/> 
               : stagingMode ? <Staging reset={setStagingMode} staging={staging} folders={currentUser.files} deleteFile={deleteFile} renameFile={renameFile} moveFile={moveFile}/> 
               :
@@ -196,7 +227,7 @@ export default function Files({navigation: { navigate }}) {
                         <FontAwesomeIcon icon={faBox} color='white' size={40}/>
                       </TouchableOpacity>
                     </View>
-                    <View style={{height: '65%', marginBottom: '5%'}}>
+                    <View style={{height: 350, marginBottom: '5%'}}>
                       <ScrollView>
                         {currentUser.files.map((file, i) => {
                           if (file.nestedUnder === '') {
@@ -206,9 +237,10 @@ export default function Files({navigation: { navigate }}) {
                       </ScrollView>
                     </View>
                     {add ? 
-                      <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
+                      <View ref={formRef} style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: '10%'}}  
+                      >
                         <FontAwesomeIcon icon={faFolder} size={30} color='white'/>
-                        <TextInput value={newFolderName} style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '40%'}} onChangeText={(e) => setNewFolderName(e)} autoFocus/>
+                        <TextInput value={newFolderName} style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '40%'}} onChangeText={(e) => setNewFolderName(e)} autoFocus onFocus={() => setKeyboardClosed(false)}/>
                         <View style={{width: '25%',
                                   borderColor: '#777',
                                   borderRadius: 25,
@@ -248,7 +280,10 @@ export default function Files({navigation: { navigate }}) {
                                   width: '100%', 
                                   justifyContent: 'center',
                                 }}
-                                  onPress={() => setAdd(true)}
+                                  onPress={() => {
+                                    setAdd(true)
+                                    setKeyboardClosed(false)
+                                  }}
                                 >
                                     <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Add New Folder</Text>
                                 </TouchableOpacity>
@@ -279,7 +314,7 @@ export default function Files({navigation: { navigate }}) {
                   </View>
                 )
               }
-          </View>
+          </ScrollView>
                     
         : <>
             <Text style={{color: 'white'}}>Loading...</Text>
