@@ -1,9 +1,7 @@
-import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity } from 'react-native'
-import React, {useState, useEffect, useContext} from 'react'
+import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
+import React, {useState, useEffect} from 'react'
 import { firebaseAuth } from '../firebaseConfig'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
-import { AuthContext } from '../context/authContext'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { getUser } from '../storage'
 
 const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
@@ -59,43 +57,42 @@ const Login = ({navigation: {navigate}}) => {
 
 
   return (
-    <View style={styles.container}>
-        <Image style={styles.bgImg } source={require('../assets/elephant-dashboard.jpg')} />
-        <View style={styles.innerContainer}>
-            <Text style={styles.bigHeader}>{signUpMode ? 'Register account' : 'Sign in'}</Text>
-            <View style={styles.formCon}>
-                <Text style={styles.subheading}>Enter Email:</Text>
-                <TextInput style={(validEmail || userEmail === '') ? styles.input : styles.inputInvalid} placeholder='Enter Email' autoCapitalize='none' placeholderTextColor={'rgb(0, 0, 0)'} value={userEmail} onChangeText={(e) => setUserEmail(e)}/>
-                <Text style={(validEmail || userEmail === '') ? {display: 'none'} : styles.invalid}>Please Enter A Valid Email</Text>
-                <Text style={styles.subheading}>Enter Password:</Text>
-                <TextInput secureTextEntry={true} style={styles.input} placeholder='Enter Password' placeholderTextColor={'rgb(0, 0, 0)'} value={password} onChangeText={(e) => setPassword(e)}/>
-            </View>
-            <View style={styles.wrapperContainer}>
-                <View style={styles.buttonWrapper}>
-                    {signUpMode ? 
-                        <TouchableOpacity onPress={() => signUp()}>
-                            <Text style={styles.inputButton}>Register</Text>
-                        </TouchableOpacity>
-                    :
-                    <TouchableOpacity onPress={() => login()}>
-                        <Text style={styles.inputButton}>Sign In</Text>
-                    </TouchableOpacity>
-                    }
+    <KeyboardAvoidingView style={{width: '100%', height: '100%', backgroundColor: 'black', position: 'relative'}} enabled={true} behavior='padding'>
+                <View style={styles.innerContainer}>
+                    <Text style={styles.bigHeader}>{signUpMode ? 'Register account' : 'Sign in'}</Text>
+                    <View style={styles.formCon}>
+                        <Text style={styles.subheading}>Enter Email:</Text>
+                        <TextInput style={(validEmail || userEmail === '') ? styles.input : styles.inputInvalid} placeholder='Enter Email' autoCapitalize='none' placeholderTextColor={'rgb(0, 0, 0)'} value={userEmail} onChangeText={(e) => setUserEmail(e)}/>
+                        <Text style={(validEmail || userEmail === '') ? {display: 'none'} : styles.invalid}>Please Enter A Valid Email</Text>
+                        <Text style={styles.subheading}>Enter Password:</Text>
+                        <TextInput secureTextEntry={true} style={styles.input} placeholder='Enter Password' placeholderTextColor={'rgb(0, 0, 0)'} value={password} onChangeText={(e) => setPassword(e)}/>
+                    </View>
                 </View>
-                <Text style={{color: 'white', width: '80%', textAlign: 'center'}}>
-                    {signUpMode ? "Already have an account?" : "Don't have an Account?"}
-                    <TouchableOpacity onPress={() => {
-                            setUserEmail('')
-                            setPassword('')
-                            setSignUpMode(prev => !prev)
-                        }}>
-                        <Text style={styles.inputText}> Click here </Text>
-                    </TouchableOpacity>
-                    {signUpMode ? "to login." : "to Register for a new one."}
-                </Text>
-            </View>
-        </View>
-    </View>
+                <View style={styles.wrapperContainer}>
+                        <View style={styles.buttonWrapper}>
+                            {signUpMode ? 
+                                <TouchableOpacity onPress={() => signUp()}>
+                                    <Text style={styles.inputButton}>Register</Text>
+                                </TouchableOpacity>
+                            :
+                            <TouchableOpacity onPress={() => login()}>
+                                <Text style={styles.inputButton}>Sign In</Text>
+                            </TouchableOpacity>
+                            }
+                        </View>
+                        <Text style={{color: 'white', width: '80%', textAlign: 'center'}}>
+                            {signUpMode ? "Already have an account?" : "Don't have an Account?"}
+                            <TouchableOpacity onPress={() => {
+                                    setUserEmail('')
+                                    setPassword('')
+                                    setSignUpMode(prev => !prev)
+                                }}>
+                                <Text style={styles.inputText}> Click here </Text>
+                            </TouchableOpacity>
+                            {signUpMode ? "to login." : "to Register for a new one."}
+                        </Text>
+                    </View>
+    </KeyboardAvoidingView>
   )
 }
 
@@ -107,7 +104,7 @@ const styles = StyleSheet.create({
         fontSize: 40,
         textAlign: 'center',
         fontWeight: '700',
-        marginBottom: '8%'
+        marginBottom: '15%',
     },
 
     subheading: {
@@ -118,13 +115,6 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         marginBottom: '8%'
     },
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgb(23,23,23)',
-        height: '100%'
-    },
     innerContainer: {
         width: '100%',
         height: '100%',
@@ -132,13 +122,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         position: 'absolute',
-        paddingTop: '10%',
-        paddingBottom: '10%'
-    },
-    bgImg: {
-        objectFit: 'scale-down',
-        opacity: .15,
-        transform: [{scaleX: -1}]
     },
     formCon: {
         width: '100%',
@@ -152,7 +135,9 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         width: '100%',
-        marginBottom: '8%'
+        marginBottom: '8%',
+        position: 'absolute',
+        bottom: '5%'
     },
     buttonWrapper: {
         width: '60%',
