@@ -103,7 +103,7 @@ export const updateStaging = async (files, currentUser) => {
 
 export const getFile = async (fileId) => {
     const docSnap = await getDoc(doc(db, 'files', fileId))
-    console.log(docSnap.data())
+    console.log('this is the log: ', docSnap.data())
     return {...docSnap.data()}
 }
 
@@ -111,6 +111,11 @@ export const deleteFileObj = async (id) => {
     const file = await getDoc(doc(db, 'files', id))
     deleteFile(file.data().uri)
     await deleteDoc(doc(db, 'files', id))
+}
+
+export const updateFileObj = async (input) => {
+    const fileRef = doc(db, 'files', input.fileId)
+    await updateDoc(fileRef, {...input})
 }
 
 export const getFileDownloadURL = async (docURL) => {

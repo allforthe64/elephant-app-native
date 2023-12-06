@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Keyboard } from 'react-native'
 import React, {useEffect, useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowLeft, faXmark } from '@fortawesome/free-solid-svg-icons'
@@ -44,7 +44,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
         : focusedFile ?
             <FocusedFileComp file={focusedFile} focus={setFocusedFile} deleteFile={deleteFile} renameFileFunction={renameFile} folders={folders} handleFileMove={moveFile}/>
         :
-            <>
+            </* ScrollView style={{height: '100%'}} scrollEnabled={false} */>
                 <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.backButtonContainer} onPress={folder.folder.nestedUnder === '' ? () => clear(null) : () => navigateUp()}>
                             <FontAwesomeIcon icon={faArrowLeft} color='white' size={20} />
@@ -58,7 +58,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
                         <Text style={styles.header}>{folder.folder.fileName}</Text>
                     </View>
                     <View style={{height: '60%'}}>
-                        <ScrollView >
+                        <ScrollView style={{height: '100%'}}>
                             {folder.folders.map((f, i) => {return <Folder key={f + i} getTargetFolder={getTargetFolder} folders={folders} renameFolder={renameFolder} moveFolderFunc={moveFolder} folder={f} deleteFolder={deleteFolder}/>})}
                             {folder.files.map((file, i) => {return <File key={file + i} focus={setFocusedFile} file={file} />})}
                         </ScrollView> 
@@ -116,7 +116,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
                                 </View>
                             </View>
                         }
-            </>
+            </ /* ScrollView */>
         }
     </View>
   )
@@ -128,7 +128,9 @@ const styles = StyleSheet.create({
     container:{
         height: '100%',
         paddingTop: '5%',
-        paddingBottom: '5%'
+        paddingBottom: '5%',
+        borderWidth: 2,
+        borderColor: 'red'
     },
     title: {
         display: 'flex', 

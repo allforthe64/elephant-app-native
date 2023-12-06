@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image, Keyboard } from 'react
 
 import { useState, useEffect, useRef } from 'react';
 
-import { userListener, updateUser, deleteFileObj } from '../../storage';
+import { userListener, updateUser, deleteFileObj, updateFileObj} from '../../storage';
 
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Folder from '../../components/file_system/folder';
@@ -68,7 +68,13 @@ export default function Files({navigation: { navigate }}) {
         //update the user with the new file refs array sent through the input param
         const updatedUser = {...currentUser, fileRefs: input.newFiles}
         await updateUser(updatedUser)
-        await deleteFileObj(input.targetFile)
+        if (index === 'rename') {
+          await updateFileObj(input.targetFile)
+        }
+        if (index === 'delete') {
+          await deleteFileObj(input.targetFile)
+        }
+        console.log('input: ', input)
       }
     }
     else if (mode === 'folder') {
@@ -107,20 +113,20 @@ export default function Files({navigation: { navigate }}) {
   //filter for all of the files that don't match the inoming file id, return the new file if the id is a match
   //input will contain fileRef object with the new filename
   const renameFile = (input) => {
-    console.log(input)
     const newFiles = currentUser.fileRefs.map(file => {
-      if (file.fileId === input.fileId) {return input} else return file
+      if (file.fileId === input.newFileRef.fileId) {return input.newFileRef} else return file
     })
-    editUser('file', newFiles, 'rename')
+    editUser('file', {newFiles: newFiles, targetFile: input.newFileInst}, 'rename')
   }
   
   //filter for all of the files that don't match the inoming file id, return the new file if the id is a match
   //input will contain fileRef object with new flag
   const moveFile = (input) => {
+    console.log(input)
     const newFiles = currentUser.fileRefs.map(file => {
       if (file.fileId === input.fileId) {return input} else return file
     })
-    editUser('file', newFiles, 'move')
+    editUser('file', {newFiles: newFiles}, 'move')
   }
 
   //delete folder by filtering for folders that don't match the target

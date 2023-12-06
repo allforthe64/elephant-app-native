@@ -12,7 +12,9 @@ import { Linking } from 'react-native'
 
 const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, handleFileMove}) => {
 
-    //initialize state
+    try {
+
+         //initialize state
     const [preDelete, setPreDelete] = useState(false)
     const [add, setAdd] = useState(false)
     const [newFileName, setNewFileName] = useState() 
@@ -22,11 +24,10 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
     const [loading, setLoading] = useState(true)
 
     const [fileURL, setFileURL] = useState()
+    const [fileObj, setFileObj] = useState()
     const [mediaPermissions, setMediaPermissions] = useState()
     const [navigateURL, setNavigateURL] = useState()
 
-
-    console.log(newFileName)
 
     //rename a file by overwriting the fileName property
     const renameFile = () => {
@@ -34,7 +35,12 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
             ...file,
             fileName: newFileName + '^' + file.fileName.split('^')[1]
         }
-        renameFileFunction(newFile)
+        const newFileObj = {
+            ...fileObj,
+            fileName: newFileName + '^' + file.fileName.split('^')[1],
+            fileId: file.fileId
+        }
+        renameFileFunction({newFileRef: newFile, newFileInst: newFileObj})
     }
 
     //move a file by changing its flag property
@@ -55,6 +61,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
             const fileInst = await getFile(file.fileId)
             const url = await getFileDownloadURL(fileInst.uri)
             setFileURL(url)
+            setFileObj(fileInst)
             setNavigateURL(fileInst.linksTo)
         }
         getFileDoc()
@@ -78,8 +85,6 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
     const save = (uri) => {
         shareAsync(uri)
     }
-
-    console.log('url: ', file)
 
 
   return (
@@ -417,5 +422,9 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                 </Modal>
         </>
   )
+
+    } catch (error) {console.log(error)}
+
+   
 }
 export default FocusedFileComp
