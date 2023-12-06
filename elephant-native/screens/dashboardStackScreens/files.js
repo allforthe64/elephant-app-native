@@ -194,6 +194,7 @@ export default function Files({navigation: { navigate }}) {
     };
   }, [])
 
+
   return ( 
       <View style={styles.container}>
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
@@ -204,7 +205,7 @@ export default function Files({navigation: { navigate }}) {
           <ScrollView ref={scrollRef} style={
               add && !keyBoardClosed ? {
               width: '100%', /*Expand height to allow the text input to scroll into view*/
-              height: '180%',
+              height: '190%',
               backgroundColor: 'rgba(0, 0, 0, .8)',
               paddingTop: insets.top,
               paddingBottom: insets.bottom,
@@ -239,7 +240,7 @@ export default function Files({navigation: { navigate }}) {
                       <View ref={formRef} style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: '10%'}}  
                       >
                         <FontAwesomeIcon icon={faFolder} size={30} color='white'/>
-                        <TextInput value={newFolderName} style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '40%'}} onChangeText={(e) => setNewFolderName(e)} autoFocus onFocus={() => setKeyboardClosed(false)}/>
+                        <TextInput value={newFolderName} style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '40%'}} onChangeText={(e) => setNewFolderName(e)} autoFocus onFocus={() => setKeyboardClosed(false)} onBlur={() => {if (newFolderName === '') setAdd(false)}}/>
                         <View style={{width: '25%',
                                   borderColor: '#777',
                                   borderRadius: 25,

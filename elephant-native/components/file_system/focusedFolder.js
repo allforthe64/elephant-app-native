@@ -59,7 +59,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
   return (
     <View style={add && !keybaordClosed
         ? {
-            height: '190%',
+            height: '180%',
             width: '100%',
             paddingTop: '5%',
             paddingBottom: '5%',
@@ -69,15 +69,15 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
             paddingBottom: insets.bottom
         } :
         {
-        height: '100%',
-        width: '100%',
-        paddingTop: '5%',
-        paddingBottom: '5%',
-        position: 'absolute', 
-        backgroundColor: 'rgba(0, 0, 0, .8)',
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom
-    }}>
+            height: '100%',
+            width: '100%',
+            paddingTop: '5%',
+            paddingBottom: '5%',
+            position: 'absolute', 
+            backgroundColor: 'rgba(0, 0, 0, .8)',
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom
+        }}>
         {loading ? <></> 
         : focusedFile ?
             <FocusedFileComp file={focusedFile} focus={setFocusedFile} deleteFile={deleteFile} renameFileFunction={renameFile} folders={folders} handleFileMove={moveFile}/>
@@ -97,7 +97,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
                     <View style={styles.title}>
                         <Text style={styles.header}>{folder.folder.fileName}</Text>
                     </View>
-                    <View style={{height: 350, marginBottom: '10%'}}>
+                    <View style={{height: 267, marginBottom: '10%'}}>
                         <ScrollView style={{height: '100%'}}>
                             {folder.folders.map((f, i) => {return <Folder key={f + i} getTargetFolder={getTargetFolder} folders={folders} renameFolder={renameFolder} moveFolderFunc={moveFolder} folder={f} deleteFolder={deleteFolder}/>})}
                             {folder.files.map((file, i) => {return <File key={file + i} focus={setFocusedFile} file={file} />})}
@@ -106,7 +106,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
                         {add ? 
                             <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
                                     <FontAwesomeIcon icon={faFolder} size={30} color='white'/>
-                                    <TextInput value={newFolderName} style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '40%'}} onChangeText={(e) => setNewFolderName(e)} autoFocus/>
+                                    <TextInput value={newFolderName} style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '40%'}} onChangeText={(e) => setNewFolderName(e)} autoFocus onFocus={() => setKeyboardClosed(false)} onBlur={() => {if (newFolderName === '') setAdd(false)}}/>
                                     <View style={{width: '25%',
                                             borderColor: '#777',
                                             borderRadius: 25,
