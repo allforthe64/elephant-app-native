@@ -169,9 +169,9 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                         <View style={{width: '100%', height: '55%', marginBottom: '10%'}}>
                                                 <ScrollView>
                                                 {/* map over each of the folders from the filesystem and display them as a pressable element // call movefile function when one of them is pressed */}
-                                                {folders.map(f => {
+                                                {folders.map((f, index) => {
                                                     if (f.id !== file.flag) return (
-                                                        <Pressable style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => setDestination(f.id)}>
+                                                        <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => setDestination(f.id)}>
                                                             <View style={f.id === destination ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
                                                             <FontAwesomeIcon icon={faFolder} size={30} color={f.id === destination ? 'black' : 'white'}/>
                                                             <Text style={f.id === destination ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>{f.fileName}</Text>
@@ -229,7 +229,8 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
 
                                 {/* if the add folder state is toggled on, display the form for creating a new folder*/}
                                 {add ?  
-                                        <>
+                                        <View style={{paddingTop: '25%'}}>
+                                            <Text style={{color: 'white', fontSize: 35, fontWeight: '700'}}>Rename File:</Text>
                                             <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',  marginTop: '10%'}}>
                                                 <FontAwesomeIcon icon={faFile} size={30} color='white'/>
                                                 <TextInput style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '70%', marginRight: '15%'}} onChangeText={(e) => setNewFileName(e)} autoFocus/>
@@ -280,7 +281,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                         </TouchableOpacity>
                                                 </View>
                                             </View>
-                                        </>            
+                                        </View>            
                                         : expanded ? 
 
                                         <Modal animationType='slide' presentationStyle='pageSheet'>
