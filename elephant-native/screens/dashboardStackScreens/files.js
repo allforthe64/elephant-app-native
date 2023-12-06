@@ -198,14 +198,11 @@ export default function Files({navigation: { navigate }}) {
       <View style={styles.container}>
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
         {!loading && currentUser ? 
-          <ScrollView ref={scrollRef} style={focusedFolder ? {
-            width: '100%', /*Focused Folder Styles */
-            height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, .8)',
-            position: 'absolute',
-            paddingTop: insets.top,
-            paddingBottom: insets.bottom
-            } : add && !keyBoardClosed ? {
+          focusedFolder ? <FocusedFolder folder={focusedFolder} renameFolder={renameFolder} moveFolder={moveFolder} addFolder={addFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder} deleteFile={deleteFile} renameFile={renameFile} moveFile={moveFile}/> 
+          : stagingMode ? <Staging reset={setStagingMode} staging={staging} folders={currentUser.files} deleteFile={deleteFile} renameFile={renameFile} moveFile={moveFile}/> 
+          :
+          <ScrollView ref={scrollRef} style={
+              add && !keyBoardClosed ? {
               width: '100%', /*Expand height to allow the text input to scroll into view*/
               height: '180%',
               backgroundColor: 'rgba(0, 0, 0, .8)',
@@ -220,12 +217,8 @@ export default function Files({navigation: { navigate }}) {
             paddingBottom: insets.bottom,
             position: 'absolute'
           }}
-            scrollEnabled={add ? true : false}
+            scrollEnabled={add  ? true : false}
           >
-              {focusedFolder ? <FocusedFolder folder={focusedFolder} renameFolder={renameFolder} moveFolder={moveFolder} addFolder={addFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder} deleteFile={deleteFile} renameFile={renameFile} moveFile={moveFile}/> 
-              : stagingMode ? <Staging reset={setStagingMode} staging={staging} folders={currentUser.files} deleteFile={deleteFile} renameFile={renameFile} moveFile={moveFile}/> 
-              :
-              (
                   <View>
                     <View style={styles.header}>
                       <TouchableOpacity style={{display: 'flex', flexDirection: 'row'}} onPress={() => setStagingMode(true)}>
@@ -318,8 +311,6 @@ export default function Files({navigation: { navigate }}) {
                     </View>
                     }
                   </View>
-                )
-              }
           </ScrollView>
                     
         : <>

@@ -7,6 +7,7 @@ import Folder from './folder'
 import File from './file'
 import FocusedFileComp from './focusedFile'
 import { faFolder } from '@fortawesome/free-solid-svg-icons'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, renameFolder, moveFolder, deleteFolder, deleteFile, renameFile, moveFile}) => {
 
@@ -16,6 +17,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
     const [add, setAdd] = useState(false)
     const [newFolderName, setNewFolderName] = useState('')
     const [focusedFile, setFocusedFile] = useState()
+    const [keybaordClosed, setKeyboardClosed] = useState(true)
 
     //get the folder above this one so the user can navigate up a level
     useEffect(() => {
@@ -38,26 +40,64 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
         getTargetFolder(targetFolder[0])
     }
 
+    const insets = useSafeAreaInsets()
+
+    //Set an event listener to shrink down the scrollview once the keyboard has been closed
+    useEffect(() => {
+        const keyboardDidHideListener = Keyboard.addListener(
+            'keyboardWillHide',
+            () => {
+                setKeyboardClosed(true); // or some other action
+            }
+        );
+
+        return () => {
+            keyboardDidHideListener.remove();
+        };
+    }, [])
+
   return (
-    <View style={styles.container}>
+    <View style={add && !keybaordClosed
+        ? {
+            height: '190%',
+            width: '100%',
+            paddingTop: '5%',
+            paddingBottom: '5%',
+            position: 'absolute', 
+            backgroundColor: 'rgba(0, 0, 0, .8)',
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom
+        } :
+        {
+        height: '100%',
+        width: '100%',
+        paddingTop: '5%',
+        paddingBottom: '5%',
+        position: 'absolute', 
+        backgroundColor: 'rgba(0, 0, 0, .8)',
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom
+    }}>
         {loading ? <></> 
         : focusedFile ?
             <FocusedFileComp file={focusedFile} focus={setFocusedFile} deleteFile={deleteFile} renameFileFunction={renameFile} folders={folders} handleFileMove={moveFile}/>
-        :
-            </* ScrollView style={{height: '100%'}} scrollEnabled={false} */>
-                <View style={styles.buttonContainer}>
+        :      
+                <ScrollView style={add && !keybaordClosed ? {height: '100%', borderWidth: 2} : {height: '100%', borderWidth: 2}} scrollEnabled={add ? true : false}>
+
+                    <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.backButtonContainer} onPress={folder.folder.nestedUnder === '' ? () => clear(null) : () => navigateUp()}>
-                            <FontAwesomeIcon icon={faArrowLeft} color='white' size={20} />
-                            <Text style={styles.smallHeader}>Back To {nestedFolder.length > 0 ? nestedFolder[0].fileName : 'Home'}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPressOut={() => clear(null)}>
-                            <FontAwesomeIcon icon={faXmark} size={30} color='white' />
-                        </TouchableOpacity>
-                </View>
+                                <FontAwesomeIcon icon={faArrowLeft} color='white' size={20} />
+                                <Text style={styles.smallHeader}>Back To {nestedFolder.length > 0 ? nestedFolder[0].fileName : 'Home'}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPressOut={() => clear(null)}>
+                                <FontAwesomeIcon icon={faXmark} size={30} color='white' />
+                            </TouchableOpacity>
+                    </View>
+                    
                     <View style={styles.title}>
                         <Text style={styles.header}>{folder.folder.fileName}</Text>
                     </View>
-                    <View style={{height: '60%'}}>
+                    <View style={{height: 350, borderWidth: 2, marginBottom: '10%'}}>
                         <ScrollView style={{height: '100%'}}>
                             {folder.folders.map((f, i) => {return <Folder key={f + i} getTargetFolder={getTargetFolder} folders={folders} renameFolder={renameFolder} moveFolderFunc={moveFolder} folder={f} deleteFolder={deleteFolder}/>})}
                             {folder.files.map((file, i) => {return <File key={file + i} focus={setFocusedFile} file={file} />})}
@@ -109,14 +149,17 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
                                             width: '100%', 
                                             justifyContent: 'center',
                                         }}
-                                            onPress={() => setAdd(true)}
+                                            onPress={() => {
+                                                setAdd(true)
+                                                setKeyboardClosed(false)
+                                            }}
                                         >
                                             <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Add New Folder</Text>
                                         </TouchableOpacity>
                                 </View>
                             </View>
                         }
-            </ /* ScrollView */>
+                </ScrollView>
         }
     </View>
   )
@@ -125,13 +168,6 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
 export default FocusedFolder
 
 const styles = StyleSheet.create({
-    container:{
-        height: '100%',
-        paddingTop: '5%',
-        paddingBottom: '5%',
-        borderWidth: 2,
-        borderColor: 'red'
-    },
     title: {
         display: 'flex', 
         flexDirection: 'row',
