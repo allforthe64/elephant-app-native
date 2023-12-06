@@ -22,6 +22,7 @@ const CameraComponent = () => {
         const [session, setSession] = useState(true)
         const [currentUser, setCurrentUser] = useState()
         const [loading, setLoading] = useState(true)
+        const [visible, setVisible] = useState(true)
 
         const {authUser} = useContext(AuthContext)
 
@@ -121,6 +122,7 @@ const CameraComponent = () => {
             } 
         }
 
+
         return (
             <>
                 {photo ? 
@@ -131,34 +133,41 @@ const CameraComponent = () => {
                         justifyContent: 'flex-end'
                     }}>
                         <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photo.base64}}/>
-                        <View style={{position: 'absolute', backgroundColor: 'white', top: '5%', right: '5%'}}>
+                        <View style={{position: 'absolute', top: '5%', right: '2.5%'}} >
                             {/* <Button title='Share' onPress={sharePic} />
                             { hasMediaLibraryPermission ? <Button title='Save to photos' onPress={savePhoto} /> : undefined} 
                             <Button title='Save to elephant storage' onPress={saveToElephant} />
                             <Button title='Discard' onPress={() => setPhoto(undefined)} /> */}
-                            <View style={{display: 'flex', flexDirection: 'coloumn', alignItems: 'flex-end', paddingRight: '2%', paddingTop: '4%', paddingBottom: '4%'}}>
-                                <View style={{display: 'flex', flexDirection: 'row', marginBottom: '10%'}}>
-                                    <Text style={{fontSize: 18, marginRight: '10%', backgroundColor: 'rgba(0, 0, 0, .5)', width: '40%'}}>Share</Text>
-                                    <TouchableOpacity>
-                                        <FontAwesomeIcon icon={faEnvelope} size={30} />
+                            <View style={visible ? {display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '2%'} : {display: 'none'}}>
+                                <View style={{display: 'flex', flexDirection: 'coloumn', marginRight: 10, paddingTop: 15}}>
+                                    <View style={{backgroundColor: 'rgba(0, 0, 0, .5)',  marginBottom: 30, paddingTop: 2, paddingBottom: 2, borderRadius: 17}}>
+                                        <Text style={{fontSize: 18, textAlign: 'center', color: 'white'}}>Share</Text>
+                                    </View>
+                                    <View style={{backgroundColor: 'rgba(0, 0, 0, .5)',  marginBottom: 25, paddingTop: 2, paddingBottom: 2, borderRadius: 17}}>
+                                        <Text style={{fontSize: 18, textAlign: 'center', color: 'white'}}>Add To Staging</Text>
+                                    </View>
+                                    <View style={{backgroundColor: 'rgba(0, 0, 0, .5)',  marginBottom: 25, paddingTop: 2, paddingBottom: 2, borderRadius: 17}}>
+                                    {hasMediaLibraryPermission ? <Text style={{fontSize: 18, paddingLeft: 10, paddingRight: 10, color: 'white'}}>Save To Photos</Text> : undefined}
+                                    </View>
+                                    
+                                    
+                                    <View style={{backgroundColor: 'rgba(0, 0, 0, .5)', paddingTop: 2, paddingBottom: 2, borderRadius: 17}}>
+                                        <Text style={{fontSize: 18, textAlign: 'center', color: 'white'}}>Delete</Text>
+                                    </View>
+                                    
+                                </View>
+                                <View style={{display: 'flex', flexDirection: 'coloumn', backgroundColor: 'rgba(0, 0, 0, .5)', paddingTop: 15, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, borderRadius: 25}}>
+                                    <TouchableOpacity style={{marginBottom: 15}} onPress={sharePic}>
+                                        <FontAwesomeIcon icon={faEnvelope} size={30} color='white'/>
                                     </TouchableOpacity>
-                                </View>
-                                <View style={{display: 'flex', flexDirection: 'row', marginBottom: '10%'}}>
-                                    {hasMediaLibraryPermission ? <Text style={{fontSize: 18, marginRight: '10%', backgroundColor: 'rgba(0, 0, 0, .5)', width: '50%'}}>Save To Photos</Text> : undefined}
-                                    <TouchableOpacity>
-                                        <FontAwesomeIcon icon={faDownload} size={30} />
-                                    </TouchableOpacity>  
-                                </View>
-                                <View style={{display: 'flex', flexDirection: 'row', marginBottom: '10%'}}>
-                                    <Text style={{fontSize: 18, marginRight: '10%', backgroundColor: 'rgba(0, 0, 0, .5)', width: '50%'}}>Add To Staging</Text>
-                                    <TouchableOpacity>
-                                        <FontAwesomeIcon icon={faCloudArrowUp} size={30}/>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={{display: 'flex', flexDirection: 'row'}}>
-                                    <Text style={{fontSize: 18, marginRight: '10%', backgroundColor: 'rgba(0, 0, 0, .5)', width: '40%'}}>Delete</Text>
-                                    <TouchableOpacity>
-                                        <FontAwesomeIcon icon={faTrash} size={30}/>
+                                    <TouchableOpacity style={{marginBottom: 25}} onPress={savePhoto}>
+                                        <FontAwesomeIcon icon={faDownload} size={30} color='white'/>
+                                    </TouchableOpacity> 
+                                    <TouchableOpacity style={{marginBottom: 20}} onPress={saveToElephant}>
+                                        <FontAwesomeIcon icon={faCloudArrowUp} size={30} color='white'/>
+                                    </TouchableOpacity> 
+                                    <TouchableOpacity onPress={() => setPhoto(undefined)}>
+                                        <FontAwesomeIcon icon={faTrash} size={30} color='white'/>
                                     </TouchableOpacity>
                                 </View>
                             </View>
