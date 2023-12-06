@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState, useContext} from 'react'
 import { View, Text, StatusBar, StyleSheet, Button, Image, TouchableOpacity, Pressable } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faXmark, faRepeat } from '@fortawesome/free-solid-svg-icons'
+import { faXmark, faCloudArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { Camera } from 'expo-camera'
 import { shareAsync } from 'expo-sharing'
 import * as MediaLibrary from 'expo-media-library'
@@ -18,7 +18,7 @@ const CameraComponent = () => {
         const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState()
         const [photo, setPhoto] = useState()
         const [success, setSuccess] = useState(false)
-        const [session, setSession] = useState(false)
+        const [session, setSession] = useState(true)
         const [currentUser, setCurrentUser] = useState()
         const [loading, setLoading] = useState(true)
 
@@ -151,7 +151,7 @@ const CameraComponent = () => {
                                     paddingRight: '5%',
                                 }}>
                                     <TouchableOpacity onPress={() => setSession(prev => !prev)} style={session ? {backgroundColor: 'white', width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'} : { width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                                        <FontAwesomeIcon icon={faRepeat} color={session ? 'black' : 'white'} size={30} />
+                                        <FontAwesomeIcon icon={faCloudArrowUp} color={session ? 'black' : 'white'} size={30} />
                                     </TouchableOpacity>
                             </View>
                             {success && 
