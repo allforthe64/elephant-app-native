@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState, useContext} from 'react'
-import { View, Text, StatusBar, StyleSheet, Button, Image, TouchableOpacity, Pressable } from 'react-native'
+import { View, Text, StatusBar, StyleSheet, Animated, Image, TouchableOpacity } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faXmark, faCloudArrowUp, faEnvelope, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { faCircle } from '@fortawesome/free-regular-svg-icons'
@@ -22,13 +22,15 @@ const CameraComponent = () => {
         const [session, setSession] = useState(true)
         const [currentUser, setCurrentUser] = useState()
         const [loading, setLoading] = useState(true)
-        const [visible, setVisible] = useState(true)
 
         const {authUser} = useContext(AuthContext)
 
+        //initialize animation ref
+        let fadeAnim = useRef(new Animated.Value(100)).current
+
+        //get the current user once the page is loaded
         useEffect(() => {
             if (loading) {
-                console.log('running function')
                 if (authUser) {
                     setCurrentUser(authUser.uid)
                     setLoading(false)
@@ -38,6 +40,7 @@ const CameraComponent = () => {
             }
         }, [authUser])
 
+        //get camera permissions
         useEffect(() => {
             (async () => {
                 const cameraPermission = await Camera.requestCameraPermissionsAsync()
@@ -47,12 +50,23 @@ const CameraComponent = () => {
             })()
         }, [])
 
+        useEffect(() => {
+            //Will change fadeAnim value to 0 in 3 seconds
+            Animated.timing(fadeAnim, {
+                toValue: 100,
+                duration: 0,
+                useNativeDriver: true
+            }).start()
+        }, [photo])
+
+        //render content based on permissions
         if (hasCameraPermission === undefined) {
             return <Text>Requesting permissions...</Text>
         } else if (!hasCameraPermission) {
             return <Text>Permission for camera not granted. Please change this in settings.</Text>
         }
 
+        //take photo using takePictureAsync method
         const takePic = async () => {
             const options = {
                 quality: 1,
@@ -71,7 +85,8 @@ const CameraComponent = () => {
             //create new formatted date for file
             const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
 
-            try {
+            try {  
+                //create blob using the photo from state and save it to elephant staging
                 const blob = await new Promise((resolve, reject) => {
                     const xhr = new XMLHttpRequest()
                     xhr.onload = () => {
@@ -104,24 +119,38 @@ const CameraComponent = () => {
             }
         }
 
+        //allow photo to be shared using shareAsync method
         const sharePic = () => {
             shareAsync(photo.uri).then(() => {
                 setPhoto(undefined)
             })
         }
 
+        //save photo to the phone's local storage using saveToLibraryAsync method
         const savePhoto = () => {
             MediaLibrary.saveToLibraryAsync(photo.uri).then((() => {
                 setPhoto(undefined)
             }))
         }
 
+        //if session mode is turned on after picture is take, immediately save the photo to elephant storage
         if (photo) {
             if (session === true) {
                 saveToElephant()
             } 
         }
 
+        const fadeOut = () => {
+            //Will change fadeAnim value to 0 in 3 seconds
+            Animated.timing(fadeAnim, {
+                delay: 100,
+                toValue: 0,
+                duration: 2500,
+                useNativeDriver: true
+            }).start()
+        }
+
+        
 
         return (
             <>
@@ -138,24 +167,22 @@ const CameraComponent = () => {
                             { hasMediaLibraryPermission ? <Button title='Save to photos' onPress={savePhoto} /> : undefined} 
                             <Button title='Save to elephant storage' onPress={saveToElephant} />
                             <Button title='Discard' onPress={() => setPhoto(undefined)} /> */}
-                            <View style={visible ? {display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '2%'} : {display: 'none'}}>
-                                <View style={{display: 'flex', flexDirection: 'coloumn', marginRight: 10, paddingTop: 15}}>
-                                    <View style={{backgroundColor: 'rgba(0, 0, 0, .5)',  marginBottom: 30, paddingTop: 2, paddingBottom: 2, borderRadius: 17}}>
-                                        <Text style={{fontSize: 18, textAlign: 'center', color: 'white'}}>Share</Text>
-                                    </View>
+                            <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '2%'}}>
+                                <Animated.View style={{display: 'flex', flexDirection: 'coloumn', marginRight: 10, paddingTop: 20, opacity: fadeAnim}} onLayout={() => fadeOut()}>
                                     <View style={{backgroundColor: 'rgba(0, 0, 0, .5)',  marginBottom: 25, paddingTop: 2, paddingBottom: 2, borderRadius: 17}}>
-                                        <Text style={{fontSize: 18, textAlign: 'center', color: 'white'}}>Add To Staging</Text>
+                                        <Text style={{fontSize: 18, textAlign: 'center', color: 'white'}}>Share</Text>
                                     </View>
                                     <View style={{backgroundColor: 'rgba(0, 0, 0, .5)',  marginBottom: 25, paddingTop: 2, paddingBottom: 2, borderRadius: 17}}>
                                     {hasMediaLibraryPermission ? <Text style={{fontSize: 18, paddingLeft: 10, paddingRight: 10, color: 'white'}}>Save To Photos</Text> : undefined}
                                     </View>
-                                    
-                                    
+                                    <View style={{backgroundColor: 'rgba(0, 0, 0, .5)',  marginBottom: 25, paddingTop: 2, paddingBottom: 2, borderRadius: 17}}>
+                                        <Text style={{fontSize: 18, textAlign: 'center', color: 'white'}}>Add To Staging</Text>
+                                    </View>
                                     <View style={{backgroundColor: 'rgba(0, 0, 0, .5)', paddingTop: 2, paddingBottom: 2, borderRadius: 17}}>
                                         <Text style={{fontSize: 18, textAlign: 'center', color: 'white'}}>Delete</Text>
                                     </View>
                                     
-                                </View>
+                                </Animated.View>
                                 <View style={{display: 'flex', flexDirection: 'coloumn', backgroundColor: 'rgba(0, 0, 0, .5)', paddingTop: 15, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, borderRadius: 25}}>
                                     <TouchableOpacity style={{marginBottom: 15}} onPress={sharePic}>
                                         <FontAwesomeIcon icon={faEnvelope} size={30} color='white'/>
@@ -163,7 +190,7 @@ const CameraComponent = () => {
                                     <TouchableOpacity style={{marginBottom: 25}} onPress={savePhoto}>
                                         <FontAwesomeIcon icon={faDownload} size={30} color='white'/>
                                     </TouchableOpacity> 
-                                    <TouchableOpacity style={{marginBottom: 20}} onPress={saveToElephant}>
+                                    <TouchableOpacity style={{marginBottom: 20}} onPress={() => saveToElephant()}>
                                         <FontAwesomeIcon icon={faCloudArrowUp} size={30} color='white'/>
                                     </TouchableOpacity> 
                                     <TouchableOpacity onPress={() => setPhoto(undefined)}>
