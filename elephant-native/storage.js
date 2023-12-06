@@ -61,14 +61,23 @@ export async function userListener(setCurrentUser, setStaging, user) {
 export async function addfile(file, destination) {
 
     console.log('incoming: ', file)
-
-    const fileRef = await addDoc(collection(db, 'files'), {
-        fileName: file.name,
-        documentType: file.fileType,
-        linksTo: file.linksTo,
-        size: file.size,
-        uri: BUCKET_URL + '/' + file.name
-    })
+    let fileRef
+    if (file.linksTo) {
+        fileRef = await addDoc(collection(db, 'files'), {
+            fileName: file.name,
+            documentType: file.fileType,
+            linksTo: file.linksTo,
+            size: file.size,
+            uri: BUCKET_URL + '/' + file.name
+        })
+    } else {
+        fileRef = await addDoc(collection(db, 'files'), {
+            fileName: file.name,
+            documentType: file.fileType,
+            size: file.size,
+            uri: BUCKET_URL + '/' + file.name
+        })
+    }
 
     const reference = {
         fileId: fileRef.id,
