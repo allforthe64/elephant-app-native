@@ -1,7 +1,8 @@
 import React, {useEffect, useRef, useState, useContext} from 'react'
 import { View, Text, StatusBar, StyleSheet, Button, Image, TouchableOpacity, Pressable } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faXmark, faCloudArrowUp } from '@fortawesome/free-solid-svg-icons'
+import { faXmark, faCloudArrowUp, faEnvelope, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faCircle } from '@fortawesome/free-regular-svg-icons'
 import { Camera } from 'expo-camera'
 import { shareAsync } from 'expo-sharing'
 import * as MediaLibrary from 'expo-media-library'
@@ -127,14 +128,41 @@ const CameraComponent = () => {
                         flex: 1,
                         flexDirection: 'column',
                         alignItems: 'center',
-                        justifyContent: 'flex-end',
-                        paddingBottom: '10%'
+                        justifyContent: 'flex-end'
                     }}>
                         <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photo.base64}}/>
-                        <Button title='Share' onPress={sharePic} />
-                        { hasMediaLibraryPermission ? <Button title='Save to photos' onPress={savePhoto} /> : undefined} 
-                        <Button title='Save to elephant storage' onPress={saveToElephant} />
-                        <Button title='Discard' onPress={() => setPhoto(undefined)} />
+                        <View style={{position: 'absolute', backgroundColor: 'white', top: '5%', right: '5%'}}>
+                            {/* <Button title='Share' onPress={sharePic} />
+                            { hasMediaLibraryPermission ? <Button title='Save to photos' onPress={savePhoto} /> : undefined} 
+                            <Button title='Save to elephant storage' onPress={saveToElephant} />
+                            <Button title='Discard' onPress={() => setPhoto(undefined)} /> */}
+                            <View style={{display: 'flex', flexDirection: 'coloumn', alignItems: 'flex-end', paddingRight: '2%', paddingTop: '4%', paddingBottom: '4%'}}>
+                                <View style={{display: 'flex', flexDirection: 'row', marginBottom: '10%'}}>
+                                    <Text style={{fontSize: 18, marginRight: '10%', backgroundColor: 'rgba(0, 0, 0, .5)', width: '40%'}}>Share</Text>
+                                    <TouchableOpacity>
+                                        <FontAwesomeIcon icon={faEnvelope} size={30} />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{display: 'flex', flexDirection: 'row', marginBottom: '10%'}}>
+                                    {hasMediaLibraryPermission ? <Text style={{fontSize: 18, marginRight: '10%', backgroundColor: 'rgba(0, 0, 0, .5)', width: '50%'}}>Save To Photos</Text> : undefined}
+                                    <TouchableOpacity>
+                                        <FontAwesomeIcon icon={faDownload} size={30} />
+                                    </TouchableOpacity>  
+                                </View>
+                                <View style={{display: 'flex', flexDirection: 'row', marginBottom: '10%'}}>
+                                    <Text style={{fontSize: 18, marginRight: '10%', backgroundColor: 'rgba(0, 0, 0, .5)', width: '50%'}}>Add To Staging</Text>
+                                    <TouchableOpacity>
+                                        <FontAwesomeIcon icon={faCloudArrowUp} size={30}/>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{display: 'flex', flexDirection: 'row'}}>
+                                    <Text style={{fontSize: 18, marginRight: '10%', backgroundColor: 'rgba(0, 0, 0, .5)', width: '40%'}}>Delete</Text>
+                                    <TouchableOpacity>
+                                        <FontAwesomeIcon icon={faTrash} size={30}/>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
                     </View>
             : 
                     <>
@@ -165,7 +193,10 @@ const CameraComponent = () => {
                                 </View>
                             }
                             <View style={styles.buttonContainer}>
-                                <Button title='Take Pic' onPress={takePic}/>
+                                {/* <Button title='Take Pic' onPress={takePic}/> */}
+                                <TouchableOpacity onPress={takePic}> 
+                                    <FontAwesomeIcon icon={faCircle} size={90} color='white'/>
+                                </TouchableOpacity>
                             </View>
                             <StatusBar style="auto" /> 
                         </Camera>
@@ -203,7 +234,6 @@ const styles = StyleSheet.create({
         width: '50%',
     },
     buttonContainer: {
-        backgroundColor: 'white',
         marginBottom: '20%'
     },
     preview: {

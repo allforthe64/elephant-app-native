@@ -227,7 +227,7 @@ export default function Files({navigation: { navigate }}) {
                         <FontAwesomeIcon icon={faBox} color='white' size={40}/>
                       </TouchableOpacity>
                     </View>
-                    <View style={{height: 350, marginBottom: '5%'}}>
+                    <View style={add ? {height: 300} : {height: 350, marginBottom: '5%'}}>
                       <ScrollView>
                         {currentUser.files.map((file, i) => {
                           if (file.nestedUnder === '') {

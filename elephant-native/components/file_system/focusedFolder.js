@@ -97,7 +97,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
                     <View style={styles.title}>
                         <Text style={styles.header}>{folder.folder.fileName}</Text>
                     </View>
-                    <View style={{height: 267, marginBottom: '10%'}}>
+                    <View style={add ? {height: 250} : {height: 267, marginBottom: '5%'}}>
                         <ScrollView style={{height: '100%'}}>
                             {folder.folders.map((f, i) => {return <Folder key={f + i} getTargetFolder={getTargetFolder} folders={folders} renameFolder={renameFolder} moveFolderFunc={moveFolder} folder={f} deleteFolder={deleteFolder}/>})}
                             {folder.files.map((file, i) => {return <File key={file + i} focus={setFocusedFile} file={file} />})}
