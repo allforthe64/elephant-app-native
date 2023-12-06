@@ -82,7 +82,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
         : focusedFile ?
             <FocusedFileComp file={focusedFile} focus={setFocusedFile} deleteFile={deleteFile} renameFileFunction={renameFile} folders={folders} handleFileMove={moveFile}/>
         :      
-                <ScrollView style={add && !keybaordClosed ? {height: '100%', borderWidth: 2} : {height: '100%', borderWidth: 2}} scrollEnabled={add ? true : false}>
+                <ScrollView scrollEnabled={add ? true : false}>
 
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.backButtonContainer} onPress={folder.folder.nestedUnder === '' ? () => clear(null) : () => navigateUp()}>
@@ -97,7 +97,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
                     <View style={styles.title}>
                         <Text style={styles.header}>{folder.folder.fileName}</Text>
                     </View>
-                    <View style={{height: 350, borderWidth: 2, marginBottom: '10%'}}>
+                    <View style={{height: 350, marginBottom: '10%'}}>
                         <ScrollView style={{height: '100%'}}>
                             {folder.folders.map((f, i) => {return <Folder key={f + i} getTargetFolder={getTargetFolder} folders={folders} renameFolder={renameFolder} moveFolderFunc={moveFolder} folder={f} deleteFolder={deleteFolder}/>})}
                             {folder.files.map((file, i) => {return <File key={file + i} focus={setFocusedFile} file={file} />})}
