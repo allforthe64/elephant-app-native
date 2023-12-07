@@ -9,8 +9,7 @@ import FocusedFileComp from './focusedFile'
 import { faFolder } from '@fortawesome/free-solid-svg-icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, renameFolder, moveFolder, deleteFolder, deleteFile, renameFile, moveFile}) => {
-
+const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, renameFolder, moveFolder, deleteFolder, deleteFile, renameFile, moveFile, files}) => {
 
     const [nestedFolder, setNestedFolder] = useState()
     const [loading, setLoading] = useState(true)
@@ -18,6 +17,11 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
     const [newFolderName, setNewFolderName] = useState('')
     const [focusedFile, setFocusedFile] = useState()
     const [keybaordClosed, setKeyboardClosed] = useState(true)
+
+    //refresh the folder when the files change
+    useEffect(() => {
+        getTargetFolder(folder.folder)
+    }, [files, folders])
 
     //get the folder above this one so the user can navigate up a level
     useEffect(() => {
@@ -29,6 +33,15 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
         const targetFolder = getNestedFolder()
         setLoading(false)
         setNestedFolder(targetFolder)
+
+        //if a file is currently being focused on, refresh the file instance being passed to the focus file component
+        if (focusedFile) {
+            const newFile = folder.files.filter(file => {
+                if (focusedFile.fileId === file.fileId) return file
+                else return false
+            })
+            setFocusedFile(newFile[0])
+        }
 
     }, [folder])
 

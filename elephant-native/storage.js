@@ -45,7 +45,6 @@ export async function updateUser(updatedUser) {
 }
 
 export async function userListener(setCurrentUser, setStaging, user) {
-    console.log('user inside function: ', user)
     const unsub = onSnapshot(doc(db, 'users', user), (doc) => {
         try {
             //filter file references from the current user that are in staging
@@ -112,7 +111,6 @@ export const updateStaging = async (files, currentUser) => {
 
 export const getFile = async (fileId) => {
     const docSnap = await getDoc(doc(db, 'files', fileId))
-    console.log('this is the log: ', docSnap.data())
     return {...docSnap.data()}
 }
 
