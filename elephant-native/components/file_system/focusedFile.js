@@ -93,7 +93,6 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
         //play sound and set playing status to true
         async function playSound() {
             setPlaying(true)
-            console.log('Loading Sound');
             const { sound, status } = await Audio.Sound.createAsync({uri: fileURL}, 10, (status) => {if(status.didJustFinish) {
                 //reset the playback position, set playing to false
                 setPlaybackPosition(0) 
