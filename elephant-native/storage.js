@@ -35,7 +35,8 @@ export function addUser(user) {
     displayName: user.email,
     files: [{id: 1, fileName: 'File 1', nestedUnder: ''}, {id: 2, fileName: 'File 2', nestedUnder: ''}, {id: 3, fileName: 'File 3', nestedUnder: ''}, {id: 4, fileName: 'File 4', nestedUnder: ''}, {id: 5, fileName: 'File 5', nestedUnder: ''}],
     fileRefs: [],
-    sharedWith: {}
+    sharedWith: {},
+    passcodeAuthenticated: false
 })
 }
 
