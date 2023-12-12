@@ -1,6 +1,6 @@
 import { View, Text, Modal, TouchableOpacity, Pressable, TextInput, ScrollView} from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faXmark, faFile, faFolder, faArrowUpRightFromSquare, faImage } from '@fortawesome/free-solid-svg-icons'
+import { faXmark, faFile, faFolder, faArrowUpRightFromSquare, faImage, faPlay, faPause } from '@fortawesome/free-solid-svg-icons'
 import React, {useEffect, useState} from 'react'
 import { getFile, getFileDownloadURL } from '../../storage'
 import { shareAsync } from 'expo-sharing'
@@ -8,6 +8,7 @@ import * as MediaLibrary from 'expo-media-library'
 import * as FileSystem from 'expo-file-system'
 import { Image } from 'react-native'
 import { Linking } from 'react-native'
+import { Audio } from 'expo-av'
 
 
 const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, handleFileMove}) => {
@@ -21,7 +22,9 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
         const [moveFile, setMoveFile] = useState(false)
         const [destination, setDestination] = useState()
         const [expanded, setExpanded] = useState(false)
-        const [loading, setLoading] = useState(true)
+        const [sound, setSound] = useState()
+        const [playing, setPlaying] = useState(false)
+        const [playbackPosition, setPlaybackPosition] = useState(0)
 
         const [fileURL, setFileURL] = useState()
         const [fileObj, setFileObj] = useState()
@@ -84,8 +87,48 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
         //save the file by opening up the share menu
         const save = (uri) => {
             shareAsync(uri)
+        }  
+
+        //load in the sound, set callback function interval to 10 mills, and check the finished status
+        //play sound and set playing status to true
+        async function playSound() {
+            setPlaying(true)
+            console.log('Loading Sound');
+            const { sound, status } = await Audio.Sound.createAsync({uri: fileURL}, 10, (status) => {if(status.didJustFinish) {
+                //reset the playback position, set playing to false
+                setPlaybackPosition(0) 
+                setPlaying(false)}}
+            );
+            //play the sound from the playback position
+            setSound(sound);
+            await sound.playFromPositionAsync(playbackPosition, [0, 0]);
         }
 
+        //get status of the sound, check if it's loaded
+        //if the sound is playing, pause the sound
+        //set the playbackPosition to result.positionMillis, set playing to false
+        const pauseSound = async () => {
+            setPlaying(false)
+            try {
+                const result = await sound.getStatusAsync();
+                if (result.isLoaded) {
+                if (result.isPlaying === true) {
+                    sound.pauseAsync();
+                    if (playbackPosition === result.playableDurationMillis) setPlaybackPosition(0)
+                    else setPlaybackPosition(result.positionMillis)
+                }
+                }
+            } catch (error) {}
+        };
+        
+        //unload the sound
+        useEffect(() => {
+            return sound
+              ? () => {
+                  sound.unloadAsync();
+                }
+              : undefined;
+        }, [sound]);
 
     return (
             <>
@@ -363,7 +406,38 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                                         </TouchableOpacity>
                                                                 </View>
                                                             </View>
-                                                                : <></>}
+                                                            : fileObj.documentType === 'm4a' ? 
+                                                                <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
+                                                                    <View style={{width: '70%',
+                                                                            borderColor: '#777',
+                                                                            borderRadius: 25,
+                                                                            backgroundColor: 'white',
+                                                                            borderWidth: 1,
+                                                                            paddingTop: '2%',
+                                                                            paddingBottom: '2%',
+                                                                            marginLeft: '2%',
+                                                                            paddingLeft: '12%',
+                                                                            paddingRight: '12%'}}>
+                                                                            <TouchableOpacity style={{
+                                                                            display: 'flex', 
+                                                                            flexDirection: 'row', 
+                                                                            width: '100%', 
+                                                                            justifyContent: 'space-around',
+
+                                                                            }}
+                                                                            disabled={fileURL ? false : true}
+                                                                            onPress={() => {
+                                                                                if (!playing) playSound()
+                                                                                else pauseSound()
+                                                                            }}
+                                                                            >
+                                                                                <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>{fileURL && !playing ? 'Play Sound' : fileURL && playing ? 'Pause Sound' : 'Fetching File...'}</Text>
+                                                                                {fileURL ? <FontAwesomeIcon icon={playing ? faPause : faPlay} size={20} style={{marginTop: '1%'}}/> : <></>}
+                                                                            </TouchableOpacity>
+                                                                    </View>
+                                                                </View>
+                                                            : 
+                                                                <></>}
                                                             <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
                                                                 <View style={{width: '70%',
                                                                         borderColor: '#777',
