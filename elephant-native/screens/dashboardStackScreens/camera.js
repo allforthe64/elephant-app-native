@@ -100,15 +100,16 @@ const CameraComponent = () => {
                     xhr.send(null)
                 })
 
-                const filename = `${formattedDate}^${currentUser}.jpg`
-                const fileRef = ref(storage, `${filename}`)
+                const filename = `${formattedDate}.jpg`
+                const fileRef = ref(storage, `${currentUser}/${filename}`)
                 uploadBytes(fileRef, blob)
 
                 const reference = await addfile({
                         name: filename,
                         fileType: 'jpg',
                         size: photo.width * photo.height,
-                        uri: photo.uri
+                        uri: photo.uri,
+                        user: currentUser
                     })
                 updateStaging([reference], currentUser)
 

@@ -68,14 +68,14 @@ export async function addfile(file, destination) {
             documentType: file.fileType,
             linksTo: file.linksTo,
             size: file.size,
-            uri: BUCKET_URL + '/' + file.name
+            uri: BUCKET_URL + '/' + file.user + '/' + file.name
         })
     } else {
         fileRef = await addDoc(collection(db, 'files'), {
             fileName: file.name,
             documentType: file.fileType,
             size: file.size,
-            uri: BUCKET_URL + '/' + file.name
+            uri: BUCKET_URL + '/' + file.user + '/' + file.name
         })
     }
 
