@@ -36,11 +36,11 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
         const renameFile = () => {
             const newFile = {
                 ...file,
-                fileName: newFileName + '^' + file.fileName.split('^')[1]
+                fileName: newFileName + '.' + file.fileName.split('.')[1]
             }
             const newFileObj = {
                 ...fileObj,
-                fileName: newFileName + '^' + file.fileName.split('^')[1],
+                fileName: newFileName + '.' + file.fileName.split('.')[1],
                 fileId: file.fileId
             }
             renameFileFunction({newFileRef: newFile, newFileInst: newFileObj})
@@ -50,7 +50,8 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
         const handleMove = () => {
             const newFile = {
                 ...file,
-                flag: destination
+                flag: destination,
+                fileName: newFileName ? newFileName + '.' + file.fileName.split('.')[1] : file.fileName
             }
             focus(false)
             setDestination(null)
@@ -294,11 +295,10 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                             justifyContent: 'center',
                                                             }}
                                                             onPress={() => {
-                                                                if (newFileName !== file.fileName.split('^')[0]) {
+                                                                if (newFileName !== file.fileName.split('.')[0] && newFileName !== '') {
                                                                     renameFile()
-                                                                    setNewFileName('')
                                                                     setAdd(false)
-                                                                }
+                                                                } else setAdd(false)
                                                             }}
                                                             >
                                                                 <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save</Text>
@@ -360,7 +360,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                     : <></>
                                                     }
                                                     <View style={(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {height: '65%', width: '90%', marginTop: '5%'} : {height: '40%', width: '90%'}}>
-                                                        <Text style={{fontSize: 22, fontWeight: 'bold', color: 'white', marginTop: '5%'}} numberOfLines={3}>{file.fileName.split('^')[0] + '.' + file.fileName.split('.')[1]}</Text>
+                                                        <Text style={{fontSize: 22, fontWeight: 'bold', color: 'white', marginTop: '5%'}} numberOfLines={3}>{newFileName ? newFileName + '.' + file.fileName.split('.')[1] : file.fileName}</Text>
                                                         <TouchableOpacity style={{ marginTop: '10%'}} onPress={() => setAdd(true)}>
                                                             <Text style={{fontSize: 18, color: 'white'}}>Rename File</Text>
                                                         </TouchableOpacity>
