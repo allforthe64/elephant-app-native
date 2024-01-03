@@ -146,7 +146,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                 </Pressable>
                                             </View>
                                             <View style={{width: '100%', height: '95%', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                                            <Text style={{fontSize: 22, color: 'white', textAlign: 'center'}}>Are you sure you want to delete {file.fileName.split('^')[0] + '.' + file.fileName.split('.')[1]}?</Text>
+                                            <Text style={{fontSize: 22, color: 'white', textAlign: 'center'}}>Are you sure you want to delete {file.fileName}?</Text>
 
                                             {/* button with onPress function to delete the file */}
                                             <View style={{width: '50%',
