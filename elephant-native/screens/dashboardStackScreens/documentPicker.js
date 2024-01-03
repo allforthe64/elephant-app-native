@@ -92,7 +92,7 @@ const FilePicker = () => {
                 const fileRef = ref(storage, filename)
                 uploadBytes(fileRef, blob)
                 
-                const reference = await addfile({...el, name: `${el.name.split('.')[0] + '^' + currentUser}.${el.name.split('.')[1]}`})
+                const reference = await addfile({...el, name: `${currentUser}/${el.name.split('.')[0] }.${el.name.split('.')[1]}`})
                 
                 return reference
 
