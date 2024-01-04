@@ -46,6 +46,7 @@ export async function updateUser(updatedUser) {
 }
 
 export async function userListener(setCurrentUser, setStaging, user) {
+    console.log(user)
     const unsub = onSnapshot(doc(db, 'users', user), (doc) => {
         try {
             //filter file references from the current user that are in staging
@@ -59,33 +60,41 @@ export async function userListener(setCurrentUser, setStaging, user) {
 }
 
 export async function addfile(file, destination) {
+    let fileName
+    if (file.version !== 0) fileName = file.name.split('.')[0] + ' ' + `(${file.version})` + '.' + file.name.split('.')[1]
+    else fileName = file.name
 
-    console.log('incoming: ', file)
-    let fileRef
-    if (file.linksTo) {
-        fileRef = await addDoc(collection(db, 'files'), {
-            fileName: file.name,
-            documentType: file.fileType,
-            linksTo: file.linksTo,
-            size: file.size,
-            uri: BUCKET_URL + '/' + file.user + '/' + file.name
-        })
-    } else {
-        fileRef = await addDoc(collection(db, 'files'), {
-            fileName: file.name,
-            documentType: file.fileType,
-            size: file.size,
-            uri: BUCKET_URL + '/' + file.user + '/' + file.name
-        })
+    console.log(fileName)
+
+    try {
+        let fileRef
+        if (file.linksTo) {
+            fileRef = await addDoc(collection(db, 'files'), {
+                fileName: fileName,
+                documentType: file.fileType,
+                linksTo: file.linksTo,
+                size: file.size,
+                uri: BUCKET_URL + '/' + file.user + '/' + file.timeStamp
+            })
+        } else {
+            fileRef = await addDoc(collection(db, 'files'), {
+                fileName: fileName,
+                documentType: file.fileType,
+                size: file.size,
+                uri: BUCKET_URL + '/' + file.user + '/' + file.timeStamp
+            })
+        }
+
+        const reference = {
+            fileId: fileRef.id,
+            fileName: fileName,
+            flag: destination ? destination : 'Staging'
+        }
+
+        return reference
+    } catch (error) {
+        console.log('error within storage: ', error)
     }
-
-    const reference = {
-        fileId: fileRef.id,
-        fileName: file.name,
-        flag: destination ? destination : 'Staging'
-    }
-
-    return reference
 }
 
 export const updateStaging = async (files, currentUser) => {

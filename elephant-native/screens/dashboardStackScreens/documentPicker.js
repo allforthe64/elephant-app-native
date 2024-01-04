@@ -1,5 +1,5 @@
-import React, {useState} from 'react'
-import {View, Text, Button, StyleSheet, Image, ScrollView, TouchableOpacity} from 'react-native'
+import React, {useState, useEffect} from 'react'
+import {View, Text, StyleSheet, Image, ScrollView, TouchableOpacity} from 'react-native'
 import FileRow from '../../components/fileRow'
 import * as DocumentPicker from 'expo-document-picker'
 import * as ImagePicker from 'expo-image-picker'
@@ -11,13 +11,31 @@ import { firebaseAuth } from '../../firebaseConfig'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { storage } from '../../firebaseConfig'
 import {ref, uploadBytes} from 'firebase/storage'
+import { userListener } from '../../storage'
 
 const FilePicker = () => {
 
     const [files, setFiles] = useState([])
     const [success, setSuccess] = useState(false)
+    const [userInst, setUserInst] = useState()
 
     const currentUser = firebaseAuth.currentUser.uid
+    const auth = firebaseAuth
+
+    //get the current user 
+    useEffect(() => {
+        if (auth) {
+        try {
+            const getCurrentUser = async () => {
+            const unsubscribe = await userListener(setUserInst, false, currentUser)
+        
+            return () => unsubscribe()
+            }
+            getCurrentUser()
+        } catch (err) {console.log(err)}
+        } else console.log('no user yet')
+        
+    }, [auth])
 
     const selectFile = async () => {
         let updatedFiles = [...files]
@@ -72,6 +90,16 @@ const FilePicker = () => {
         
         const references =  await Promise.all(files.map(async (el) => {
 
+            let versionNo = 0
+            userInst.fileRefs.forEach(fileRef => {
+                console.log(el)
+                if (fileRef.fileName === el.name && fileRef.fileName.split('.')[1] === el.name.split('.')[1]) {
+                    versionNo ++
+                }
+            })
+            console.log(versionNo)
+
+            const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
 
             try {
                 const blob = await new Promise((resolve, reject) => {
@@ -88,11 +116,11 @@ const FilePicker = () => {
                     xhr.send(null)
                 })
     
-                const filename = `${currentUser}/${el.name.split('.')[0]}.${el.name.split('.')[1]}`
+                const filename = `${currentUser}/${formattedDate}`
                 const fileRef = ref(storage, filename)
                 uploadBytes(fileRef, blob)
                 
-                const reference = await addfile({...el, name: `${el.name.split('.')[0] }.${el.name.split('.')[1]}`, user: currentUser})
+                const reference = await addfile({...el, name: el.name, user: currentUser, timeStamp: formattedDate, version: versionNo})
                 
                 return reference
 
@@ -114,7 +142,6 @@ const FilePicker = () => {
     }
 
     const insets = useSafeAreaInsets()
-    console.log(files)
 
   return (
     <View style={styles.container}>
