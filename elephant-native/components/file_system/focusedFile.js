@@ -71,7 +71,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                     version: version
                 }
                 renameFileFunction({newFileRef: newFile, newFileInst: newFileObj})
-                setNewFileName(prev => version > 0 ? prev + ` (${version})` + '.' + file.fileName.split('.')[1] : prev + '.' + file.fileName.split('.')[1])
+                setNewFileName(version > 0 ? newFileName + ` (${version})` + '.' + file.fileName.split('.')[1] : newFileName + '.' + file.fileName.split('.')[1])
             }
         }
 

@@ -1,15 +1,18 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React from 'react'
+import React, {useState} from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFile } from '@fortawesome/free-solid-svg-icons';
 
 const File = ({file, focus}) => {
+
+  const [fileName, setFileName] = useState(file.fileName.split('.')[0] + (file.version > 0 ? ` (${file.version}).${file.fileName.split('.')[1]}` : '.' + file.fileName.split('.')[1]))
+
   return (
     <TouchableOpacity style={styles.file} onPress={() => focus(file)}>
         <View style={styles.fileTitle}>
             <FontAwesomeIcon icon={faFile} color={'white'} size={32} />
-            <Text numberOfLines={1} style={styles.fileName}>{file.fileName}</Text>
+            <Text numberOfLines={1} style={styles.fileName}>{fileName}</Text>
         </View>
     </TouchableOpacity>
   )
