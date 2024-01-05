@@ -60,35 +60,35 @@ export async function userListener(setCurrentUser, setStaging, user) {
 }
 
 export async function addfile(file, destination) {
-    let fileName
-    if (file.version !== 0) fileName = file.name.split('.')[0] + ' ' + `(${file.version})` + '.' + file.name.split('.')[1]
-    else fileName = file.name
 
-    console.log(fileName)
+    console.log(file)
 
     try {
         let fileRef
         if (file.linksTo) {
             fileRef = await addDoc(collection(db, 'files'), {
-                fileName: fileName,
+                fileName: file.name,
                 documentType: file.fileType,
                 linksTo: file.linksTo,
                 size: file.size,
-                uri: BUCKET_URL + '/' + file.user + '/' + file.timeStamp
+                uri: BUCKET_URL + '/' + file.user + '/' + file.timeStamp,
+                version: file.version
             })
         } else {
             fileRef = await addDoc(collection(db, 'files'), {
-                fileName: fileName,
+                fileName: file.name,
                 documentType: file.fileType,
                 size: file.size,
-                uri: BUCKET_URL + '/' + file.user + '/' + file.timeStamp
+                uri: BUCKET_URL + '/' + file.user + '/' + file.timeStamp,
+                version: file.version
             })
         }
 
         const reference = {
             fileId: fileRef.id,
-            fileName: fileName,
-            flag: destination ? destination : 'Staging'
+            fileName: file.name,
+            flag: destination ? destination : 'Staging',
+            version: file.version
         }
 
         return reference

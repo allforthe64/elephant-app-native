@@ -9,41 +9,70 @@ import * as FileSystem from 'expo-file-system'
 import { Image } from 'react-native'
 import { Linking } from 'react-native'
 import { Audio } from 'expo-av'
+import { firebaseAuth } from '../../firebaseConfig'
+import { userListener } from '../../storage'
 
 
 const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, handleFileMove}) => {
 
-    try {
+    //initialize state
+    const [userInst, setUserInst] = useState()
+    const [preDelete, setPreDelete] = useState(false)
+    const [add, setAdd] = useState(false)
+    const [newFileName, setNewFileName] = useState(file ? file.fileName.split('.')[0] + (file.version > 0 ? ` (${file.version}).${file.fileName.split('.')[1]}` : '.' + file.fileName.split('.')[1]) : '') 
+    const [moveFile, setMoveFile] = useState(false)
+    const [destination, setDestination] = useState()
+    const [expanded, setExpanded] = useState(false)
+    const [sound, setSound] = useState()
+    const [playing, setPlaying] = useState(false)
+    const [playbackPosition, setPlaybackPosition] = useState(0)
 
-         //initialize state
-        const [preDelete, setPreDelete] = useState(false)
-        const [add, setAdd] = useState(false)
-        const [newFileName, setNewFileName] = useState() 
-        const [moveFile, setMoveFile] = useState(false)
-        const [destination, setDestination] = useState()
-        const [expanded, setExpanded] = useState(false)
-        const [sound, setSound] = useState()
-        const [playing, setPlaying] = useState(false)
-        const [playbackPosition, setPlaybackPosition] = useState(0)
+    const [fileURL, setFileURL] = useState()
+    const [fileObj, setFileObj] = useState()
+    const [mediaPermissions, setMediaPermissions] = useState()
+    const [navigateURL, setNavigateURL] = useState()
 
-        const [fileURL, setFileURL] = useState()
-        const [fileObj, setFileObj] = useState()
-        const [mediaPermissions, setMediaPermissions] = useState()
-        const [navigateURL, setNavigateURL] = useState()
+    const auth = firebaseAuth
+
+    //get the current user 
+    useEffect(() => {
+        if (auth) {
+        try {
+            const getCurrentUser = async () => {
+            const unsubscribe = await userListener(setUserInst, false, auth.currentUser.uid)
+        
+            return () => unsubscribe()
+            }
+            getCurrentUser()
+        } catch (err) {console.log(err)}
+        } else console.log('no user yet')
+        
+    }, [auth])
 
 
         //rename a file by overwriting the fileName property
         const renameFile = () => {
-            const newFile = {
-                ...file,
-                fileName: newFileName + '.' + file.fileName.split('.')[1]
+            console.log(newFileName)
+            let version = 0
+            userInst.fileRefs.forEach(fileRef => {
+                if (fileRef.fileName.split('.')[0].toLowerCase() === newFileName.toLowerCase()) version ++})
+            console.log(version)
+
+            if (newFileName !== file.fileName.split('.')[0] && newFileName.length > 0) {
+                const newFile = {
+                    ...file,
+                    fileName: newFileName + '.' + file.fileName.split('.')[1],
+                    version: version
+                }
+                const newFileObj = {
+                    ...fileObj,
+                    fileName: newFileName + '.' + file.fileName.split('.')[1],
+                    fileId: file.fileId,
+                    version: version
+                }
+                renameFileFunction({newFileRef: newFile, newFileInst: newFileObj})
+                setNewFileName(prev => version > 0 ? prev + ` (${version})` + '.' + file.fileName.split('.')[1] : prev + '.' + file.fileName.split('.')[1])
             }
-            const newFileObj = {
-                ...fileObj,
-                fileName: newFileName + '.' + file.fileName.split('.')[1],
-                fileId: file.fileId
-            }
-            renameFileFunction({newFileRef: newFile, newFileInst: newFileObj})
         }
 
         //move a file by changing its flag property
@@ -360,7 +389,9 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                     : <></>
                                                     }
                                                     <View style={(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {height: '65%', width: '90%', marginTop: '5%'} : {height: '40%', width: '90%'}}>
-                                                        <Text style={{fontSize: 22, fontWeight: 'bold', color: 'white', marginTop: '5%'}} numberOfLines={3}>{newFileName ? newFileName + '.' + file.fileName.split('.')[1] : file.fileName}</Text>
+                                                        
+                                                        <Text style={{fontSize: 22, fontWeight: 'bold', color: 'white', marginTop: '5%'}} numberOfLines={3}>{newFileName}</Text>
+
                                                         <TouchableOpacity style={{ marginTop: '10%'}} onPress={() => setAdd(true)}>
                                                             <Text style={{fontSize: 18, color: 'white'}}>Rename File</Text>
                                                         </TouchableOpacity>
@@ -498,8 +529,6 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                     </Modal>
             </>
     )
-
-    } catch (error) {console.log(error)}
 
    
 }
