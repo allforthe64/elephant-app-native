@@ -18,9 +18,14 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
     const [focusedFile, setFocusedFile] = useState()
     const [keybaordClosed, setKeyboardClosed] = useState(true)
 
+
     //refresh the folder when the files change
     useEffect(() => {
         getTargetFolder(folder.folder)
+        if (focusedFile) {
+            const newFile = files.filter(fileRef => fileRef.fileId === focusedFile.fileId)
+            setFocusedFile(newFile[0])
+        }
     }, [files, folders])
 
     //get the folder above this one so the user can navigate up a level

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
@@ -7,11 +7,21 @@ import FocusedFileComp from './focusedFile'
 import File from './file'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-const Staging = ({staging, reset, folders, deleteFile, renameFile, moveFile}) => {
+const Staging = ({staging, reset, folders, deleteFile, renameFile, moveFile, userFiles}) => {
 
     const [focusedFile, setFocusedFile] = useState()
 
     const insets = useSafeAreaInsets()
+
+    console.log(userFiles)
+
+    useEffect(() => {
+        if (focusedFile) {
+            const newFile = userFiles.filter(fileRef => fileRef.fileId === focusedFile.fileId)
+            setFocusedFile(newFile[0])
+        }
+
+    }, [userFiles])
 
   return (
     <>

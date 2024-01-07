@@ -200,7 +200,7 @@ export default function Files({navigation: { navigate }}) {
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
         {!loading && currentUser ? 
           focusedFolder ? <FocusedFolder folder={focusedFolder} renameFolder={renameFolder} moveFolder={moveFolder} addFolder={addFolder} deleteFolder={deleteFolder} folders={currentUser.files} clear={setFocusedFolder} getTargetFolder={getTargetFolder} deleteFile={deleteFile} renameFile={renameFile} moveFile={moveFile} files={currentUser.fileRefs}/> 
-          : stagingMode ? <Staging reset={setStagingMode} staging={staging} folders={currentUser.files} deleteFile={deleteFile} renameFile={renameFile} moveFile={moveFile}/> 
+          : stagingMode ? <Staging reset={setStagingMode} staging={staging} userFiles={currentUser.fileRefs} folders={currentUser.files} deleteFile={deleteFile} renameFile={renameFile} moveFile={moveFile}/> 
           :
           <ScrollView ref={scrollRef} style={
               add && !keyBoardClosed ? {

@@ -58,6 +58,8 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                 if (fileRef.fileName.split('.')[0].toLowerCase() === newFileName.toLowerCase()) version ++})
             console.log(version)
 
+            console.log(version)
+
             if (newFileName !== file.fileName.split('.')[0] && newFileName.length > 0) {
                 const newFile = {
                     ...file,
