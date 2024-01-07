@@ -10,27 +10,32 @@ export default function DashCollectContainer({ navigate }) {
 
             <View style={styles.column}>
                 <View style={styles.buttonWrapper}>
+                  <TouchableOpacity onPress={() => navigate('Camera')} style={{display: 'flex', flexDirection: 'row'}}>
+                      <FontAwesomeIcon icon={faCamera} size={50} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.buttonWrapper}>
                     <TouchableOpacity onPress={() => navigate('Record Audio')} style={{display: 'flex', flexDirection: 'row'}}>
-                    <FontAwesomeIcon icon={faMicrophone} size={30}/>
-                        <Text style={styles.input}>Record Audio</Text>
+                      <FontAwesomeIcon icon={faMicrophone} size={50}/>
+{/*                         <Text style={styles.input}>Record Audio</Text> */}
                     </TouchableOpacity>
                 </View>
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity onPress={() => navigate('QR Scanner')} style={{display: 'flex', flexDirection: 'row'}}>
-                    <FontAwesomeIcon icon={faQrcode} size={30}/>
-                        <Text style={styles.input}>QR Scanner</Text>
+                      <FontAwesomeIcon icon={faQrcode} size={50}/>
+                        {/* <Text style={styles.input}>QR Scanner</Text> */}
                     </TouchableOpacity>
                 </View>
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity onPress={() => navigate('Notepad')} style={{display: 'flex', flexDirection: 'row'}}>
-                    <FontAwesomeIcon icon={faPencil} size={30}/>
-                        <Text style={styles.input}>Notepad</Text>
+                      <FontAwesomeIcon icon={faPencil} size={50}/>
+                        {/* <Text style={styles.input}>Notepad</Text> */}
                     </TouchableOpacity>
                 </View>
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity onPress={() => navigate('Scan Document')} style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
-                    <FontAwesomeIcon icon={faFile} size={30}/>
-                        <Text style={styles.input}>Scan Document</Text>
+                      <FontAwesomeIcon icon={faFile} size={50}/>
+                        {/* <Text style={styles.input}>Scan Document</Text> */}
                     </TouchableOpacity>
                 </View>
             </View>
@@ -43,13 +48,14 @@ export default function DashCollectContainer({ navigate }) {
 const styles = StyleSheet.create({
 
   container: {
-    height: '28%',
+    height: '100%',
+    width: '20%',
     display: 'flex',
     flexDirection: 'row', 
-    justifyContent: 'space-around',
   },
   column: {
-    width: '70%',
+    width: '100%',
+    paddingTop: '2%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-around'
@@ -66,20 +72,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18
   },
-  wrapperContainer: {
-    flex: 1,
-    alignItems: 'center'
-  },
   buttonWrapper: {
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#777',
-    borderRadius: 25,
+    borderRadius: 1000,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: '2%',
-    paddingBottom: '2%',
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   input: {
     /* padding: 8, */

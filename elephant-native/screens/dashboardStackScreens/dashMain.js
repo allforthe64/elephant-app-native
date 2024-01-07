@@ -4,7 +4,7 @@ import { firebaseAuth } from '../../firebaseConfig';
 import DashCollectContainer from '../../components/dashCollectContainer';
 import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faFolder, faCamera } from '@fortawesome/free-solid-svg-icons';
+import { faFolder, faCamera, faBox } from '@fortawesome/free-solid-svg-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function DashMain({navigation: { navigate }}) {
@@ -26,35 +26,46 @@ export default function DashMain({navigation: { navigate }}) {
     <View>
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
         <View style={styles.buttonContainer}>
-          <View style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: insets.top, paddingBottom: insets.bottom}}>
-              <View style={{width: '21%', backgroundColor: 'white', paddingTop: '3%', paddingBottom: '3%', borderRadius: 1000}}>
-                <TouchableOpacity onPress={() => navigate('Camera')} style={styles.file}>
-                    <FontAwesomeIcon icon={faCamera} size={50} />
-                </TouchableOpacity>
-              </View>
-          </View>
-
-            <Text style={styles.subheading}>Collect Other Data:</Text>
+          <View style={{display: 'flex', flexDirection: 'row-reverse', justifyContent: 'space-around', height: 600}}>
             <DashCollectContainer navigate={navigate}/>
-
-
-            <View style={styles.wrapperContainer}>
-              <View style={styles.buttonWrapper}>
-                <TouchableOpacity onPress={() => navigate('Files')} style={styles.file}>
-                    <Text style={styles.input}>My Files</Text>
-                    <FontAwesomeIcon icon={faFolder} size={30} style={{marginLeft: '3%', marginTop: '1%'}}/>
-                </TouchableOpacity>
+            <View style={{display: 'flex', flexDirection: 'column', width:'65%'}}>
+              <View style={styles.wrapperContainer}>
+                <View style={styles.buttonWrapper}>
+                  <TouchableOpacity onPress={() => navigate('Files', {staging: false})} style={styles.file}>
+                      <Text style={styles.input}>My Files</Text>
+                      <FontAwesomeIcon icon={faFolder} size={30} style={{marginLeft: '3%', marginTop: '1%'}}/>
+                  </TouchableOpacity>
+                </View>
               </View>
-              <View style={styles.buttonWrapperLogout}>
-                    <TouchableOpacity onPress={async () => {
-                      auth.signOut()
-                      navigate('Home')
-                      }}>
-                        <Text style={styles.inputLogout}>Sign Out</Text>
-                    </TouchableOpacity>
+              <View style={styles.wrapperContainer}>
+                <View style={{width: '80%',
+                    borderColor: '#777',
+                    borderRadius: 25,
+                    backgroundColor: 'white',
+                    borderWidth: 1,
+                    paddingTop: '2%',
+                    paddingBottom: '2%',
+                    marginBottom: '8%',
+                    marginLeft: '2%'}}>
+                  <TouchableOpacity onPress={() => navigate('Files', {staging: true})} style={styles.file}>
+                      <Text style={styles.input}>Staging</Text>
+                      <FontAwesomeIcon icon={faBox} size={30} style={{marginLeft: '3%', marginTop: '1%'}}/>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
+          <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
+            <View style={styles.buttonWrapperLogout}>
+                  <TouchableOpacity onPress={async () => {
+                    auth.signOut()
+                    navigate('Home')
+                    }}>
+                      <Text style={styles.inputLogout}>Sign Out</Text>
+                  </TouchableOpacity>
+            </View>
+          </View>
+      </View>
     </View>
     
   );
@@ -66,13 +77,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    height: '100%'
   },
   buttonContainer: {
     width: '100%',
     height: '100%',
     backgroundColor: 'rgba(0, 0, 0, .6)',
     position: 'absolute',
-    display: 'flex',
   },
   bigHeader: {
     color: 'white',

@@ -15,14 +15,14 @@ import Staging from '../../components/file_system/staging';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-export default function Files({navigation: { navigate }}) {
+export default function Files({navigation: { navigate }, route}) {
 
   try {
 
   //initialize state 
   const [currentUser, setCurrentUser] = useState()
   const [staging, setStaging] = useState([])
-  const [stagingMode, setStagingMode] = useState(false)
+  const [stagingMode, setStagingMode] = useState(route.params.staging)
   const [loading, setLoading] = useState(true)
   const [focusedFolder, setFocusedFolder] = useState()
   const [add, setAdd] = useState(false)
