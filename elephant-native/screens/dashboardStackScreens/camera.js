@@ -1,9 +1,9 @@
 import React, {useEffect, useRef, useState, useContext} from 'react'
 import { View, Text, StatusBar, StyleSheet, Animated, Image, TouchableOpacity } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faXmark, faCloudArrowUp, faEnvelope, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faXmark, faCloudArrowUp, faEnvelope, faDownload, faTrash, faRepeat } from '@fortawesome/free-solid-svg-icons'
 import { faCircle } from '@fortawesome/free-regular-svg-icons'
-import { Camera } from 'expo-camera'
+import { Camera, CameraType } from 'expo-camera'
 import { shareAsync } from 'expo-sharing'
 import * as MediaLibrary from 'expo-media-library'
 import { format } from 'date-fns'
@@ -22,6 +22,7 @@ const CameraComponent = () => {
         const [session, setSession] = useState(true)
         const [currentUser, setCurrentUser] = useState()
         const [loading, setLoading] = useState(true)
+        const [type, setType] = useState(CameraType.back)
 
         const {authUser} = useContext(AuthContext)
 
@@ -153,7 +154,9 @@ const CameraComponent = () => {
             }).start()
         }
 
-        
+        const toggleType = () => {
+            setType(prev => prev === CameraType.back ? CameraType.front : CameraType.back)
+        }
 
         return (
             <>
@@ -205,7 +208,7 @@ const CameraComponent = () => {
                     </View>
             : 
                     <>
-                        <Camera style={styles.containerCenter} ref={cameraRef}>
+                        <Camera style={styles.containerCenter} ref={cameraRef} type={type}>
                             <View style={{
                                     position: 'absolute',
                                     top: 0,
@@ -217,8 +220,23 @@ const CameraComponent = () => {
                                     alignItems: 'flex-end',
                                     paddingRight: '5%',
                                 }}>
-                                    <TouchableOpacity onPress={() => setSession(prev => !prev)} style={session ? {backgroundColor: 'white', width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'} : { width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                                    <TouchableOpacity onPress={() => setSession(prev => !prev)} style={session ? {backgroundColor: 'white', width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'} : { width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, .5)'}}>
                                         <FontAwesomeIcon icon={faCloudArrowUp} color={session ? 'black' : 'white'} size={30} />
+                                    </TouchableOpacity>
+                            </View>
+                            <View style={{
+                                    position: 'absolute',
+                                    top: 75,
+                                    width: '100%',
+                                    height: '12.5%',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-end',
+                                    alignItems: 'flex-end',
+                                    paddingRight: '5%',
+                                }}>
+                                    <TouchableOpacity onPress={toggleType} style={{ width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, .5)'}}>
+                                        <FontAwesomeIcon icon={faRepeat} color={'white'} size={30} />
                                     </TouchableOpacity>
                             </View>
                             {success && 
