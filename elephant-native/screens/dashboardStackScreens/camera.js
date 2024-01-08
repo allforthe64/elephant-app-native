@@ -109,7 +109,9 @@ const CameraComponent = () => {
                         fileType: 'jpg',
                         size: photo.width * photo.height,
                         uri: photo.uri,
-                        user: currentUser
+                        user: currentUser,
+                        version: 0,
+                        timeStamp: `${formattedDate}.jpg`
                     })
                 updateStaging([reference], currentUser)
 
