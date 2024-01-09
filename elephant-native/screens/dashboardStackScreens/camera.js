@@ -30,7 +30,6 @@ const CameraComponent = () => {
         const [videoObj, setVideoObj] = useState()
 
         const {authUser} = useContext(AuthContext)
-
         //initialize animation ref
         let fadeAnim = useRef(new Animated.Value(100)).current
 
