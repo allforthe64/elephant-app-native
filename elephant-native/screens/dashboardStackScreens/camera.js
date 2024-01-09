@@ -1,9 +1,10 @@
 import React, {useEffect, useRef, useState, useContext} from 'react'
 import { View, Text, StatusBar, StyleSheet, Animated, Image, TouchableOpacity } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faXmark, faCloudArrowUp, faEnvelope, faDownload, faTrash, faRepeat } from '@fortawesome/free-solid-svg-icons'
+import { faXmark, faCloudArrowUp, faEnvelope, faDownload, faTrash, faRepeat, faVideoCamera, faCamera, faSquare } from '@fortawesome/free-solid-svg-icons'
 import { faCircle } from '@fortawesome/free-regular-svg-icons'
-import { Camera, CameraType } from 'expo-camera'
+import { Camera, CameraType, VideoCodec } from 'expo-camera'
+import { Video } from 'expo-av'
 import { shareAsync } from 'expo-sharing'
 import * as MediaLibrary from 'expo-media-library'
 import { format } from 'date-fns'
@@ -11,6 +12,7 @@ import { addfile, updateStaging } from '../../storage'
 import { AuthContext } from '../../context/authContext'
 import { storage } from '../../firebaseConfig'
 import {ref, uploadBytes} from 'firebase/storage'
+import { faCircle as solidCircle } from '@fortawesome/free-solid-svg-icons'
 
 const CameraComponent = () => {
     try {
@@ -23,6 +25,9 @@ const CameraComponent = () => {
         const [currentUser, setCurrentUser] = useState()
         const [loading, setLoading] = useState(true)
         const [type, setType] = useState(CameraType.back)
+        const [video, setVideo] = useState(false)
+        const [recording, setRecording] = useState(false)
+        const [videoObj, setVideoObj] = useState()
 
         const {authUser} = useContext(AuthContext)
 
@@ -79,47 +84,109 @@ const CameraComponent = () => {
             setPhoto(newPhoto)
         }
 
-        const saveToElephant = async () => {
+        //take a video using takeAsyncVideo method
+        const takeVideo = () => {
+            setRecording(true)
+            const options = {
+                quality: '1080p',
+                mute: false,
+                codec: VideoCodec.H264
+            }
+            cameraRef.current.recordAsync(options).then((recordedVideo) => {
+                setVideoObj(recordedVideo)
+                setRecording(false)
+            })
+        }
 
-            setPhoto(undefined)
+        //stop recording video
+        const stopVideo = () => {
+            cameraRef.current.stopRecording()
+        }
 
-            //create new formatted date for file
-            const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
+        const saveToElephant = async (videoMode) => {
 
-            try {  
-                //create blob using the photo from state and save it to elephant staging
-                const blob = await new Promise((resolve, reject) => {
-                    const xhr = new XMLHttpRequest()
-                    xhr.onload = () => {
-                    resolve(xhr.response) 
-                    }
-                    xhr.onerror = (e) => {
-                        reject(new TypeError('Network request failed'))
-                    }
-                    xhr.responseType = 'blob'
-                    xhr.open('GET', photo.uri, true)
-                    xhr.send(null)
-                })
+            if (videoMode) {
+                setVideoObj(undefined)
 
-                const filename = `${formattedDate}.jpg`
-                const fileRef = ref(storage, `${currentUser}/${filename}`)
-                uploadBytes(fileRef, blob)
+                //create new formatted date for file
+                const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
 
-                const reference = await addfile({
-                        name: filename,
-                        fileType: 'jpg',
-                        size: photo.width * photo.height,
-                        uri: photo.uri,
-                        user: currentUser,
-                        version: 0,
-                        timeStamp: `${formattedDate}.jpg`
+                try {  
+                    //create blob using the photo from state and save it to elephant staging
+                    const blob = await new Promise((resolve, reject) => {
+                        const xhr = new XMLHttpRequest()
+                        xhr.onload = () => {
+                        resolve(xhr.response) 
+                        }
+                        xhr.onerror = (e) => {
+                            reject(new TypeError('Network request failed'))
+                        }
+                        xhr.responseType = 'blob'
+                        xhr.open('GET', videoObj.uri, true)
+                        xhr.send(null)
                     })
-                updateStaging([reference], currentUser)
 
-                setSuccess(true)
+                    const filename = `${formattedDate}.${videoObj.uri.split('.')[1]}`
+                    const fileRef = ref(storage, `${currentUser}/${filename}`)
+                    uploadBytes(fileRef, blob)
 
-            } catch (err) {
-                console.log(err)
+                    const reference = await addfile({
+                            name: filename,
+                            fileType: `${videoObj.uri.split('.')[1]}`,
+                            size: 'foobar',
+                            uri: videoObj.uri,
+                            user: currentUser,
+                            version: 0,
+                            timeStamp: `${formattedDate}.${videoObj.uri.split('.')[1]}`
+                        })
+                    updateStaging([reference], currentUser)
+
+                    setSuccess(true)
+
+                } catch (err) {
+                    console.log(err)
+                }
+            } else {
+                setPhoto(undefined)
+
+                //create new formatted date for file
+                const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
+
+                try {  
+                    //create blob using the photo from state and save it to elephant staging
+                    const blob = await new Promise((resolve, reject) => {
+                        const xhr = new XMLHttpRequest()
+                        xhr.onload = () => {
+                        resolve(xhr.response) 
+                        }
+                        xhr.onerror = (e) => {
+                            reject(new TypeError('Network request failed'))
+                        }
+                        xhr.responseType = 'blob'
+                        xhr.open('GET', photo.uri, true)
+                        xhr.send(null)
+                    })
+
+                    const filename = `${formattedDate}.jpg`
+                    const fileRef = ref(storage, `${currentUser}/${filename}`)
+                    uploadBytes(fileRef, blob)
+
+                    const reference = await addfile({
+                            name: filename,
+                            fileType: 'jpg',
+                            size: photo.width * photo.height,
+                            uri: photo.uri,
+                            user: currentUser,
+                            version: 0,
+                            timeStamp: `${formattedDate}.jpg`
+                        })
+                    updateStaging([reference], currentUser)
+
+                    setSuccess(true)
+
+                } catch (err) {
+                    console.log(err)
+                }
             }
         }
 
@@ -130,6 +197,13 @@ const CameraComponent = () => {
             })
         }
 
+        //allow photo to be shared using shareAsync method
+        const shareVideo = () => {
+            shareAsync(videoObj.uri).then(() => {
+                setVideoObj(undefined)
+            })
+        }
+
         //save photo to the phone's local storage using saveToLibraryAsync method
         const savePhoto = () => {
             MediaLibrary.saveToLibraryAsync(photo.uri).then((() => {
@@ -137,11 +211,25 @@ const CameraComponent = () => {
             }))
         }
 
+        //save photo to the phone's local storage using saveToLibraryAsync method
+        const saveVideo = () => {
+            MediaLibrary.saveToLibraryAsync(videoObj.uri).then((() => {
+                setVideoObj(undefined)
+            }))
+        }
+
         //if session mode is turned on after picture is take, immediately save the photo to elephant storage
         if (photo) {
             if (session === true) {
                 saveToElephant()
-            } 
+            }
+            
+        }
+
+        if (videoObj) {
+            if (session === true) {
+                saveToElephant(true)
+            }
         }
 
         const fadeOut = () => {
@@ -158,6 +246,7 @@ const CameraComponent = () => {
             setType(prev => prev === CameraType.back ? CameraType.front : CameraType.back)
         }
 
+
         return (
             <>
                 {photo ? 
@@ -168,7 +257,7 @@ const CameraComponent = () => {
                         justifyContent: 'flex-end'
                     }}>
                         <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photo.base64}}/>
-                        <View style={{position: 'absolute', top: '5%', right: '2.5%'}} >
+                        <View style={{position: 'absolute', top: '8%', right: '2.5%'}} >
                             {/* <Button title='Share' onPress={sharePic} />
                             { hasMediaLibraryPermission ? <Button title='Save to photos' onPress={savePhoto} /> : undefined} 
                             <Button title='Save to elephant storage' onPress={saveToElephant} />
@@ -196,7 +285,7 @@ const CameraComponent = () => {
                                     <TouchableOpacity style={{marginBottom: 25}} onPress={savePhoto}>
                                         <FontAwesomeIcon icon={faDownload} size={30} color='white'/>
                                     </TouchableOpacity> 
-                                    <TouchableOpacity style={{marginBottom: 20}} onPress={() => saveToElephant()}>
+                                    <TouchableOpacity style={{marginBottom: 20}} onPress={() => saveToElephant(true)}>
                                         <FontAwesomeIcon icon={faCloudArrowUp} size={30} color='white'/>
                                     </TouchableOpacity> 
                                     <TouchableOpacity onPress={() => setPhoto(undefined)}>
@@ -206,7 +295,55 @@ const CameraComponent = () => {
                             </View>
                         </View>
                     </View>
-            : 
+            : videoObj ? 
+                <>
+                    <View style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                    }}>
+                        <Video style={{flex: 1, alignSelf: 'stretch', height: '100%'}} source={{uri: videoObj.uri}} useNativeControls resizeMode='contain' isLooping/>
+                        <View style={{position: 'absolute', top: '8%', right: '2.5%'}} >
+                            {/* <Button title='Share' onPress={sharePic} />
+                            { hasMediaLibraryPermission ? <Button title='Save to photos' onPress={savePhoto} /> : undefined} 
+                            <Button title='Save to elephant storage' onPress={saveToElephant} />
+                            <Button title='Discard' onPress={() => setPhoto(undefined)} /> */}
+                            <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '2%'}}>
+                                <Animated.View style={{display: 'flex', flexDirection: 'coloumn', marginRight: 10, paddingTop: 20, opacity: fadeAnim}} onLayout={() => fadeOut()}>
+                                    <View style={{backgroundColor: 'rgba(0, 0, 0, .5)',  marginBottom: 25, paddingTop: 2, paddingBottom: 2, borderRadius: 17}}>
+                                        <Text style={{fontSize: 18, textAlign: 'center', color: 'white'}}>Share</Text>
+                                    </View>
+                                    <View style={{backgroundColor: 'rgba(0, 0, 0, .5)',  marginBottom: 25, paddingTop: 2, paddingBottom: 2, borderRadius: 17}}>
+                                    {hasMediaLibraryPermission ? <Text style={{fontSize: 18, paddingLeft: 10, paddingRight: 10, color: 'white'}}>Save To Photos</Text> : undefined}
+                                    </View>
+                                    <View style={{backgroundColor: 'rgba(0, 0, 0, .5)',  marginBottom: 25, paddingTop: 2, paddingBottom: 2, borderRadius: 17}}>
+                                        <Text style={{fontSize: 18, textAlign: 'center', color: 'white'}}>Add To Staging</Text>
+                                    </View>
+                                    <View style={{backgroundColor: 'rgba(0, 0, 0, .5)', paddingTop: 2, paddingBottom: 2, borderRadius: 17}}>
+                                        <Text style={{fontSize: 18, textAlign: 'center', color: 'white'}}>Delete</Text>
+                                    </View>
+                                    
+                                </Animated.View>
+                                <View style={{display: 'flex', flexDirection: 'coloumn', backgroundColor: 'rgba(0, 0, 0, .5)', paddingTop: 15, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, borderRadius: 25}}>
+                                    <TouchableOpacity style={{marginBottom: 15}} onPress={shareVideo}>
+                                        <FontAwesomeIcon icon={faEnvelope} size={30} color='white'/>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={{marginBottom: 25}} onPress={saveVideo}>
+                                        <FontAwesomeIcon icon={faDownload} size={30} color='white'/>
+                                    </TouchableOpacity> 
+                                    <TouchableOpacity style={{marginBottom: 20}} onPress={() => saveToElephant(true)}>
+                                        <FontAwesomeIcon icon={faCloudArrowUp} size={30} color='white'/>
+                                    </TouchableOpacity> 
+                                    <TouchableOpacity onPress={() => setVideoObj(undefined)}>
+                                        <FontAwesomeIcon icon={faTrash} size={30} color='white'/>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </>
+            :
                     <>
                         <Camera style={styles.containerCenter} ref={cameraRef} type={type}>
                             <View style={{
@@ -250,10 +387,26 @@ const CameraComponent = () => {
                                 </View>
                             }
                             <View style={styles.buttonContainer}>
-                                {/* <Button title='Take Pic' onPress={takePic}/> */}
-                                <TouchableOpacity onPress={takePic}> 
-                                    <FontAwesomeIcon icon={faCircle} size={90} color='white'/>
+                                <TouchableOpacity onPress={() => setVideo(prev => !prev)} style={video ? {/* backgroundColor: 'white' */backgroundColor: 'rgba(0, 0, 0, .5)', width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: '10%', marginTop: '5%'} : { width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, .5)', marginRight: '10%', marginTop: '5%'}}>
+                                        <FontAwesomeIcon icon={video ? faCamera : faVideoCamera} color={/* video ? 'black' :  */'white'} size={30} />
                                 </TouchableOpacity>
+                                {!video ? 
+                                    <TouchableOpacity onPress={takePic} style={{marginRight: '17%'}}> 
+                                        <FontAwesomeIcon icon={faCircle} size={90} color='white'/>
+                                    </TouchableOpacity>
+                                :   
+                                    <>
+                                        {recording ? 
+                                            <TouchableOpacity onPress={stopVideo} style={{marginRight: '17%', backgroundColor: 'transparent', borderWidth: 8, borderColor: 'white', borderRadius: 1000, width: '24%', height: 90, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}> 
+                                                <FontAwesomeIcon icon={faSquare} size={55} color='red'/>
+                                            </TouchableOpacity>
+                                            :
+                                            <TouchableOpacity onPress={takeVideo} style={{marginRight: '17%', backgroundColor: 'transparent', borderWidth: 8, borderColor: 'white', borderRadius: 1000, width: '24%', height: 90, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}> 
+                                                <FontAwesomeIcon icon={solidCircle} size={55} color='red'/>
+                                            </TouchableOpacity>
+                                        }
+                                    </>
+                                }
                             </View>
                             <StatusBar style="auto" /> 
                         </Camera>
@@ -291,7 +444,11 @@ const styles = StyleSheet.create({
         width: '50%',
     },
     buttonContainer: {
-        marginBottom: '20%'
+        marginBottom: '15%',
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'center'
     },
     preview: {
         alignSelf: 'stretch',
