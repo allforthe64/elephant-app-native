@@ -13,8 +13,10 @@ import { AuthContext } from '../../context/authContext'
 import { storage } from '../../firebaseConfig'
 import {ref, uploadBytes} from 'firebase/storage'
 import { faCircle as solidCircle } from '@fortawesome/free-solid-svg-icons'
+import { PinchGestureHandler } from 'react-native-gesture-handler'
 
 const CameraComponent = () => {
+
     try {
         const cameraRef = useRef()
         const [hasCameraPermission, setHasCameraPermission] = useState()
@@ -28,8 +30,10 @@ const CameraComponent = () => {
         const [video, setVideo] = useState(false)
         const [recording, setRecording] = useState(false)
         const [videoObj, setVideoObj] = useState()
+        const [zoom, setZoom] = useState(0)
 
         const {authUser} = useContext(AuthContext)
+
         //initialize animation ref
         let fadeAnim = useRef(new Animated.Value(100)).current
 
@@ -245,6 +249,19 @@ const CameraComponent = () => {
             setType(prev => prev === CameraType.back ? CameraType.front : CameraType.back)
         }
 
+        const onPinchEvent = (event) => {
+            if (event.nativeEvent.velocity > 0) {
+                setZoom(prev => {
+                    let newZoom = prev += .01
+                    if (newZoom > 1) newZoom = 1
+                    return newZoom
+                })
+            } else setZoom(prev => {
+                let newZoom = prev -= 0.01
+                if (newZoom < 0) newZoom = 0
+                return newZoom
+            })
+        }
 
         return (
             <>
@@ -344,71 +361,76 @@ const CameraComponent = () => {
                 </>
             :
                     <>
-                        <Camera style={styles.containerCenter} ref={cameraRef} type={type}>
-                            <View style={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    width: '100%',
-                                    height: '12.5%',
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    justifyContent: 'flex-end',
-                                    alignItems: 'flex-end',
-                                    paddingRight: '5%',
-                                }}>
-                                    <TouchableOpacity onPress={() => setSession(prev => !prev)} style={session ? {backgroundColor: 'white', width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'} : { width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, .5)'}}>
-                                        <FontAwesomeIcon icon={faCloudArrowUp} color={session ? 'black' : 'white'} size={30} />
-                                    </TouchableOpacity>
-                            </View>
-                            <View style={{
-                                    position: 'absolute',
-                                    top: 75,
-                                    width: '100%',
-                                    height: '12.5%',
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    justifyContent: 'flex-end',
-                                    alignItems: 'flex-end',
-                                    paddingRight: '5%',
-                                }}>
-                                    <TouchableOpacity onPress={toggleType} style={{ width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, .5)'}}>
-                                        <FontAwesomeIcon icon={faRepeat} color={'white'} size={30} />
-                                    </TouchableOpacity>
-                            </View>
-                            {success && 
-                                <View style={styles.successContainer}>
-                                    <View style={styles.innerContainer}>
-                                        <Text style={{color: 'green'}}>Upload Successful!</Text>
-                                        <TouchableOpacity onPress={() => setSuccess(false)}>
-                                            <FontAwesomeIcon icon={faXmark} size={20} color={'black'} />
+                        <PinchGestureHandler
+                            onGestureEvent={onPinchEvent}
+                            /* onHandlerStateChange={}   */  
+                        >
+                            <Camera style={styles.containerCenter} ref={cameraRef} type={type} zoom={zoom}>
+                                <View style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        width: '100%',
+                                        height: '12.5%',
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        justifyContent: 'flex-end',
+                                        alignItems: 'flex-end',
+                                        paddingRight: '5%',
+                                    }}>
+                                        <TouchableOpacity onPress={() => setSession(prev => !prev)} style={session ? {backgroundColor: 'white', width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'} : { width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, .5)'}}>
+                                            <FontAwesomeIcon icon={faCloudArrowUp} color={session ? 'black' : 'white'} size={30} />
                                         </TouchableOpacity>
-                                    </View>
                                 </View>
-                            }
-                            <View style={styles.buttonContainer}>
-                                <TouchableOpacity onPress={() => setVideo(prev => !prev)} style={video ? {/* backgroundColor: 'white' */backgroundColor: 'rgba(0, 0, 0, .5)', width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: '10%', marginTop: '5%'} : { width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, .5)', marginRight: '10%', marginTop: '5%'}}>
-                                        <FontAwesomeIcon icon={video ? faCamera : faVideoCamera} color={/* video ? 'black' :  */'white'} size={30} />
-                                </TouchableOpacity>
-                                {!video ? 
-                                    <TouchableOpacity onPress={takePic} style={{marginRight: '17%'}}> 
-                                        <FontAwesomeIcon icon={faCircle} size={90} color='white'/>
-                                    </TouchableOpacity>
-                                :   
-                                    <>
-                                        {recording ? 
-                                            <TouchableOpacity onPress={stopVideo} style={{marginRight: '17%', backgroundColor: 'transparent', borderWidth: 8, borderColor: 'white', borderRadius: 1000, width: '24%', height: 90, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}> 
-                                                <FontAwesomeIcon icon={faSquare} size={55} color='red'/>
+                                <View style={{
+                                        position: 'absolute',
+                                        top: 75,
+                                        width: '100%',
+                                        height: '12.5%',
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        justifyContent: 'flex-end',
+                                        alignItems: 'flex-end',
+                                        paddingRight: '5%',
+                                    }}>
+                                        <TouchableOpacity onPress={toggleType} style={{ width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, .5)'}}>
+                                            <FontAwesomeIcon icon={faRepeat} color={'white'} size={30} />
+                                        </TouchableOpacity>
+                                </View>
+                                {success && 
+                                    <View style={styles.successContainer}>
+                                        <View style={styles.innerContainer}>
+                                            <Text style={{color: 'green'}}>Upload Successful!</Text>
+                                            <TouchableOpacity onPress={() => setSuccess(false)}>
+                                                <FontAwesomeIcon icon={faXmark} size={20} color={'black'} />
                                             </TouchableOpacity>
-                                            :
-                                            <TouchableOpacity onPress={takeVideo} style={{marginRight: '17%', backgroundColor: 'transparent', borderWidth: 8, borderColor: 'white', borderRadius: 1000, width: '24%', height: 90, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}> 
-                                                <FontAwesomeIcon icon={solidCircle} size={55} color='red'/>
-                                            </TouchableOpacity>
-                                        }
-                                    </>
+                                        </View>
+                                    </View>
                                 }
-                            </View>
-                            <StatusBar style="auto" /> 
-                        </Camera>
+                                <View style={styles.buttonContainer}>
+                                    <TouchableOpacity onPress={() => setVideo(prev => !prev)} style={video ? {/* backgroundColor: 'white' */backgroundColor: 'rgba(0, 0, 0, .5)', width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: '10%', marginTop: '5%'} : { width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, .5)', marginRight: '10%', marginTop: '5%'}}>
+                                            <FontAwesomeIcon icon={video ? faCamera : faVideoCamera} color={/* video ? 'black' :  */'white'} size={30} />
+                                    </TouchableOpacity>
+                                    {!video ? 
+                                        <TouchableOpacity onPress={takePic} style={{marginRight: '17%'}}> 
+                                            <FontAwesomeIcon icon={faCircle} size={90} color='white'/>
+                                        </TouchableOpacity>
+                                    :   
+                                        <>
+                                            {recording ? 
+                                                <TouchableOpacity onPress={stopVideo} style={{marginRight: '17%', backgroundColor: 'transparent', borderWidth: 8, borderColor: 'white', borderRadius: 1000, width: '24%', height: 90, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}> 
+                                                    <FontAwesomeIcon icon={faSquare} size={55} color='red'/>
+                                                </TouchableOpacity>
+                                                :
+                                                <TouchableOpacity onPress={takeVideo} style={{marginRight: '17%', backgroundColor: 'transparent', borderWidth: 8, borderColor: 'white', borderRadius: 1000, width: '24%', height: 90, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}> 
+                                                    <FontAwesomeIcon icon={solidCircle} size={55} color='red'/>
+                                                </TouchableOpacity>
+                                            }
+                                        </>
+                                    }
+                                </View>
+                                <StatusBar style="auto" /> 
+                            </Camera>
+                        </PinchGestureHandler>
                     </>
             }
             </>
