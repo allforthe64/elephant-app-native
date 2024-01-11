@@ -246,20 +246,33 @@ const CameraComponent = () => {
         }
 
         const toggleType = () => {
-            setType(prev => prev === CameraType.back ? CameraType.front : CameraType.back)
+            if (!recording) setType(prev => prev === CameraType.back ? CameraType.front : CameraType.back)
         }
 
         const onPinchEvent = (event) => {
+
             if (event.nativeEvent.velocity > 0) {
                 setZoom(prev => {
-                    let newZoom = prev += .01
-                    if (newZoom > 1) newZoom = 1
-                    return newZoom
+                    if (type === CameraType.back) {
+                        let newZoom = prev += .01
+                        if (newZoom > 1) newZoom = 1
+                        return newZoom
+                    } else {
+                        let newZoom = prev += .001
+                        if (newZoom > 1) newZoom = 1
+                        return newZoom
+                    }
                 })
             } else setZoom(prev => {
-                let newZoom = prev -= 0.01
-                if (newZoom < 0) newZoom = 0
-                return newZoom
+                if (type === CameraType.back) {
+                    let newZoom = prev -= .01
+                    if (newZoom < 0) newZoom = 0
+                    return newZoom
+                } else {
+                    let newZoom = prev -= .001
+                    if (newZoom < 0) newZoom = 0
+                    return newZoom
+                }
             })
         }
 
