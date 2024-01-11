@@ -28,7 +28,7 @@ export default function DashMain({navigation: { navigate }}) {
         <View style={styles.buttonContainer}>
           <View style={{display: 'flex', flexDirection: 'row-reverse', justifyContent: 'space-around', height: 600}}>
             <DashCollectContainer navigate={navigate}/>
-            <View style={{display: 'flex', flexDirection: 'column', width:'65%'}}>
+            <View style={{display: 'flex', flexDirection: 'column', width:'55%'}}>
               <View style={styles.wrapperContainer}>
                 <View style={styles.buttonWrapper}>
                   <TouchableOpacity onPress={() => navigate('Files', {staging: false})} style={styles.file}>
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     width: '100%',
-    paddingTop: '5%'
+    paddingTop: '10%'
   },
   buttonWrapper: {
     width: '80%',
