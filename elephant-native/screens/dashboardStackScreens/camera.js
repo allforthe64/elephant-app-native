@@ -108,6 +108,7 @@ const CameraComponent = () => {
 
         const saveToElephant = async (videoMode) => {
 
+            //save video
             if (videoMode) {
                 setVideoObj(undefined)
 
@@ -221,7 +222,7 @@ const CameraComponent = () => {
             }))
         }
 
-        //if session mode is turned on after picture is take, immediately save the photo to elephant storage
+        //if session mode is turned on after picture is taken, immediately save the photo to elephant storage
         if (photo) {
             if (session === true) {
                 saveToElephant()
@@ -229,6 +230,7 @@ const CameraComponent = () => {
             
         }
 
+        //if session mode is turned on after video is taken, immediately save the photo to elephant storage
         if (videoObj) {
             if (session === true) {
                 saveToElephant(true)
@@ -245,10 +247,12 @@ const CameraComponent = () => {
             }).start()
         }
 
+        //toggle between front and back camera
         const toggleType = () => {
             if (!recording) setType(prev => prev === CameraType.back ? CameraType.front : CameraType.back)
         }
 
+        //if velocity of pinch event is positive increase zoom, if it is negative decrease zoom
         const onPinchEvent = (event) => {
 
             if (event.nativeEvent.velocity > 0) {
