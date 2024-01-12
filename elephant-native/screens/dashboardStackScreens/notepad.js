@@ -2,10 +2,9 @@ import React, { useState, useRef, useEffect } from 'react'
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Keyboard, KeyboardAvoidingView, Modal, Pressable, ScrollView } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faCheck, faPencil, faXmark, faFolder } from '@fortawesome/free-solid-svg-icons'
-
-import {firebase} from '../../firebaseConfig'
+import { ref as refFunction, uploadBytes} from 'firebase/storage'
 import { format } from 'date-fns'
-import { firebaseAuth } from '../../firebaseConfig';
+import { firebaseAuth, storage } from '../../firebaseConfig';
 import { addfile, userListener, updateStaging } from '../../storage'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -52,22 +51,34 @@ const Notepad = () => {
     const addToStorage = async () => {
 
       const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
-      const fileName = formattedDate + '^' + currentUser.uid
+      const fileName = `Note from: ${formattedDate}.txt`
+
+      let versionNo = 0
+      currentUser.fileRefs.forEach(fileRef => {
+        if (fileRef.fileName === fileName && fileRef.fileName.split('.')[1] === fileName.split('.')[1]) {
+          versionNo ++
+      }
+      })
+
+      console.log(versionNo)
 
       try {
         const textFile = new Blob([`${body}`], {
           type: "text/plain;charset=utf-8",
        });
-        const fileUri = `Note From: ${fileName}.txt`
-        const ref = firebase.storage().ref().child(fileUri)
-        await ref.put(textFile)
+        const fileUri = `${currentUser.uid}/${formattedDate}`
+        const fileRef = refFunction(storage, fileUri)
+        uploadBytes(fileRef, textFile)
 
 
         const reference = await addfile({
-          name: `Note From: ${fileName}.txt`,
+          name: fileName,
           fileType: 'txt',
           size: textFile.size,
-          uri: `${fileUri}`
+          uri: `${fileUri}`,
+          user: currentUser.uid,
+          timeStamp: formattedDate,
+          version: versionNo
       }, destination)
       updateStaging([reference], currentUser.uid)
       setBody(null)

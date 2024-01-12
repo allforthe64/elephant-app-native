@@ -61,7 +61,7 @@ export async function userListener(setCurrentUser, setStaging, user) {
 
 export async function addfile(file, destination) {
 
-    console.log(file)
+    console.log('this is the file: ', file)
 
     try {
         let fileRef
