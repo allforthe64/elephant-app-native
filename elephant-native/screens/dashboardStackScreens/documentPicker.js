@@ -17,7 +17,6 @@ import { useToast } from 'react-native-toast-notifications'
 const FilePicker = () => {
 
     const [files, setFiles] = useState([])
-    const [success, setSuccess] = useState(false)
     const [userInst, setUserInst] = useState()
     const [loading, setLoading] = useState(false)
 
@@ -160,16 +159,6 @@ const FilePicker = () => {
             paddingTop: insets.top,
             paddingBottom: insets.bottom
         }}>
-            {success && 
-                <View style={styles.successContainer}>
-                    <View style={styles.innerSuccessContainer}>
-                        <Text style={{color: 'green'}}>Upload Successful!</Text>
-                        <TouchableOpacity onPress={() => setSuccess(false)}>
-                            <FontAwesomeIcon icon={faXmark} size={20} color={'black'} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            }
             <Text style={styles.bigHeader}>Files to upload:</Text>
                 {loading ? 
                     <View style={styles.noFileCon}>
