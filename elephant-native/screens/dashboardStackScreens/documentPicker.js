@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { storage } from '../../firebaseConfig'
 import {ref, uploadBytes} from 'firebase/storage'
 import { userListener } from '../../storage'
+import { useToast } from 'react-native-toast-notifications'
 
 const FilePicker = () => {
 
@@ -21,6 +22,7 @@ const FilePicker = () => {
 
     const currentUser = firebaseAuth.currentUser.uid
     const auth = firebaseAuth
+    const toast = useToast()
 
     //get the current user 
     useEffect(() => {
@@ -137,7 +139,9 @@ const FilePicker = () => {
 
         const empty = []
         setFiles(empty)
-        setSuccess(true)
+        toast.show('File upload successful', {
+            type: 'success'
+        })
           
     }
 

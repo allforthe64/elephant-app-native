@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { firebaseAuth } from '../../firebaseConfig';
 import DashCollectContainer from '../../components/dashCollectContainer';
@@ -6,10 +5,11 @@ import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFolder, faCamera, faBox } from '@fortawesome/free-solid-svg-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useToast } from 'react-native-toast-notifications';
 
 export default function DashMain({navigation: { navigate }}) {
-
   const auth = firebaseAuth
+
 
   //if the user is not logged in, take them back to the homepage
   useEffect(() => {

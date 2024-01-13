@@ -57,8 +57,10 @@
     "react-native-screens": "~3.22.0",
     "react-native-simple-audio-player": "^1.0.3",
     "react-native-svg": "13.9.0",
+    "react-native-toast-notifications": "^3.4.0",
     "react-native-video": "^5.2.1",
-    "styled-components": "^5.3.11"
+    "styled-components": "^5.3.11",
+    "toastify-react-native": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
