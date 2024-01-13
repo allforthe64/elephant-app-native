@@ -14,6 +14,7 @@ import { faBox, faFolder } from '@fortawesome/free-solid-svg-icons';
 import Staging from '../../components/file_system/staging';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useToast } from 'react-native-toast-notifications';
 
 export default function Files({navigation: { navigate }, route}) {
 
@@ -28,6 +29,7 @@ export default function Files({navigation: { navigate }, route}) {
   const [add, setAdd] = useState(false)
   const [newFolderName, setNewFolderName] = useState('')
   const [keyBoardClosed, setKeyboardClosed] = useState(true)
+  const toast = useToast()
 
 
   //get the auth user context object
@@ -73,6 +75,9 @@ export default function Files({navigation: { navigate }, route}) {
         }
         if (index === 'delete') {
           await deleteFileObj(input.targetFile)
+          toast.show(`Deleted File`, {
+            type: 'success'
+          })
         }
         console.log('input: ', input)
       }
@@ -85,15 +90,31 @@ export default function Files({navigation: { navigate }, route}) {
       if (index === 'delete') {
         const updatedUser = {...currentUser, files: input.newFolders, fileRefs: input.refsToKeep} 
         await updateUser(updatedUser)
+        toast.show(`Deleted ${input.target}`, {
+          type: 'success'
+        })
       } else if (index === 'rename' || index === 'move') {
           //get index of the target folder to be renamed
           //edit the entry of the current files based on the index and preserve the order of the array
           //update the user
-          const index = currentUser.files.map(file => file.id).indexOf(input.id)
-          let newFiles = [...currentUser.files]
-          newFiles[index] = input
-          const updatedUser = {...currentUser, files: newFiles}
-          await updateUser(updatedUser)
+          if (index === 'move') {
+            const fileIndex = currentUser.files.map(file => file.id).indexOf(input.newFolder.id)
+            let newFiles = [...currentUser.files]
+            newFiles[fileIndex] = input.newFolder
+            const updatedUser = {...currentUser, files: newFiles}
+            toast.show(`Moved folder to ${input.target}`, {
+              type: 'success'
+            })
+            await updateUser(updatedUser)
+          } else {
+            console.log(input)
+            const fileIndex = currentUser.files.map(file => file.id).indexOf(input.id)
+            let newFiles = [...currentUser.files]
+            newFiles[fileIndex] = input
+            const updatedUser = {...currentUser, files: newFiles}
+            await updateUser(updatedUser)
+          }
+
       } else if (index === 'add') {
         console.log('current user in function: ', currentUser)
         //add the new file to the user
@@ -126,15 +147,16 @@ export default function Files({navigation: { navigate }, route}) {
     const newFiles = currentUser.fileRefs.map(file => {
       if (file.fileId === input.fileId) {return input} else return file
     })
-    editUser('file', {newFiles: newFiles}, 'move')
+    editUser('file', {newFiles: newFiles, target: input.target}, 'move')
   }
 
   //delete folder by filtering for folders that don't match the target
   //filter for all fileRefs that don't have a flag matching the target
   const deleteFolder = (target) => {
-    const refsToKeep = currentUser.fileRefs.filter(ref => ref.flag !== target)
-    const newFolders = currentUser.files.filter(file => file.id !== target)
-    editUser('folder', {refsToKeep: refsToKeep, newFolders: newFolders}, 'delete')
+    console.log(target)
+    const refsToKeep = currentUser.fileRefs.filter(ref => ref.flag !== target.id)
+    const newFolders = currentUser.files.filter(file => file.id !== target.id)
+    editUser('folder', {refsToKeep: refsToKeep, newFolders: newFolders, target: target.folderName}, 'delete')
   }
 
   //call the edit user function with a new folder object containing the new folder name
@@ -144,6 +166,7 @@ export default function Files({navigation: { navigate }, route}) {
 
   //call the edit user function with a new folder object containing the new folder nestedUnder property
   const moveFolder = (input) => {
+    console.log(input)
     editUser('folder', input, 'move')
   }
 

@@ -12,8 +12,9 @@ const Folder = ({folder, getTargetFolder, deleteFolder, renameFolder, moveFolder
   const [editName, setEditName] = useState(false)
   const [moveFolder, setMoveFolder] = useState(false)
   const [newName, setNewName] = useState(folder.fileName)
-  const [destination, setDestination] = useState()
+  const [destination, setDestination] = useState({id: null, folderName: null})
   const [validFolders, setValidFolders] = useState()
+
 
   useEffect(() => {
     if (folder.nestedUnder === '') setValidFolders(folders.filter(f => {if (f.nestedUnder === '') return f}))
@@ -22,7 +23,7 @@ const Folder = ({folder, getTargetFolder, deleteFolder, renameFolder, moveFolder
 
   //call the delete folder function from the main component and hide both modals
   const deleteFolderFunction = () => {
-    deleteFolder(folder.id)
+    deleteFolder({id: folder.id, folderName: folder.fileName})
     setPreDelete(false)
     setVisible(false)
   }
@@ -44,19 +45,19 @@ const Folder = ({folder, getTargetFolder, deleteFolder, renameFolder, moveFolder
         ...folder,
         nestedUnder: ''
       }
-      setDestination(null)
       setMoveFolder(false)
       setVisible(false)
-      moveFolderFunc(newFolder)
+      moveFolderFunc({newFolder: newFolder, target: 'Home'})
+      setDestination({id: null, folderName: null})
     } else {
       const newFolder = {
         ...folder,
-        nestedUnder: destination
+        nestedUnder: destination.id
       }
-      setDestination(null)
       setMoveFolder(false)
       setVisible(false)
-      moveFolderFunc(newFolder)
+      moveFolderFunc({newFolder: newFolder, target: destination.folderName})
+      setDestination({id: null, folderName: null})
     }
   }
 
@@ -190,17 +191,17 @@ const Folder = ({folder, getTargetFolder, deleteFolder, renameFolder, moveFolder
                                   <ScrollView>
                                     {folders.map(f => {
                                       if (f.id !== folder.id) return (
-                                        <Pressable style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => setDestination(f.id)}>
-                                          <View style={f.id === destination ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
-                                            <FontAwesomeIcon icon={faFolder} size={30} color={f.id === destination ? 'black' : 'white'}/>
-                                            <Text style={f.id === destination ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>{f.fileName}</Text>
+                                        <Pressable style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => setDestination({id: f.id, folderName: f.fileName})}>
+                                          <View style={f.id === destination.id ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
+                                            <FontAwesomeIcon icon={faFolder} size={30} color={f.id === destination.id ? 'black' : 'white'}/>
+                                            <Text style={f.id === destination.id ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>{f.fileName}</Text>
                                           </View>
                                         </Pressable>)
                                     })}
-                                    <Pressable style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => setDestination('home')}>
-                                          <View style={destination === 'home' ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
-                                            <FontAwesomeIcon icon={faFolder} size={30} color={destination === 'home' ? 'black' : 'white'}/>
-                                            <Text style={destination === 'home' ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>Home</Text>
+                                    <Pressable style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => setDestination({id: 'home', folderName: null})}>
+                                          <View style={destination.id === 'home' ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
+                                            <FontAwesomeIcon icon={faFolder} size={30} color={destination.id === 'home' ? 'black' : 'white'}/>
+                                            <Text style={destination.id === 'home' ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>Home</Text>
                                           </View>
                                         </Pressable>
                                   </ScrollView>

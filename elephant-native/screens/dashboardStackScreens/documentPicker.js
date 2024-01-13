@@ -19,6 +19,7 @@ const FilePicker = () => {
     const [files, setFiles] = useState([])
     const [success, setSuccess] = useState(false)
     const [userInst, setUserInst] = useState()
+    const [loading, setLoading] = useState(false)
 
     const currentUser = firebaseAuth.currentUser.uid
     const auth = firebaseAuth
@@ -89,7 +90,8 @@ const FilePicker = () => {
     }
 
     const saveFiles = async () => {
-        
+
+        setLoading(true)
         const references =  await Promise.all(files.map(async (el) => {
 
             let versionNo = 0
@@ -132,11 +134,10 @@ const FilePicker = () => {
 
         }))
 
-        console.log(references)
-
 
         updateStaging(references, currentUser)
 
+        setLoading(false)
         const empty = []
         setFiles(empty)
         toast.show('File upload successful', {
@@ -170,17 +171,25 @@ const FilePicker = () => {
                 </View>
             }
             <Text style={styles.bigHeader}>Files to upload:</Text>
-            {files.length === 0 ? 
-                <View style={styles.noFileCon}>
-                    <Text style={styles.bigHeader}>No Files Uploaded</Text>
-                </View>
-            :
-                <View style={styles.scrollCon}>
-                    <ScrollView>
-                        {renderFiles()}
-                    </ScrollView>
-                </View>
-            }
+                {loading ? 
+                    <View style={styles.noFileCon}>
+                        <Text style={styles.bigHeader}>Uploading Files...</Text>
+                    </View>
+                :   
+                    <>
+                        {files.length === 0 ? 
+                            <View style={styles.noFileCon}>
+                                <Text style={styles.bigHeader}>No Files Selected</Text>
+                            </View>
+                        :
+                            <View style={styles.scrollCon}>
+                                <ScrollView>
+                                    {renderFiles()}
+                                </ScrollView>
+                            </View>
+                        }
+                    </>
+                }
             <View style={styles.buttonCon}>
 
                 <View style={styles.buttonWrapperSm}>

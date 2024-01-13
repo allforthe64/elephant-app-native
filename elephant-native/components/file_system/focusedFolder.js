@@ -17,6 +17,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
     const [newFolderName, setNewFolderName] = useState('')
     const [focusedFile, setFocusedFile] = useState()
     const [keybaordClosed, setKeyboardClosed] = useState(true)
+    
 
 
     //refresh the folder when the files change
