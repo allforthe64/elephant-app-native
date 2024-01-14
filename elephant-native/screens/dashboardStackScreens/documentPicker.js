@@ -100,9 +100,8 @@ const FilePicker = () => {
                     versionNo ++
                 }
             })
-            console.log(versionNo)
 
-            const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
+            const formattedDate = format(new Date(), `yyyy-MM-dd:hh:mm:ss::${Date.now()}`)
 
             try {
                 const blob = await new Promise((resolve, reject) => {

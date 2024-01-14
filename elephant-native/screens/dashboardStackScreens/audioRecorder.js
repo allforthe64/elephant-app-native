@@ -1,5 +1,5 @@
 import { Audio } from 'expo-av'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Text, View , TouchableOpacity, ScrollView, StyleSheet, Image} from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMicrophone, faSquare, faXmark } from '@fortawesome/free-solid-svg-icons'
@@ -9,15 +9,36 @@ import { firebaseAuth } from '../../firebaseConfig'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { storage } from '../../firebaseConfig'
 import {ref, uploadBytes} from 'firebase/storage'
+import { userListener } from '../../storage'
+import { format } from 'date-fns'
+import { useToast } from 'react-native-toast-notifications'
 
 const AudioRecorder = () => {
 
     try {
         const [recording, setRecording] = useState()
-    const [recordings, setRecordings] = useState([])
-    const [success, setSuccess] = useState(false)
+        const [recordings, setRecordings] = useState([])
+        const [userInst, setUserInst] = useState()
+        const [loading, setLoading] = useState(false)
 
-    const currentUser = firebaseAuth.currentUser.uid
+        const currentUser = firebaseAuth.currentUser.uid
+        const toast = useToast()
+
+        //get the current user 
+        useEffect(() => {
+            if (firebaseAuth) {
+            try {
+                const getCurrentUser = async () => {
+                const unsubscribe = await userListener(setUserInst, false, currentUser)
+            
+                return () => unsubscribe()
+                }
+                getCurrentUser()
+            } catch (err) {console.log(err)}
+            } else console.log('no user yet')
+            
+        }, [firebaseAuth])
+
 
     const startRecording = async () => {
         try {
@@ -89,12 +110,22 @@ const AudioRecorder = () => {
         setRecordings(arr)
     }
 
-    console.log(recordings)
-
     const saveFiles = async () => {
 
+        setLoading(true)
+
         const references = await Promise.all(recordings.map(async (el) => {
-            const filename = `${el.name}^${currentUser}.${el.file.split('.')[1]}`
+
+            let versionNo = 0
+            userInst.fileRefs.forEach(fileRef => {
+                console.log(el.name)
+                console.log(fileRef.fileName)
+                if (fileRef.fileName === (el.name + '.' + el.file.split('.')[1]) && fileRef.fileName.split('.')[1] === el.file.split('.')[1]) {
+                    versionNo ++
+                }
+            })
+
+            const formattedDate = format(new Date(), `yyyy-MM-dd:hh:mm:ss::${Date.now()}`)
 
             try {
                 const blob = await new Promise((resolve, reject) => {
@@ -111,6 +142,7 @@ const AudioRecorder = () => {
                     xhr.send(null)
                 })
     
+                const filename = `${currentUser}/${formattedDate}`
                 const fileRef = ref(storage, filename)
                 uploadBytes(fileRef, blob)
     
@@ -118,22 +150,28 @@ const AudioRecorder = () => {
                 console.log(err)
             }
 
+            console.log(el.file.split('.')[1])
+
             const reference = await addfile({
-                name: filename,
+                name: el.name + '.' + el.file.split('.')[1],
                 fileType: el.file.split('.')[1],
                 size: el.duration,
-                uri: el.file
+                uri: el.file,
+                user: currentUser, 
+                timeStamp: formattedDate, 
+                version: versionNo
             })
             return reference
 
         }))
 
-        console.log('references: ', references)
-
         updateStaging(references, currentUser)
         const empty = []
         setRecordings(empty)
-        setSuccess(true)
+        setLoading(false)
+        toast.show('File upload successful', {
+            type: 'success'
+        })
           
     }
 
@@ -154,27 +192,26 @@ const AudioRecorder = () => {
             paddingBottom: '10%',
             paddingTop: insets.top,
             paddingBottom: insets.bottom}}>
-            {success && 
-                    <View style={styles.successContainer}>
-                        <View style={styles.innerSuccessContainer}>
-                            <Text style={{color: 'green'}}>Upload Successful!</Text>
-                            <TouchableOpacity onPress={() => setSuccess(false)}>
-                                <FontAwesomeIcon icon={faXmark} size={20} color={'black'} />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-            }
             <Text style={styles.bigHeader}>Audio Recordings:</Text>
-            {recordings.length === 0 ? 
+
+            {loading ? 
                 <View style={styles.noRecCon}>
-                    <Text style={styles.bigHeader}>No Recordings Yet</Text>
+                    <Text style={styles.bigHeader}>Uploading Recordings...</Text>
                 </View>
             :
-                <View style={styles.scrollCon}>
-                    <ScrollView>
-                        {getRecordingLines()}
-                    </ScrollView>
-                </View>
+                <>
+                    {recordings.length === 0 ? 
+                        <View style={styles.noRecCon}>
+                            <Text style={styles.bigHeader}>No Recordings Yet</Text>
+                        </View>
+                    :
+                        <View style={styles.scrollCon}>
+                            <ScrollView>
+                                {getRecordingLines()}
+                            </ScrollView>
+                        </View>
+                    }
+                </>
             }
             <View style={styles.wrapperContainer}>
                 <View style={recording ? styles.buttonWrapperIcon : styles.buttonWrapperRed}>
