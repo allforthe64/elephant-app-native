@@ -89,6 +89,7 @@ export default function Files({navigation: { navigate }, route}) {
       //reset the delete array
       if (index === 'delete') {
         const updatedUser = {...currentUser, files: input.newFolders, fileRefs: input.refsToKeep} 
+        input.refsToDelete.forEach(async (ref) => await deleteFileObj(ref.fileId))
         await updateUser(updatedUser)
         toast.show(`Deleted ${input.target}`, {
           type: 'success'
@@ -152,11 +153,12 @@ export default function Files({navigation: { navigate }, route}) {
 
   //delete folder by filtering for folders that don't match the target
   //filter for all fileRefs that don't have a flag matching the target
+  //delete the physical files
   const deleteFolder = (target) => {
-    console.log(target)
     const refsToKeep = currentUser.fileRefs.filter(ref => ref.flag !== target.id)
     const newFolders = currentUser.files.filter(file => file.id !== target.id)
-    editUser('folder', {refsToKeep: refsToKeep, newFolders: newFolders, target: target.folderName}, 'delete')
+    const refsToDelete = currentUser.fileRefs.filter(ref => {if (ref.flag === target.id) return ref})
+    editUser('folder', {refsToKeep: refsToKeep, newFolders: newFolders, target: target.folderName, refsToDelete: refsToDelete}, 'delete')
   }
 
   //call the edit user function with a new folder object containing the new folder name
