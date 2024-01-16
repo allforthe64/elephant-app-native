@@ -97,13 +97,14 @@ const CameraComponent = () => {
             }
             cameraRef.current.recordAsync(options).then((recordedVideo) => {
                 setVideoObj(recordedVideo)
-                setRecording(false)
             })
         }
 
         //stop recording video
         const stopVideo = () => {
+            alert('running stop function')
             cameraRef.current.stopRecording()
+            setRecording(false)
         }
 
         const saveToElephant = async (videoMode) => {
