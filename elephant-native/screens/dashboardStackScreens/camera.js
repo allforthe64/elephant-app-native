@@ -96,6 +96,7 @@ const CameraComponent = () => {
                 codec: VideoCodec.H264
             }
             cameraRef.current.recordAsync(options).then((recordedVideo) => {
+                console.log('this is the recordedVideo: ', recordedVideo)
                 setVideoObj(recordedVideo)
             })
         }
