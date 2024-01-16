@@ -14,6 +14,7 @@ import { storage } from '../../firebaseConfig'
 import {ref, uploadBytes} from 'firebase/storage'
 import { faCircle as solidCircle } from '@fortawesome/free-solid-svg-icons'
 import { PinchGestureHandler } from 'react-native-gesture-handler'
+import { useToast } from 'react-native-toast-notifications'
 
 const CameraComponent = () => {
 
@@ -23,7 +24,6 @@ const CameraComponent = () => {
         const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState()
         const [hasAudioRecordingPermission, setHasAudioRecordingPermission] = useState()
         const [photo, setPhoto] = useState()
-        const [success, setSuccess] = useState(false)
         const [session, setSession] = useState(true)
         const [currentUser, setCurrentUser] = useState()
         const [loading, setLoading] = useState(true)
@@ -34,6 +34,8 @@ const CameraComponent = () => {
         const [zoom, setZoom] = useState(0)
 
         const {authUser} = useContext(AuthContext)
+
+        const toast = useToast()
 
         //initialize animation ref
         let fadeAnim = useRef(new Animated.Value(100)).current
@@ -91,17 +93,15 @@ const CameraComponent = () => {
         }
 
         //take a video using takeAsyncVideo method
-        const takeVideo = () => {
+        const takeVideo = async () => {
             setRecording(true)
             const options = {
                 quality: '1080p',
                 mute: false,
                 codec: VideoCodec.H264
             }
-            cameraRef.current.recordAsync(options).then((recordedVideo) => {
-                console.log('this is the recordedVideo: ', recordedVideo)
-                setVideoObj(recordedVideo)
-            })
+            const recordedVideo = await cameraRef.current.recordAsync(options)
+            setVideoObj(recordedVideo)
         }
 
         //stop recording video
@@ -151,8 +151,6 @@ const CameraComponent = () => {
                         })
                     updateStaging([reference], currentUser)
 
-                    setSuccess(true)
-
                 } catch (err) {
                     console.log(err)
                 }
@@ -192,7 +190,9 @@ const CameraComponent = () => {
                         })
                     updateStaging([reference], currentUser)
 
-                    setSuccess(true)
+                    toast.show('Upload successful', {
+                        type: 'success'
+                    })
 
                 } catch (err) {
                     console.log(err)
@@ -286,6 +286,7 @@ const CameraComponent = () => {
             })
         }
 
+        console.log('this is the recording status: ', recording)
         console.log('this is the video object: ', videoObj)
 
         return (
@@ -421,16 +422,6 @@ const CameraComponent = () => {
                                             <FontAwesomeIcon icon={faRepeat} color={'white'} size={30} />
                                         </TouchableOpacity>
                                 </View>
-                                {success && 
-                                    <View style={styles.successContainer}>
-                                        <View style={styles.innerContainer}>
-                                            <Text style={{color: 'green'}}>Upload Successful!</Text>
-                                            <TouchableOpacity onPress={() => setSuccess(false)}>
-                                                <FontAwesomeIcon icon={faXmark} size={20} color={'black'} />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                }
                                 <View style={styles.buttonContainer}>
                                     <TouchableOpacity onPress={() => setVideo(prev => !prev)} style={video ? {/* backgroundColor: 'white' */backgroundColor: 'rgba(0, 0, 0, .5)', width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: '10%', marginTop: '5%'} : { width: '14%', height: '55%', borderRadius: 100, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, .5)', marginRight: '10%', marginTop: '5%'}}>
                                             <FontAwesomeIcon icon={video ? faCamera : faVideoCamera} color={/* video ? 'black' :  */'white'} size={30} />
@@ -471,16 +462,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-end'
-    },
-    successContainer: {
-        position: 'absolute',
-        top: 0,
-        backgroundColor: 'white',
-        width: '100%',
-        height: '5%',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
     },
     innerContainer: {
         display: 'flex',

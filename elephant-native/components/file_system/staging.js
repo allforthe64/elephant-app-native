@@ -13,8 +13,6 @@ const Staging = ({staging, reset, folders, deleteFile, renameFile, moveFile, use
 
     const insets = useSafeAreaInsets()
 
-    console.log(userFiles)
-
     useEffect(() => {
         if (focusedFile) {
             const newFile = userFiles.filter(fileRef => fileRef.fileId === focusedFile.fileId)
