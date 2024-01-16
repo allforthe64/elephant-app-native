@@ -111,6 +111,7 @@ const CameraComponent = () => {
 
             //save video
             if (videoMode) {
+                console.log('running video upload')
                 setVideoObj(undefined)
 
                 //create new formatted date for file
@@ -280,6 +281,8 @@ const CameraComponent = () => {
                 }
             })
         }
+
+        console.log('this is the video object: ', videoObj)
 
         return (
             <>
