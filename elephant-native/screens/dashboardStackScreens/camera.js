@@ -21,6 +21,7 @@ const CameraComponent = () => {
         const cameraRef = useRef()
         const [hasCameraPermission, setHasCameraPermission] = useState()
         const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState()
+        const [hasAudioRecordingPermission, setHasAudioRecordingPermission] = useState
         const [photo, setPhoto] = useState()
         const [success, setSuccess] = useState(false)
         const [session, setSession] = useState(true)
@@ -54,8 +55,10 @@ const CameraComponent = () => {
             (async () => {
                 const cameraPermission = await Camera.requestCameraPermissionsAsync()
                 const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync()
+                const audioRecorderingPermission = await Audio.requestPermissionsAsync()
                 setHasCameraPermission(cameraPermission.status === "granted")
                 setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted")
+                setHasAudioRecordingPermission(audioRecorderingPermission.status === "granted")
             })()
         }, [])
 
@@ -69,7 +72,7 @@ const CameraComponent = () => {
         }, [photo])
 
         //render content based on permissions
-        if (hasCameraPermission === undefined) {
+        if (hasCameraPermission === undefined || hasMediaLibraryPermission === undefined || hasAudioRecordingPermission === undefined) {
             return <Text>Requesting permissions...</Text>
         } else if (!hasCameraPermission) {
             return <Text>Permission for camera not granted. Please change this in settings.</Text>
