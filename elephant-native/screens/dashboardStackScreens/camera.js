@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faXmark, faCloudArrowUp, faEnvelope, faDownload, faTrash, faRepeat, faVideoCamera, faCamera, faSquare } from '@fortawesome/free-solid-svg-icons'
 import { faCircle } from '@fortawesome/free-regular-svg-icons'
 import { Camera, CameraType, VideoCodec } from 'expo-camera'
-import { Video } from 'expo-av'
+import { Video, Audio } from 'expo-av'
 import { shareAsync } from 'expo-sharing'
 import * as MediaLibrary from 'expo-media-library'
 import { format } from 'date-fns'
@@ -21,7 +21,7 @@ const CameraComponent = () => {
         const cameraRef = useRef()
         const [hasCameraPermission, setHasCameraPermission] = useState()
         const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState()
-        const [hasAudioRecordingPermission, setHasAudioRecordingPermission] = useState
+        const [hasAudioRecordingPermission, setHasAudioRecordingPermission] = useState()
         const [photo, setPhoto] = useState()
         const [success, setSuccess] = useState(false)
         const [session, setSession] = useState(true)
@@ -55,10 +55,10 @@ const CameraComponent = () => {
             (async () => {
                 const cameraPermission = await Camera.requestCameraPermissionsAsync()
                 const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync()
-                const audioRecorderingPermission = await Audio.requestPermissionsAsync()
+                const {status} = await Audio.requestPermissionsAsync()
                 setHasCameraPermission(cameraPermission.status === "granted")
                 setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted")
-                setHasAudioRecordingPermission(audioRecorderingPermission.status === "granted")
+                setHasAudioRecordingPermission(status === "granted")
             })()
         }, [])
 
