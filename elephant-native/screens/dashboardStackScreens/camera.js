@@ -97,7 +97,6 @@ const CameraComponent = () => {
             try {
                 setRecording(true)
                 const options = {
-                    quality: '1080p',
                     mute: false,
                     codec: VideoCodec.H264
                 }
