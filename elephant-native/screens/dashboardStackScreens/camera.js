@@ -57,7 +57,7 @@ const CameraComponent = () => {
             (async () => {
                 const cameraPermission = await Camera.requestCameraPermissionsAsync()
                 const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync()
-                const {status} = await Audio.requestPermissionsAsync()
+                const {status} = await Audio.requestPermissionsAsync() 
                 setHasCameraPermission(cameraPermission.status === "granted")
                 setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted")
                 setHasAudioRecordingPermission(status === "granted")
@@ -94,14 +94,16 @@ const CameraComponent = () => {
 
         //take a video using takeAsyncVideo method
         const takeVideo = async () => {
-            setRecording(true)
-            const options = {
-                quality: '1080p',
-                mute: false,
-                codec: VideoCodec.H264
-            }
-            const recordedVideo = await cameraRef.current.recordAsync(options)
-            setVideoObj(recordedVideo)
+            try {
+                setRecording(true)
+                const options = {
+                    quality: '1080p',
+                    mute: false,
+                    codec: VideoCodec.H264
+                }
+                const recordedVideo = await cameraRef.current.recordAsync(options)
+                setVideoObj(recordedVideo)
+            } catch (error) { console.log('error within recording function: ', error) }
         }
 
         //stop recording video
