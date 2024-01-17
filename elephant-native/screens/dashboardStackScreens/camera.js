@@ -392,7 +392,7 @@ const CameraComponent = () => {
                             onGestureEvent={onPinchEvent}
                             /* onHandlerStateChange={}   */  
                         >
-                            <Camera style={styles.containerCenter} ref={cameraRef} type={type} zoom={zoom}>
+                            <Camera style={styles.containerCenter} ref={cameraRef} /* type={type} */ zoom={zoom}>
                                 <View style={{
                                         position: 'absolute',
                                         top: 0,
