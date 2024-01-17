@@ -144,7 +144,7 @@ const CameraComponent = () => {
 
                     const reference = await addfile({
                             name: filename,
-                            fileType: `${videoObj.uri.split('.')[1]}`,
+                            fileType: 'Video',
                             size: 'foobar',
                             uri: videoObj.uri,
                             user: currentUser,
@@ -152,6 +152,9 @@ const CameraComponent = () => {
                             timeStamp: `${formattedDate}.${videoObj.uri.split('.')[1]}`
                         })
                     updateStaging([reference], currentUser)
+                    toast.show('Upload successful', {
+                        type: 'success'
+                    })
 
                 } catch (err) {
                     console.log(err)
@@ -191,7 +194,6 @@ const CameraComponent = () => {
                             timeStamp: `${formattedDate}.jpg`
                         })
                     updateStaging([reference], currentUser)
-
                     toast.show('Upload successful', {
                         type: 'success'
                     })
