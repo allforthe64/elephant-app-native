@@ -331,7 +331,7 @@ const CameraComponent = () => {
                                     <TouchableOpacity style={{marginBottom: 25}} onPress={savePhoto}>
                                         <FontAwesomeIcon icon={faDownload} size={30} color='white'/>
                                     </TouchableOpacity> 
-                                    <TouchableOpacity style={{marginBottom: 20}} onPress={() => saveToElephant(true)}>
+                                    <TouchableOpacity style={{marginBottom: 20}} onPress={() => saveToElephant(false)}>
                                         <FontAwesomeIcon icon={faCloudArrowUp} size={30} color='white'/>
                                     </TouchableOpacity> 
                                     <TouchableOpacity onPress={() => setPhoto(undefined)}>
