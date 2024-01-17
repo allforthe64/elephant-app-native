@@ -97,12 +97,13 @@ const CameraComponent = () => {
             try {
                 setRecording(true)
                 const options = {
+                    quality: 1,
                     mute: false,
                     codec: VideoCodec.H264
                 }
-                const recordedVideo = await cameraRef.current.recordAsync(/* options */)
+                const recordedVideo = await cameraRef.current.recordAsync(options)
                 setVideoObj(recordedVideo)
-            } catch (error) { console.log('error within recording function: ', error) }
+            } catch (error) { alert('error within recording function: ', error) }
         }
 
         //stop recording video
@@ -392,7 +393,7 @@ const CameraComponent = () => {
                             onGestureEvent={onPinchEvent}
                             /* onHandlerStateChange={}   */  
                         >
-                            <Camera style={styles.containerCenter} ref={cameraRef} /* type={type} */ zoom={zoom}>
+                            <Camera style={styles.containerCenter} ref={cameraRef} type={type} zoom={zoom}>
                                 <View style={{
                                         position: 'absolute',
                                         top: 0,
