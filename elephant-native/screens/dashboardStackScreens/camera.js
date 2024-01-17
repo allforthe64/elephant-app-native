@@ -100,7 +100,7 @@ const CameraComponent = () => {
                     mute: false,
                     codec: VideoCodec.H264
                 }
-                const recordedVideo = await cameraRef.current.recordAsync(options)
+                const recordedVideo = await cameraRef.current.recordAsync(/* options */)
                 setVideoObj(recordedVideo)
             } catch (error) { console.log('error within recording function: ', error) }
         }
