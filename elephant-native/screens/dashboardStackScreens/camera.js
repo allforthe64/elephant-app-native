@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState, useContext} from 'react'
-import { View, Text, StatusBar, StyleSheet, Animated, Image, TouchableOpacity } from 'react-native'
+import { View, Text, StatusBar, StyleSheet, Animated, Image, TouchableOpacity, Platform } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faXmark, faCloudArrowUp, faEnvelope, faDownload, faTrash, faRepeat, faVideoCamera, faCamera, faSquare } from '@fortawesome/free-solid-svg-icons'
+import { faCloudArrowUp, faEnvelope, faDownload, faTrash, faRepeat, faVideoCamera, faCamera, faSquare } from '@fortawesome/free-solid-svg-icons'
 import { faCircle } from '@fortawesome/free-regular-svg-icons'
 import { Camera, CameraType, VideoCodec } from 'expo-camera'
 import { Video, Audio } from 'expo-av'
@@ -137,18 +137,18 @@ const CameraComponent = () => {
                         xhr.send(null)
                     })
 
-                    const filename = `${formattedDate}.mp4`
+                    const filename = `${formattedDate}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}`
                     const fileRef = ref(storage, `${currentUser}/${filename}`)
                     uploadBytes(fileRef, blob)
 
                     const reference = await addfile({
                             name: filename,
-                            fileType: 'mp4',
+                            fileType: `${Platform.OS === 'ios' ? 'mov' : 'mp4'}`,
                             size: 'foobar',
                             uri: videoObj.uri,
                             user: currentUser,
                             version: 0,
-                            timeStamp: `${formattedDate}.mp4`
+                            timeStamp: `${formattedDate}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}`
                         })
                     updateStaging([reference], currentUser)
                     toast.show('Upload successful', {
