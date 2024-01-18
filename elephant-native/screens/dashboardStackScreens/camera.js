@@ -108,7 +108,6 @@ const CameraComponent = () => {
 
         //stop recording video
         const stopVideo = () => {
-            alert('running stop function')
             cameraRef.current.stopRecording()
             setRecording(false)
         }
@@ -138,18 +137,18 @@ const CameraComponent = () => {
                         xhr.send(null)
                     })
 
-                    const filename = `${formattedDate}.${videoObj.uri.split('.')[1]}`
+                    const filename = `${formattedDate}.mp4`
                     const fileRef = ref(storage, `${currentUser}/${filename}`)
                     uploadBytes(fileRef, blob)
 
                     const reference = await addfile({
                             name: filename,
-                            fileType: 'Video',
+                            fileType: 'mp4',
                             size: 'foobar',
                             uri: videoObj.uri,
                             user: currentUser,
                             version: 0,
-                            timeStamp: `${formattedDate}.${videoObj.uri.split('.')[1]}`
+                            timeStamp: `${formattedDate}.mp4`
                         })
                     updateStaging([reference], currentUser)
                     toast.show('Upload successful', {
@@ -289,9 +288,6 @@ const CameraComponent = () => {
                 }
             })
         }
-
-        console.log('this is the recording status: ', recording)
-        console.log('this is the video object: ', videoObj)
 
         return (
             <>
