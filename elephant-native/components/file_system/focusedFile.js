@@ -8,7 +8,7 @@ import * as MediaLibrary from 'expo-media-library'
 import * as FileSystem from 'expo-file-system'
 import { Image } from 'react-native'
 import { Linking } from 'react-native'
-import { Audio } from 'expo-av'
+import { Audio, Video } from 'expo-av'
 import { firebaseAuth } from '../../firebaseConfig'
 import { userListener } from '../../storage'
 import { useToast } from 'react-native-toast-notifications'
@@ -308,7 +308,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
             </View>
             <View style={{paddingLeft: '5%'}}>
 
-            {/* if the add folder state is toggled on, display the form for creating a new folder*/}
+            {/* handle file rename*/}
             {add ?  
                     <View style={{paddingTop: '25%'}}>
                         <Text style={{color: 'white', fontSize: 35, fontWeight: '700'}}>Rename File:</Text>
@@ -363,8 +363,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                         </View>
                     </View>            
                     : expanded ? 
-
-                    <Modal animationType='slide' presentationStyle='pageSheet'>
+                    <Modal animationType='slide' presentationStyle='pageSheet'> {/* Expanded Image */}
                         <View style={{ paddingTop: '10%', backgroundColor: 'rgb(23 23 23)', height: '100%', width: '100%'}}>
                             <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '5%', width: '100%'}}>
                                 <Pressable onPress={() => setExpanded(false)}>
@@ -392,11 +391,20 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                         </View>
                                     }
                                 </View>
-                            :(file.fileName.split('.')[1] === 'pdf') ? 
-                                <></>
+                            :(file.fileName.split('.')[1] === 'mp4' || file.fileName.split('.')[1] === 'mov') ? 
+                                <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '10%', marginBottom: '10%', height: 200, width: 340}}>
+                                    {fileURL ? 
+                                        <Video style={{flex: 1, alignSelf: 'stretch', height: '100%'}} source={{uri: `${fileURL}`}} useNativeControls resizeMode ='contain' isLooping/>
+                                    : 
+                                        <View style={{height: 150}}>
+                                            <FontAwesomeIcon icon={faImage} color='white' size={125}/>
+                                            <Text style={{color: 'white', textAlign: 'center', marginTop: 15, fontSize: 10}}>Fetching Video...</Text>
+                                        </View>
+                                    }
+                                </View>
                             : <></>
                             }
-                            <View style={(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {height: '65%', width: '90%', marginTop: '5%'} : {height: '40%', width: '90%'}}>
+                            <View style={(file.fileName.split('.')[1] === 'mp4' || file.fileName.split('.')[1] === 'mov') ? {height: '37%', width: '90%'} : (file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {height: '72.5%', width: '90%', marginTop: '5%'} : {height: '40%', width: '90%'}}>
                                 
                                 <Text style={{fontSize: 22, fontWeight: 'bold', color: 'white', marginTop: '5%'}} numberOfLines={3}>{newFileName}</Text>
 
@@ -444,7 +452,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                 </TouchableOpacity>
                                         </View>
                                     </View>
-                                    : fileObj.documentType === 'm4a' ? 
+                                    : fileObj.documentType === 'm4a' || fileObj.documentType === 'mp3' ? 
                                         <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
                                             <View style={{width: '70%',
                                                     borderColor: '#777',

@@ -82,14 +82,18 @@ const CameraComponent = () => {
 
         //take photo using takePictureAsync method
         const takePic = async () => {
-            const options = {
-                quality: 1,
-                base64: true,
-                exif: false
+            try {
+                const options = {
+                    quality: 1,
+                    base64: true,
+                    exif: false
+                }
+    
+                const newPhoto = await cameraRef.current.takePictureAsync(options)
+                setPhoto(newPhoto)
+            } catch (err) {
+                alert(err)
             }
-
-            const newPhoto = await cameraRef.current.takePictureAsync(options)
-            setPhoto(newPhoto)
         }
 
         //take a video using takeAsyncVideo method
@@ -156,7 +160,7 @@ const CameraComponent = () => {
                     })
 
                 } catch (err) {
-                    console.log(err)
+                    alert(err)
                 }
             } else {
                 setPhoto(undefined)
@@ -198,7 +202,7 @@ const CameraComponent = () => {
                     })
 
                 } catch (err) {
-                    console.log(err)
+                    alert(err)
                 }
             }
         }
@@ -234,7 +238,7 @@ const CameraComponent = () => {
         //if session mode is turned on after picture is taken, immediately save the photo to elephant storage
         if (photo) {
             if (session === true) {
-                saveToElephant()
+                saveToElephant(false)
             }
             
         }

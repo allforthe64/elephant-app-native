@@ -20,8 +20,6 @@ export default function DashMain({navigation: { navigate }}) {
 
   const insets = useSafeAreaInsets()
 
-  console.log(auth.currentUser)
-
   return (
     <View>
         <Image style={styles.bgImg} source={require('../../assets/elephant-dashboard.jpg')} />
