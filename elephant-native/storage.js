@@ -36,7 +36,8 @@ export function addUser(user) {
     files: [{id: 1, fileName: 'File 1', nestedUnder: ''}, {id: 2, fileName: 'File 2', nestedUnder: ''}, {id: 3, fileName: 'File 3', nestedUnder: ''}, {id: 4, fileName: 'File 4', nestedUnder: ''}, {id: 5, fileName: 'File 5', nestedUnder: ''}],
     fileRefs: [],
     sharedWith: {},
-    passcodeAuthenticated: false
+    passcodeAuthenticated: false,
+    spaceAvailable: 5000000000
 })
 }
 
