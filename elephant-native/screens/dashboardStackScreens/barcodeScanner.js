@@ -8,14 +8,32 @@ import { firebaseAuth } from '../../firebaseConfig'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { storage } from '../../firebaseConfig'
 import {ref, uploadBytes} from 'firebase/storage'
+import {format} from 'date-fns'
+import { userListener } from '../../storage'
 
 const Scanner = () => {
 
     const [hasPermissions, setHasPermissions] = useState(false)
     const [scanData, setScanData] = useState()
     const [urls, setUrls] = useState([])
+    const [userInst, setUserInst] = useState()
 
     const currentUser = firebaseAuth.currentUser.uid
+
+    //get the current user 
+    useEffect(() => {
+        if (currentUser) {
+        try {
+            const getCurrentUser = async () => {
+            const unsubscribe = await userListener(setUserInst, false, currentUser)
+        
+            return () => unsubscribe()
+            }
+            getCurrentUser()
+        } catch (err) {console.log(err)}
+        } else console.log('no user yet')
+        
+    }, [currentUser])
 
     useEffect(() => {
         (async() => {
@@ -58,12 +76,21 @@ const Scanner = () => {
 
         const references = await Promise.all(urls.map(async (el, i) => {
 
-            const fileName = `URL for: ${el.title}^${currentUser}.txt`
+            let versionNo = 0
+                userInst.fileRefs.forEach(fileRef => {
+                if (fileRef.fileName === el.name && fileRef.fileName.split('.')[1] === el.name.split('.')[1]) {
+                    versionNo ++
+                }
+            })
+
+            const fileName = `URL for: ${el.title}.txt`
+
+            const formattedDate = format(new Date(), `yyyy-MM-dd:hh:mm:ss::${Date.now()}`)
 
             const textFile = new Blob([`${el.data}`], {
             type: "text/plain;charset=utf-8",
                 });
-            const fileUri = `${fileName}`
+            const fileUri = `${currentUser}/${formattedDate}`
             const fileRef = ref(storage, fileName)
             uploadBytes(fileRef, textFile)
 
@@ -73,7 +100,7 @@ const Scanner = () => {
                 linksTo: el.data,
                 fileType: 'txt',
                 size: textFile.size,
-                uri: `${fileUri}`
+                user: currentUser, timeStamp: formattedDate, version: versionNo
             }, false)
 
             return reference
