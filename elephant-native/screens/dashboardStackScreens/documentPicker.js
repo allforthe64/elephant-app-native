@@ -87,60 +87,79 @@ const FilePicker = () => {
     
         setFiles(arr)
     }
-
+    
     const saveFiles = async () => {
 
         setLoading(true)
+        let exceded = false
+        let uploadSize = 0
+
         const references =  await Promise.all(files.map(async (el) => {
 
-            let versionNo = 0
-            userInst.fileRefs.forEach(fileRef => {
-                console.log(el)
-                if (fileRef.fileName === el.name && fileRef.fileName.split('.')[1] === el.name.split('.')[1]) {
-                    versionNo ++
-                }
-            })
+            if (userInst.spaceAvailable - el.size < 0) {
+                exceded = true
+            } else {
+                uploadSize += el.size
+            }
 
-            const formattedDate = format(new Date(), `yyyy-MM-dd:hh:mm:ss::${Date.now()}`)
-
-            try {
-                const blob = await new Promise((resolve, reject) => {
-                    const xhr = new XMLHttpRequest()
-                    xhr.onload = () => {
-                        resolve(xhr.response) 
+            if (!exceded) {
+                let versionNo = 0
+                userInst.fileRefs.forEach(fileRef => {
+                    if (fileRef.fileName === el.name && fileRef.fileName.split('.')[1] === el.name.split('.')[1]) {
+                        versionNo ++
                     }
-                    xhr.onerror = (e) => {
-                        reject(e)
-                        reject(new TypeError('Network request failed'))
-                    }
-                    xhr.responseType = 'blob'
-                    xhr.open('GET', el.uri, true)
-                    xhr.send(null)
                 })
     
-                const filename = `${currentUser}/${formattedDate}`
-                const fileRef = ref(storage, filename)
-                uploadBytes(fileRef, blob)
-                
-                const reference = await addfile({...el, name: el.name, user: currentUser, timeStamp: formattedDate, version: versionNo})
-                
-                return reference
-
-            } catch (err) {
-                console.log(err)
+                const formattedDate = format(new Date(), `yyyy-MM-dd:hh:mm:ss::${Date.now()}`)
+    
+    
+                try {
+                    const blob = await new Promise((resolve, reject) => {
+                        const xhr = new XMLHttpRequest()
+                        xhr.onload = () => {
+                            resolve(xhr.response) 
+                        }
+                        xhr.onerror = (e) => {
+                            reject(e)
+                            reject(new TypeError('Network request failed'))
+                        }
+                        xhr.responseType = 'blob'
+                        xhr.open('GET', el.uri, true)
+                        xhr.send(null)
+                    })
+        
+                    const filename = `${currentUser}/${formattedDate}`
+                    const fileRef = ref(storage, filename)
+                    uploadBytes(fileRef, blob)
+                    
+                    const reference = await addfile({...el, name: el.name, user: currentUser, timeStamp: formattedDate, version: versionNo})
+                    
+                    return reference
+    
+                } catch (err) {
+                    console.log(err)
+                }
             }
 
         }))
 
+        if (!exceded) {
+            updateStaging(references, currentUser)
 
-        updateStaging(references, currentUser)
-
-        setLoading(false)
-        const empty = []
-        setFiles(empty)
-        toast.show('File upload successful', {
-            type: 'success'
-        })
+            setLoading(false)
+            const empty = []
+            setFiles(empty)
+            toast.show('File upload successful', {
+                type: 'success'
+            }) 
+        } else {
+            setLoading(false)
+            const empty = []
+            setFiles(empty)
+            toast.show('Storage limit exceded :(', {
+                type: 'danger'
+            }) 
+        }
           
     }
 
