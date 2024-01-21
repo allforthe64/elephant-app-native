@@ -74,11 +74,11 @@ const Scanner = () => {
     const submit = async () => {
 
 
-        const references = await Promise.all(urls.map(async (el, i) => {
+        const references = await Promise.all(urls.map(async (el) => {
 
             let versionNo = 0
                 userInst.fileRefs.forEach(fileRef => {
-                if (fileRef.fileName === el.name && fileRef.fileName.split('.')[1] === el.name.split('.')[1]) {
+                if (fileRef.fileName === `URL for: ${el.title}.txt`) {
                     versionNo ++
                 }
             })
@@ -91,7 +91,7 @@ const Scanner = () => {
             type: "text/plain;charset=utf-8",
                 });
             const fileUri = `${currentUser}/${formattedDate}`
-            const fileRef = ref(storage, fileName)
+            const fileRef = ref(storage, fileUri)
             uploadBytes(fileRef, textFile)
 
 

@@ -404,7 +404,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                 </View>
                             : <></>
                             }
-                            <View style={(file.fileName.split('.')[1] === 'mp4' || file.fileName.split('.')[1] === 'mov') ? {height: '37%', width: '90%'} : (file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {height: '72.5%', width: '90%', marginTop: '5%'} : {height: '40%', width: '90%'}}>
+                            <View style={(file.fileName.split('.')[1] === 'mp4' || file.fileName.split('.')[1] === 'mov') ? {height: '37%', width: '90%'} : file.fileName.includes('URL for') ? {height: '70%', width: '90%'} : (file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {height: '72.5%', width: '90%', marginTop: '5%'} : {height: '40%', width: '90%'}}>
                                 
                                 <Text style={{fontSize: 22, fontWeight: 'bold', color: 'white', marginTop: '5%'}} numberOfLines={3}>{newFileName}</Text>
 
