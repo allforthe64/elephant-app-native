@@ -10,6 +10,7 @@ import { storage } from '../../firebaseConfig'
 import {ref, uploadBytes} from 'firebase/storage'
 import {format} from 'date-fns'
 import { userListener } from '../../storage'
+import { useToast } from 'react-native-toast-notifications'
 
 const Scanner = () => {
 
@@ -18,7 +19,24 @@ const Scanner = () => {
     const [urls, setUrls] = useState([])
     const [userInst, setUserInst] = useState()
 
+    const toast = useToast()
+
     const currentUser = firebaseAuth.currentUser.uid
+
+    //get the current user 
+    useEffect(() => {
+        if (currentUser) {
+        try {
+            const getCurrentUser = async () => {
+            const unsubscribe = await userListener(setUserInst, false, currentUser)
+        
+            return () => unsubscribe()
+            }
+            getCurrentUser()
+        } catch (err) {console.log(err)}
+        } else console.log('no user yet')
+        
+    }, [currentUser])
 
     //get the current user 
     useEffect(() => {
@@ -71,19 +89,24 @@ const Scanner = () => {
         setUrls(arr)
     }
 
+    
     const submit = async () => {
 
-
+        let exceded = false
+        let uploadSize = 0
+        
         const references = await Promise.all(urls.map(async (el) => {
+
+            console.log(el)
+
+            const fileName = el.title ? `URL for: ${el.title}.txt` : `URL for: ${el.data}.txt`
 
             let versionNo = 0
                 userInst.fileRefs.forEach(fileRef => {
-                if (fileRef.fileName === `URL for: ${el.title}.txt`) {
+                if (fileRef.fileName === fileName) {
                     versionNo ++
                 }
             })
-
-            const fileName = `URL for: ${el.title}.txt`
 
             const formattedDate = format(new Date(), `yyyy-MM-dd:hh:mm:ss::${Date.now()}`)
 
@@ -92,21 +115,38 @@ const Scanner = () => {
                 });
             const fileUri = `${currentUser}/${formattedDate}`
             const fileRef = ref(storage, fileUri)
-            uploadBytes(fileRef, textFile)
 
+            if (userInst.spaceAvailable - textFile.size < 0) {
+                exceded = true
+            } else uploadSize += textFile.size
 
-            const reference = await addfile({
-                name: fileName,
-                linksTo: el.data,
-                fileType: 'txt',
-                size: textFile.size,
-                user: currentUser, timeStamp: formattedDate, version: versionNo
-            }, false)
+            if (!exceded) {
+                uploadBytes(fileRef, textFile)
 
-            return reference
+                const reference = await addfile({
+                    name: fileName,
+                    linksTo: el.data,
+                    fileType: 'txt',
+                    size: textFile.size,
+                    user: currentUser, timeStamp: formattedDate, version: versionNo
+                }, false)
+
+                return reference   
+            }
         }))
-        updateStaging(references, currentUser)
-        setUrls([])
+
+        if (!exceded) {
+            updateStaging(references, currentUser)
+            setUrls([])
+            toast.show('File upload successful', {
+                type: 'success'
+            }) 
+        } else {
+            setUrls([])
+            toast.show('Storage limit exceded :(', {
+                type: 'danger'
+            }) 
+        }
     }
 
     const insets = useSafeAreaInsets()

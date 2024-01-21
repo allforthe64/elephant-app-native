@@ -89,7 +89,8 @@ export async function addfile(file, destination) {
             fileId: fileRef.id,
             fileName: file.name,
             flag: destination ? destination : 'Staging',
-            version: file.version
+            version: file.version,
+            size: file.size
         }
 
         return reference
