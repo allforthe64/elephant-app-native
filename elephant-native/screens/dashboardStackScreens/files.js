@@ -123,6 +123,8 @@ export default function Files({navigation: { navigate }, route}) {
         const updatedUser = {...currentUser, files: newFiles}
         await updateUser(updatedUser)
       }
+    } else if (mode === size) {
+      
     }
   }
 

@@ -4,7 +4,7 @@ import FileRow from '../../components/fileRow'
 import * as DocumentPicker from 'expo-document-picker'
 import * as ImagePicker from 'expo-image-picker'
 import { format } from 'date-fns'
-import { addfile, updateStaging } from '../../storage'
+import { addfile, updateStaging, updateUser } from '../../storage'
 import { firebaseAuth } from '../../firebaseConfig'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { storage } from '../../firebaseConfig'
@@ -87,77 +87,72 @@ const FilePicker = () => {
     }
     
     const saveFiles = async () => {
-
+        
         setLoading(true)
-        let exceded = false
         let uploadSize = 0
 
         const references =  await Promise.all(files.map(async (el) => {
 
-            if (userInst.spaceAvailable - el.size < 0) {
-                exceded = true
-            } else {
-                uploadSize += el.size
-            }
+            //increase the upload size
+            uploadSize += el.size
 
-            if (!exceded) {
-                let versionNo = 0
-                userInst.fileRefs.forEach(fileRef => {
-                    if (fileRef.fileName === el.name && fileRef.fileName.split('.')[1] === el.name.split('.')[1]) {
-                        versionNo ++
+            //check for files with the same name and increase the version number
+            let versionNo = 0
+            userInst.fileRefs.forEach(fileRef => {
+                if (fileRef.fileName === el.name && fileRef.fileName.split('.')[1] === el.name.split('.')[1]) {
+                    versionNo ++
+                }
+            })
+
+            //generate formatted date for file name
+            const formattedDate = format(new Date(), `yyyy-MM-dd:hh:mm:ss::${Date.now()}`)
+
+            //create blob and upload it into firebase storage
+            try {
+                const blob = await new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest()
+                    xhr.onload = () => {
+                        resolve(xhr.response) 
                     }
+                    xhr.onerror = (e) => {
+                        reject(e)
+                        reject(new TypeError('Network request failed'))
+                    }
+                    xhr.responseType = 'blob'
+                    xhr.open('GET', el.uri, true)
+                    xhr.send(null)
                 })
     
-                const formattedDate = format(new Date(), `yyyy-MM-dd:hh:mm:ss::${Date.now()}`)
-    
-    
-                try {
-                    const blob = await new Promise((resolve, reject) => {
-                        const xhr = new XMLHttpRequest()
-                        xhr.onload = () => {
-                            resolve(xhr.response) 
-                        }
-                        xhr.onerror = (e) => {
-                            reject(e)
-                            reject(new TypeError('Network request failed'))
-                        }
-                        xhr.responseType = 'blob'
-                        xhr.open('GET', el.uri, true)
-                        xhr.send(null)
-                    })
-        
-                    const filename = `${currentUser}/${formattedDate}`
-                    const fileRef = ref(storage, filename)
-                    uploadBytes(fileRef, blob)
-                    
-                    const reference = await addfile({...el, name: el.name, user: currentUser, timeStamp: formattedDate, version: versionNo})
-                    
-                    return reference
-    
-                } catch (err) {
-                    console.log(err)
-                }
+                const filename = `${currentUser}/${formattedDate}`
+                const fileRef = ref(storage, filename)
+                uploadBytes(fileRef, blob)
+                
+                //generate references
+                const reference = await addfile({...el, name: el.name, user: currentUser, timeStamp: formattedDate, version: versionNo})
+                
+                return reference
+
+            } catch (err) {
+                console.log(err)
             }
 
         }))
 
-        if (!exceded) {
-            updateStaging(references, currentUser)
+        try {
 
+            //increase the ammount of storage space being used and add the new references into the user's fileRefs
+            const newSpaceUsed = userInst.spaceUsed + uploadSize
+            const newUser = {...userInst, spaceUsed: newSpaceUsed, fileRefs: [...userInst.fileRefs, ...references]}
+            await updateUser(newUser)
+
+            //reset the form
             setLoading(false)
             const empty = []
             setFiles(empty)
             toast.show('File upload successful', {
                 type: 'success'
             }) 
-        } else {
-            setLoading(false)
-            const empty = []
-            setFiles(empty)
-            toast.show('Storage limit exceded :(', {
-                type: 'danger'
-            }) 
-        }
+        } catch (error) {console.log(error)}
           
     }
 

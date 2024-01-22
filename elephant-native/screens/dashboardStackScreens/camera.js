@@ -8,8 +8,8 @@ import { Video, Audio } from 'expo-av'
 import { shareAsync } from 'expo-sharing'
 import * as MediaLibrary from 'expo-media-library'
 import { format } from 'date-fns'
-import { addfile, updateStaging } from '../../storage'
-import { AuthContext } from '../../context/authContext'
+import { addfile, updateUser, userListener, updateStaging} from '../../storage'
+import { firebaseAuth } from '../../firebaseConfig'
 import { storage } from '../../firebaseConfig'
 import {ref, uploadBytes} from 'firebase/storage'
 import { faCircle as solidCircle } from '@fortawesome/free-solid-svg-icons'
@@ -25,7 +25,7 @@ const CameraComponent = () => {
         const [hasAudioRecordingPermission, setHasAudioRecordingPermission] = useState()
         const [photo, setPhoto] = useState()
         const [session, setSession] = useState(true)
-        const [currentUser, setCurrentUser] = useState()
+        const [userInst, setUserInst] = useState()
         const [loading, setLoading] = useState(true)
         const [type, setType] = useState(CameraType.back)
         const [video, setVideo] = useState(false)
@@ -33,24 +33,27 @@ const CameraComponent = () => {
         const [videoObj, setVideoObj] = useState()
         const [zoom, setZoom] = useState(0)
 
-        const {authUser} = useContext(AuthContext)
+        const currentUser = firebaseAuth.currentUser.uid
 
         const toast = useToast()
 
         //initialize animation ref
         let fadeAnim = useRef(new Animated.Value(100)).current
 
-        //get the current user once the page is loaded
+        //get the current user 
         useEffect(() => {
-            if (loading) {
-                if (authUser) {
-                    setCurrentUser(authUser.uid)
-                    setLoading(false)
-                } else {
-                    alert('Function is erroring out trying to assign the current user')
+            if (currentUser) {
+            try {
+                const getCurrentUser = async () => {
+                const unsubscribe = await userListener(setUserInst, false, currentUser)
+            
+                return () => unsubscribe()
                 }
-            }
-        }, [authUser])
+                getCurrentUser()
+            } catch (err) {console.log(err)}
+            } else console.log('no user yet')
+            
+        }, [currentUser])
 
         //get camera permissions
         useEffect(() => {
@@ -145,6 +148,7 @@ const CameraComponent = () => {
                     const fileRef = ref(storage, `${currentUser}/${filename}`)
                     const result = await uploadBytes(fileRef, blob)
 
+                    //generate reference
                     const reference = await addfile({
                             name: filename,
                             fileType: `${Platform.OS === 'ios' ? 'mov' : 'mp4'}`,
@@ -154,7 +158,12 @@ const CameraComponent = () => {
                             version: 0,
                             timeStamp: `${formattedDate}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}`
                         })
-                    updateStaging([reference], currentUser)
+                    
+                    //increase the ammount of space the user is consuming based off the size of the video
+                    const newSpaceUsed = userInst.spaceUsed + result.metadata.size
+                    const newUser = {...userInst, spaceUsed: newSpaceUsed, fileRefs: [...userInst.fileRefs, reference]}
+                    await updateUser(newUser)
+
                     toast.show('Upload successful', {
                         type: 'success'
                     })
@@ -166,7 +175,7 @@ const CameraComponent = () => {
                 setPhoto(undefined)
 
                 //create new formatted date for file
-                const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
+                const formattedDate = format(new Date(), `yyyy-MM-dd:hh:mm:ss::${Date.now()}`)
 
                 try {  
                     //create blob using the photo from state and save it to elephant staging
@@ -185,9 +194,7 @@ const CameraComponent = () => {
 
                     const filename = `${formattedDate}.jpg`
                     const fileRef = ref(storage, `${currentUser}/${filename}`)
-                    const result = await uploadBytes(fileRef, blob)
-
-                    console.log(result)
+                    const result = await uploadBytes(fileRef, blob) 
 
                     const reference = await addfile({
                             name: filename,
@@ -198,13 +205,17 @@ const CameraComponent = () => {
                             version: 0,
                             timeStamp: `${formattedDate}.jpg`
                         })
+                    
+                    
+                    //increase the ammount of space the user is consuming based off the size of the video
                     updateStaging([reference], currentUser)
+
                     toast.show('Upload successful', {
                         type: 'success'
                     })
 
                 } catch (err) {
-                    alert(err)
+                    console.log(err)
                 }
             }
         }

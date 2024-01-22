@@ -4,7 +4,7 @@ import { Text, View , TouchableOpacity, ScrollView, StyleSheet, Image} from 'rea
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faMicrophone, faSquare, faXmark } from '@fortawesome/free-solid-svg-icons'
 import AudioEditor from '../../components/audioEditor'
-import { updateStaging, addfile } from '../../storage'
+import { updateUser, addfile } from '../../storage'
 import { firebaseAuth } from '../../firebaseConfig'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { storage } from '../../firebaseConfig'
@@ -113,20 +113,22 @@ const AudioRecorder = () => {
     const saveFiles = async () => {
 
         setLoading(true)
+        let uploadSize = 0
 
         const references = await Promise.all(recordings.map(async (el) => {
 
+            //check if a file already exists with this file's name. If it does, increase version number
             let versionNo = 0
             userInst.fileRefs.forEach(fileRef => {
-                console.log(el.name)
-                console.log(fileRef.fileName)
                 if (fileRef.fileName === (el.name + '.' + el.file.split('.')[1]) && fileRef.fileName.split('.')[1] === el.file.split('.')[1]) {
                     versionNo ++
                 }
             })
 
+            //generate formatted date
             const formattedDate = format(new Date(), `yyyy-MM-dd:hh:mm:ss::${Date.now()}`)
 
+            //upload the file
             const blob = await new Promise(async (resolve, reject) => {
                 const xhr = new XMLHttpRequest()
                 xhr.onload = () => {
@@ -145,7 +147,7 @@ const AudioRecorder = () => {
             const fileRef = ref(storage, filename)
             const result = await uploadBytes(fileRef, blob)
     
-
+            //create file reference
             const reference = await addfile({
                 name: el.name + '.' + el.file.split('.')[1],
                 fileType: el.file.split('.')[1],
@@ -155,11 +157,19 @@ const AudioRecorder = () => {
                 timeStamp: formattedDate, 
                 version: versionNo
             })
+
+            //increase upload size
+            uploadSize += result.metadata.size
+
             return reference
 
         }))
 
-        updateStaging(references, currentUser)
+        //increase the ammount of space the user is consuming and add the references to the user's staging
+        const newSpaceUsed = userInst.spaceUsed + uploadSize
+        const newUser = {...userInst, spaceUsed: newSpaceUsed, fileRefs: [...userInst.fileRefs, ...references]}
+        await updateUser(newUser)
+
         const empty = []
         setRecordings(empty)
         setLoading(false)

@@ -37,7 +37,7 @@ export function addUser(user) {
     fileRefs: [],
     sharedWith: {},
     passcodeAuthenticated: false,
-    spaceAvailable: 5000000000
+    spaceUsed: 0
 })
 }
 
