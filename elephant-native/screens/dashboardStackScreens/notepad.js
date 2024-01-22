@@ -5,9 +5,11 @@ import { faCheck, faPencil, faXmark, faFolder } from '@fortawesome/free-solid-sv
 import { ref as refFunction, uploadBytes} from 'firebase/storage'
 import { format } from 'date-fns'
 import { firebaseAuth, storage } from '../../firebaseConfig';
-import { addfile, userListener, updateStaging } from '../../storage'
+import { addfile, userListener, updateUser } from '../../storage'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
+import { useToast } from 'react-native-toast-notifications'
 
 const Notepad = () => {
 
@@ -18,6 +20,8 @@ const Notepad = () => {
     const [destination, setDestination] = useState()
     const [currentUser, setCurrentUser] = useState()
     const [loading, setLoading] = useState(false)
+
+    const toast = useToast()
 
     //get the auth user context object
     const auth = firebaseAuth
@@ -50,9 +54,12 @@ const Notepad = () => {
 
     const addToStorage = async () => {
 
+      //generate formatted date, fileName, and upload size
       const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
       const fileName = `Note from: ${formattedDate}.txt`
+      let uploadSize = 0
 
+      //increase version number if other files exist with the same name
       let versionNo = 0
       currentUser.fileRefs.forEach(fileRef => {
         if (fileRef.fileName === fileName && fileRef.fileName.split('.')[1] === fileName.split('.')[1]) {
@@ -60,8 +67,7 @@ const Notepad = () => {
       }
       })
 
-      console.log(versionNo)
-
+      //create textFile and upload to firebase storage/increase the upload size variable by the size of the textFile
       try {
         const textFile = new Blob([`${body}`], {
           type: "text/plain;charset=utf-8",
@@ -70,7 +76,9 @@ const Notepad = () => {
         const fileRef = refFunction(storage, fileUri)
         uploadBytes(fileRef, textFile)
 
+        uploadSize += textFile.size
 
+        //create a reference
         const reference = await addfile({
           name: fileName,
           fileType: 'txt',
@@ -80,9 +88,16 @@ const Notepad = () => {
           timeStamp: formattedDate,
           version: versionNo
       }, destination)
-      updateStaging([reference], currentUser.uid)
+
+      //calculate a new value for spaceUsed and update the fileRefs using update user
+      const newSpaceUsed = currentUser.spaceUsed + uploadSize
+      const newUser = {...currentUser, spaceUsed: newSpaceUsed, fileRefs: [...currentUser.fileRefs, reference]}
+      await updateUser(newUser)
       setBody(null)
       setDestination(null)
+      toast.show('File upload successful', {
+        type: 'success'
+    })
       } catch (err) {
         console.log(err)
       }
