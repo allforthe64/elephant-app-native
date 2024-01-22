@@ -75,11 +75,13 @@ export default function Files({navigation: { navigate }, route}) {
         if (index === 'delete') {
           updatedUser = {...updatedUser, spaceUsed: currentUser.spaceUsed - input.targetFile.size}
           await deleteFileObj(input.targetFile.fileId)
+        }
+        await updateUser(updatedUser)
+        if (index === 'delete') {
           toast.show(`Deleted File`, {
             type: 'success'
           })
         }
-        await updateUser(updatedUser)
       }
     }
     else if (mode === 'folder') {
@@ -93,7 +95,6 @@ export default function Files({navigation: { navigate }, route}) {
           newSpaceUsed -= ref.size
           await deleteFileObj(ref.fileId)
         })
-        console.log('this is newSpacUsed: ', newSpaceUsed)
         const updatedUser = {...currentUser, files: input.newFolders, fileRefs: input.refsToKeep, spaceUsed: newSpaceUsed} 
         await updateUser(updatedUser)
         toast.show(`Deleted ${input.target}`, {
@@ -128,8 +129,6 @@ export default function Files({navigation: { navigate }, route}) {
         const updatedUser = {...currentUser, files: newFiles}
         await updateUser(updatedUser)
       }
-    } else if (mode === size) {
-      
     }
   }
 

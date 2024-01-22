@@ -8,13 +8,14 @@ import { Video, Audio } from 'expo-av'
 import { shareAsync } from 'expo-sharing'
 import * as MediaLibrary from 'expo-media-library'
 import { format } from 'date-fns'
-import { addfile, updateStaging } from '../../storage'
-import { AuthContext } from '../../context/authContext'
+import { addfile, updateUser } from '../../storage'
 import { storage } from '../../firebaseConfig'
 import {ref, uploadBytes} from 'firebase/storage'
 import { faCircle as solidCircle } from '@fortawesome/free-solid-svg-icons'
 import { PinchGestureHandler } from 'react-native-gesture-handler'
 import { useToast } from 'react-native-toast-notifications'
+import { firebaseAuth } from '../../firebaseConfig'
+import { userListener } from '../../storage'
 
 const CameraComponent = () => {
 
@@ -25,7 +26,7 @@ const CameraComponent = () => {
         const [hasAudioRecordingPermission, setHasAudioRecordingPermission] = useState()
         const [photo, setPhoto] = useState()
         const [session, setSession] = useState(true)
-        const [currentUser, setCurrentUser] = useState()
+        const [userInst, setUserInst] = useState()
         const [loading, setLoading] = useState(true)
         const [type, setType] = useState(CameraType.back)
         const [video, setVideo] = useState(false)
@@ -33,24 +34,27 @@ const CameraComponent = () => {
         const [videoObj, setVideoObj] = useState()
         const [zoom, setZoom] = useState(0)
 
-        const {authUser} = useContext(AuthContext)
+        const currentUser = firebaseAuth.currentUser.uid
 
         const toast = useToast()
 
         //initialize animation ref
         let fadeAnim = useRef(new Animated.Value(100)).current
 
-        //get the current user once the page is loaded
+        //get the current user 
         useEffect(() => {
-            if (loading) {
-                if (authUser) {
-                    setCurrentUser(authUser.uid)
-                    setLoading(false)
-                } else {
-                    alert('Function is erroring out trying to assign the current user')
+            if (firebaseAuth) {
+            try {
+                const getCurrentUser = async () => {
+                const unsubscribe = await userListener(setUserInst, false, currentUser)
+            
+                return () => unsubscribe()
                 }
-            }
-        }, [authUser])
+                getCurrentUser()
+            } catch (err) {console.log(err)}
+            } else console.log('no user yet')
+            
+        }, [firebaseAuth])
 
         //get camera permissions
         useEffect(() => {
@@ -154,7 +158,8 @@ const CameraComponent = () => {
                             version: 0,
                             timeStamp: `${formattedDate}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}`
                         })
-                    updateStaging([reference], currentUser)
+                    const updatedUser = {...userInst, fileRefs: [...userInst.fileRefs, reference], spaceUsed: userInst.spaceUsed + result.metadata.size}
+                    updateUser(updatedUser)
                     toast.show('Upload successful', {
                         type: 'success'
                     })
@@ -185,18 +190,19 @@ const CameraComponent = () => {
 
                     const filename = `${formattedDate}.jpg`
                     const fileRef = ref(storage, `${currentUser}/${filename}`)
-                    uploadBytes(fileRef, blob)
+                    const result = await uploadBytes(fileRef, blob)
 
                     const reference = await addfile({
                             name: filename,
                             fileType: 'jpg',
-                            size: 10,
+                            size: result.metadata.size,
                             uri: photo.uri,
                             user: currentUser,
                             version: 0,
                             timeStamp: `${formattedDate}.jpg`
                         })
-                    updateStaging([reference], currentUser)
+                    const updatedUser = {...userInst, fileRefs: [...userInst.fileRefs, reference], spaceUsed: userInst.spaceUsed + result.metadata.size}
+                    updateUser(updatedUser)
                     toast.show('Upload successful', {
                         type: 'success'
                     })
