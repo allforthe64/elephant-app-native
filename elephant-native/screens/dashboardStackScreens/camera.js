@@ -128,7 +128,7 @@ const CameraComponent = () => {
 
                 try {  
                     //create blob using the photo from state and save it to elephant staging
-                    const blob = await new Promise((resolve, reject) => {
+                    const blob = await new Promise(async (resolve, reject) => {
                         const xhr = new XMLHttpRequest()
                         xhr.onload = () => {
                         resolve(xhr.response) 
@@ -143,12 +143,12 @@ const CameraComponent = () => {
 
                     const filename = `${formattedDate}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}`
                     const fileRef = ref(storage, `${currentUser}/${filename}`)
-                    uploadBytes(fileRef, blob)
+                    const result = await uploadBytes(fileRef, blob)
 
                     const reference = await addfile({
                             name: filename,
                             fileType: `${Platform.OS === 'ios' ? 'mov' : 'mp4'}`,
-                            size: 'foobar',
+                            size: result.metadata.size,
                             uri: videoObj.uri,
                             user: currentUser,
                             version: 0,
@@ -170,7 +170,7 @@ const CameraComponent = () => {
 
                 try {  
                     //create blob using the photo from state and save it to elephant staging
-                    const blob = await new Promise((resolve, reject) => {
+                    const blob = await new Promise(async (resolve, reject) => {
                         const xhr = new XMLHttpRequest()
                         xhr.onload = () => {
                         resolve(xhr.response) 
@@ -185,12 +185,14 @@ const CameraComponent = () => {
 
                     const filename = `${formattedDate}.jpg`
                     const fileRef = ref(storage, `${currentUser}/${filename}`)
-                    uploadBytes(fileRef, blob)
+                    const result = await uploadBytes(fileRef, blob)
+
+                    console.log(result)
 
                     const reference = await addfile({
                             name: filename,
                             fileType: 'jpg',
-                            size: photo.width * photo.height,
+                            size: result.metadata.size,
                             uri: photo.uri,
                             user: currentUser,
                             version: 0,

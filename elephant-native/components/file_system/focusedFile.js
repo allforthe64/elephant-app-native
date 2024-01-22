@@ -363,11 +363,12 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                         </View>
                     </View>            
                     : expanded ? 
-                    <Modal animationType='slide' presentationStyle='pageSheet'> {/* Expanded Image */}
+                    <Modal animationType='slide' presentationStyle='pageSheet'>
+                        {/* code to render expanded images */}
                         <View style={{ paddingTop: '10%', backgroundColor: 'rgb(23 23 23)', height: '100%', width: '100%'}}>
                             <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '5%', width: '100%'}}>
                                 <Pressable onPress={() => setExpanded(false)}>
-                                <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
+                                    <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
                                 </Pressable>
                             </View>
                             <View style={{height: '60%', marginTop: '20%'}}>
@@ -404,7 +405,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                 </View>
                             : <></>
                             }
-                            <View style={(file.fileName.split('.')[1] === 'mp4' || file.fileName.split('.')[1] === 'mov') ? {height: '37%', width: '90%'} : file.fileName.includes('URL for') ? {height: '70%', width: '90%'} : (file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {height: '72.5%', width: '90%', marginTop: '5%'} : {height: '40%', width: '90%'}}>
+                            <View style={(file.fileName.split('.')[1] === 'mp4' || file.fileName.split('.')[1] === 'mov') ? {height: '37%', width: '90%'} : (file.fileName.includes('URL for') || file.fileName.split('.')[1] === 'm4a' || file.fileName.split('.')[1] === 'mp3') ? {height: '67%', width: '90%'} : (file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {height: '72.5%', width: '90%', marginTop: '5%'} : {height: '40%', width: '90%'}}>
                                 
                                 <Text style={{fontSize: 22, fontWeight: 'bold', color: 'white', marginTop: '5%'}} numberOfLines={3}>{newFileName}</Text>
 

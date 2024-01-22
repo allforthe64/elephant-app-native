@@ -127,35 +127,29 @@ const AudioRecorder = () => {
 
             const formattedDate = format(new Date(), `yyyy-MM-dd:hh:mm:ss::${Date.now()}`)
 
-            try {
-                const blob = await new Promise((resolve, reject) => {
-                    const xhr = new XMLHttpRequest()
-                    xhr.onload = () => {
-                        resolve(xhr.response) 
-                    }
-                    xhr.onerror = (e) => {
-                        reject(e)
-                        reject(new TypeError('Network request failed'))
-                    }
-                    xhr.responseType = 'blob'
-                    xhr.open('GET', el.file, true)
-                    xhr.send(null)
-                })
-    
-                const filename = `${currentUser}/${formattedDate}`
-                const fileRef = ref(storage, filename)
-                uploadBytes(fileRef, blob)
-    
-            } catch (err) {
-                console.log(err)
-            }
+            const blob = await new Promise(async (resolve, reject) => {
+                const xhr = new XMLHttpRequest()
+                xhr.onload = () => {
+                    resolve(xhr.response) 
+                }
+                xhr.onerror = (e) => {
+                    reject(e)
+                    reject(new TypeError('Network request failed'))
+                }
+                xhr.responseType = 'blob'
+                xhr.open('GET', el.file, true)
+                xhr.send(null)
+            })
 
-            console.log(el.file.split('.')[1])
+            const filename = `${currentUser}/${formattedDate}`
+            const fileRef = ref(storage, filename)
+            const result = await uploadBytes(fileRef, blob)
+    
 
             const reference = await addfile({
                 name: el.name + '.' + el.file.split('.')[1],
                 fileType: el.file.split('.')[1],
-                size: el.duration,
+                size: result.metadata.size,
                 uri: el.file,
                 user: currentUser, 
                 timeStamp: formattedDate, 
