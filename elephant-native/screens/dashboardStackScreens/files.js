@@ -68,18 +68,18 @@ export default function Files({navigation: { navigate }, route}) {
     if (mode === 'file') {
       if (index === 'delete' || index === 'rename' || index === 'move') {
         //update the user with the new file refs array sent through the input param
-        const updatedUser = {...currentUser, fileRefs: input.newFiles}
-        await updateUser(updatedUser)
+        let updatedUser = {...currentUser, fileRefs: input.newFiles}
         if (index === 'rename') {
           await updateFileObj(input.targetFile)
         }
         if (index === 'delete') {
-          await deleteFileObj(input.targetFile)
+          updatedUser = {...updatedUser, spaceUsed: currentUser.spaceUsed - input.targetFile.size}
+          await deleteFileObj(input.targetFile.fileId)
           toast.show(`Deleted File`, {
             type: 'success'
           })
         }
-        console.log('input: ', input)
+        await updateUser(updatedUser)
       }
     }
     else if (mode === 'folder') {
@@ -88,8 +88,13 @@ export default function Files({navigation: { navigate }, route}) {
       //update the user using the updatedUser object
       //reset the delete array
       if (index === 'delete') {
-        const updatedUser = {...currentUser, files: input.newFolders, fileRefs: input.refsToKeep} 
-        input.refsToDelete.forEach(async (ref) => await deleteFileObj(ref.fileId))
+        let newSpaceUsed = currentUser.spaceUsed
+        input.refsToDelete.forEach(async (ref) => {
+          newSpaceUsed -= ref.size
+          await deleteFileObj(ref.fileId)
+        })
+        console.log('this is newSpacUsed: ', newSpaceUsed)
+        const updatedUser = {...currentUser, files: input.newFolders, fileRefs: input.refsToKeep, spaceUsed: newSpaceUsed} 
         await updateUser(updatedUser)
         toast.show(`Deleted ${input.target}`, {
           type: 'success'
@@ -130,8 +135,9 @@ export default function Files({navigation: { navigate }, route}) {
 
   //filter for all files that don't match the incoming file id
   const deleteFile = (target) => {
-    const newFiles = currentUser.fileRefs.filter(file => {if (file.fileId !== target) return file})
-    editUser('file', {newFiles: newFiles, targetFile: target}, 'delete')
+    let targetFile
+    const newFiles = currentUser.fileRefs.filter(file => {if (file.fileId !== target) { return file } else targetFile = file})
+    editUser('file', {newFiles: newFiles, targetFile: targetFile}, 'delete')
   }
 
   //filter for all of the files that don't match the inoming file id, return the new file if the id is a match
