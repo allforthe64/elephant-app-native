@@ -72,7 +72,8 @@ export async function addfile(file, destination) {
                 documentType: file.fileType,
                 linksTo: file.linksTo,
                 size: file.size,
-                uri: BUCKET_URL + '/' + file.user + '/' + file.timeStamp,
+                uri: file.name.split('.')[1] === 'doc' || file.name.split('.')[1] === 'docx' ? BUCKET_URL + '/' + file.timeStamp + '^&' + file.user
+                : BUCKET_URL + '/' + file.user + '/' + file.timeStamp,
                 version: file.version
             })
         } else {
@@ -80,7 +81,8 @@ export async function addfile(file, destination) {
                 fileName: file.name,
                 documentType: file.fileType,
                 size: file.size,
-                uri: BUCKET_URL + '/' + file.user + '/' + file.timeStamp,
+                uri: file.name.split('.')[1] === 'doc' || file.name.split('.')[1] === 'docx' ? BUCKET_URL + '/' + file.timeStamp + '^&' + file.user
+                : BUCKET_URL + '/' + file.user + '/' + file.timeStamp,
                 version: file.version
             })
         }

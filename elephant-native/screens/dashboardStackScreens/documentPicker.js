@@ -122,8 +122,13 @@ const FilePicker = () => {
                     xhr.open('GET', el.uri, true)
                     xhr.send(null)
                 })
-    
-                const filename = `${currentUser}/${formattedDate}`
+                
+                let filename
+                if (el.name.split('.')[1] === 'doc' || el.name.split('.')[1] === 'docx') {
+                    filename = `${formattedDate}^&${currentUser}`
+                } else {
+                    filename = `${currentUser}/${formattedDate}`
+                }
                 const fileRef = ref(storage, filename)
                 uploadBytes(fileRef, blob)
                 
