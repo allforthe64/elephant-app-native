@@ -281,7 +281,7 @@ const CameraComponent = () => {
                         if (newZoom > 1) newZoom = 1
                         return newZoom
                     } else {
-                        let newZoom = prev += .001
+                        let newZoom = prev += .009
                         if (newZoom > 1) newZoom = 1
                         return newZoom
                     }
