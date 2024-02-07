@@ -35,7 +35,7 @@ const DocScanner = () => {
                 width={width}
                 height={width / 2}
                 autoPlay={true}
-                data={[...new Array(6).keys()]}
+                data={scannedImageArray}
                 scrollAnimationDuration={1000}
                 onSnapToItem={(index) => console.log('current index:', index)}
                 renderItem={({ index }) => (
