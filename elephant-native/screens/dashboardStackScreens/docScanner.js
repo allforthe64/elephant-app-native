@@ -25,7 +25,7 @@ const DocScanner = () => {
     <Image
       resizeMode="contain"
       style={{ width: '100%', height: '100%' }}
-      source={{ uri: scannedImage[0] }}
+      source={{ uri: scannedImageArray[0] }}
     />
   )
 }
