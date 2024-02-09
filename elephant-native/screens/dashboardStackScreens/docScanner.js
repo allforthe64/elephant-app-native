@@ -22,11 +22,17 @@ const DocScanner = () => {
   }, []);
 
   return (
-    <Image
-      resizeMode="contain"
-      style={{ width: '100%', height: '100%' }}
-      source={{ uri: scannedImageArray[0] }}
-    />
+    <>
+      {scannedImageArray ? 
+        <Image
+          resizeMode="contain"
+          style={{ width: '100%', height: '100%' }}
+          source={{ uri: scannedImageArray[0] }}
+        />
+      :
+        <></>
+      }
+    </>
   )
 }
 
