@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Image, Platform, PermissionsAndroid, Dimensions, View } from 'react-native'
 import DocumentScanner from 'react-native-document-scanner-plugin'
+import Carousel from 'react-native-reanimated-carousel';
 import { useToast } from 'react-native-toast-notifications'
 
 const DocScanner = () => {
