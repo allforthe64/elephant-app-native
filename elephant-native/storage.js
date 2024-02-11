@@ -33,7 +33,7 @@ export function addUser(user) {
     const userRef = setDoc(doc(db, 'users', user.localId), {
     email: user.email,
     displayName: user.email,
-    files: [{id: 1, fileName: 'File 1', nestedUnder: ''}, {id: 2, fileName: 'File 2', nestedUnder: ''}, {id: 3, fileName: 'File 3', nestedUnder: ''}, {id: 4, fileName: 'File 4', nestedUnder: ''}, {id: 5, fileName: 'File 5', nestedUnder: ''}],
+    files: [{id: 1, fileName: 'My House', nestedUnder: ''}, {id: 2, fileName: 'Financial', nestedUnder: ''}, {id: 3, fileName: 'Personal/Medical', nestedUnder: ''}, {id: 4, fileName: 'Pictures/Videos', nestedUnder: ''}, {id: 5, fileName: 'Work', nestedUnder: ''}, {id: 6, fileName: 'Hobbies', nestedUnder: ''}, {id: 7, fileName: 'Basement/Mech', nestedUnder: 1}, {id: 8, fileName: 'Garage', nestedUnder: 1}, {id: 9, fileName: 'Kitchen', nestedUnder: 1}, {id: 10, fileName: 'Main Floor', nestedUnder: 1}, {id: 11, fileName: 'Second Floor', nestedUnder: 1}, {id: 12, fileName: 'Structure', nestedUnder: 1}, {id: 13, fileName: 'Mortgage', nestedUnder: 2}, {id: 14, fileName: 'Insurance', nestedUnder: 2}, {id: 15, fileName: 'Tax Info', nestedUnder: 2}, {id: 16, fileName: 'Banking', nestedUnder: 2}, {id: 17, fileName: 'Friends', nestedUnder: 4}, {id: 18, fileName: 'Family', nestedUnder: 4}, {id: 19, fileName: 'Pets', nestedUnder: 4}, {id: 20, fileName: 'Vacations', nestedUnder: 4}, {id: 21, fileName: 'Events', nestedUnder: 4}, {id: 22, fileName: 'Receipts', nestedUnder: 15}, {id: 23, fileName: 'Returns', nestedUnder: 15}],
     fileRefs: [],
     sharedWith: {},
     passcodeAuthenticated: false,

@@ -4,6 +4,10 @@ import DocumentScanner from 'react-native-document-scanner-plugin'
 import { useToast } from 'react-native-toast-notifications'
 
 const DocScanner = () => {
+
+  try {
+
+  
   const [scannedImageArray, setScannedImageArray] = useState();
 
   const toast = useToast()
@@ -69,6 +73,9 @@ const DocScanner = () => {
       }
     </>
   )
+  } catch (error) {
+    alert(error)
+  }
 }
 
 export default DocScanner
