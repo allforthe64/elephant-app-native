@@ -51,7 +51,7 @@ const DocScanner = () => {
               <Carousel
                   loop
                   width={width}
-                  style={{height: '60%'}}
+                  style={{height: '75%', paddingRight: '5%'}}
                   data={scannedImageArray}
                   scrollAnimationDuration={1000}
                   onSnapToItem={(index) => console.log('current index:', index)}
@@ -73,7 +73,7 @@ const DocScanner = () => {
                   )}
                   />
             :
-              <View style={{height: '60%'}} width={width}>
+              <View style={{height: '75%'}} width={width}>
                 <Image 
                   style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                   source={{uri: scannedImageArray[0]}}
