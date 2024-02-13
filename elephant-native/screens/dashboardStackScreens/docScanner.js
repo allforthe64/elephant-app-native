@@ -33,7 +33,11 @@ const DocScanner = () => {
     // get back an array with scanned image file paths
     if (scannedImages.length > 0) {
       // set the img src, so we can view the first scanned image
-      setScannedImageArray(scannedImages)
+      if (scannedImageArray.length > 1) {
+        setScannedImageArray(prev => [...prev, scannedImages])
+      } else {
+        setScannedImageArray(scannedImages)
+      }
     }
   }
 
@@ -45,7 +49,7 @@ const DocScanner = () => {
   return (
     <>
       {scannedImageArray ? 
-        <View style={{ flex: 1, paddingLeft: '5%', paddingRight: '5%' }}>
+        <View style={{ paddingLeft: '5%', paddingRight: '5%' }}>
           {scannedImageArray.length > 1
             ?    
               <Carousel
@@ -80,6 +84,56 @@ const DocScanner = () => {
                 />
               </View>          
           }  
+
+          <View style={{
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%',
+            marginBottom: '8%'
+            }}>
+              <View style={{
+                width: '60%',
+                borderColor: '#777',
+                borderRadius: 25,
+                backgroundColor: 'white',
+                borderWidth: 1,
+                paddingTop: '2%',
+                paddingBottom: '2%',
+              }}>
+                  <TouchableOpacity onPress={() => scanDocument()}>
+                  <Text style={{
+                    textAlign: 'center',
+                    fontSize: 15,
+                    width: '100%',
+                  }}>Scan More Documents</Text>
+                  </TouchableOpacity>
+              </View>
+          </View>
+
+          <View style={{
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%',
+            marginBottom: '8%'
+            }}>
+              <View style={{
+                width: '60%',
+                borderColor: '#777',
+                borderRadius: 25,
+                backgroundColor: 'white',
+                borderWidth: 1,
+                paddingTop: '2%',
+                paddingBottom: '2%',
+              }}>
+                <TouchableOpacity onPress={() => alert('Converting')}>
+                <Text style={{
+                  textAlign: 'center',
+                  fontSize: 15,
+                  width: '100%',
+                }}>Convert To PDF</Text>
+                </TouchableOpacity>
+            </View>
+          </View>
         </View>
       :
         <></>
