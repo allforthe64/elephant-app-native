@@ -45,30 +45,41 @@ const DocScanner = () => {
   return (
     <>
       {scannedImageArray ? 
-        <View style={{ flex: 1 }}>
-            <Carousel
-                loop
-                width={width}
-                height={width / 2}
-                autoPlay={true}
-                data={scannedImageArray}
-                scrollAnimationDuration={1000}
-                onSnapToItem={(index) => console.log('current index:', index)}
-                renderItem={({ index }) => (
-                    <View
-                        style={{
-                            flex: 1,
-                            borderWidth: 1,
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Image 
-                          style={{ width: '100%', height: '100%' }}
-                          source={{uri: scannedImageArray[index]}}
-                        />
-                    </View>
-                )}
-            />
+        <View style={{ flex: 1, paddingLeft: '5%', paddingRight: '5%' }}>
+          {scannedImageArray.length > 1
+            ?    
+              <Carousel
+                  loop
+                  width={width}
+                  style={{height: '60%'}}
+                  data={scannedImageArray}
+                  scrollAnimationDuration={1000}
+                  onSnapToItem={(index) => console.log('current index:', index)}
+                  renderItem={({ index }) => (
+                      <View
+                          style={{
+                              flex: 1,
+                              borderWidth: 1,
+                              justifyContent: 'center',
+                              width: '100%',
+                              height: '100%'
+                          }}
+                      >
+                          <Image 
+                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                            source={{uri: scannedImageArray[index]}}
+                          />
+                      </View>
+                  )}
+                  />
+            :
+              <View style={{height: '60%'}} width={width}>
+                <Image 
+                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                  source={{uri: scannedImageArray[0]}}
+                />
+              </View>          
+          }  
         </View>
       :
         <></>
