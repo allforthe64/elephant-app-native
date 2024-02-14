@@ -56,12 +56,11 @@ const FilePicker = () => {
         // No permissions request is necessary for launching the image library
         let img = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.All,
-          allowsEditing: true,
           aspect: [4, 3],
           quality: 1,
         });
     
-        if (!img.canceled) {
+        if (!img.didCancel) {
             updatedFiles.push({name: img.assets[0].fileName, uri: img.assets[0].uri, size: img.assets[0].fileSize, fileType: img.assets[0].fileName.split('.')[1]})
             setFiles(updatedFiles)
         }

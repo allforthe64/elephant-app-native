@@ -52,88 +52,146 @@ const DocScanner = () => {
         <View style={{ paddingLeft: '5%', paddingRight: '5%' }}>
           {scannedImageArray.length > 1
             ?    
-              <Carousel
-                  loop
-                  width={width}
-                  style={{height: '75%', paddingRight: '5%'}}
-                  data={scannedImageArray}
-                  scrollAnimationDuration={1000}
-                  onSnapToItem={(index) => console.log('current index:', index)}
-                  renderItem={({ index }) => (
-                      <View
-                          style={{
-                              flex: 1,
-                              borderWidth: 1,
-                              justifyContent: 'center',
-                              width: '100%',
-                              height: '100%'
-                          }}
-                      >
-                          <Image 
-                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                            source={{uri: scannedImageArray[index]}}
-                          />
+            <>
+                <Carousel
+                    loop
+                    width={width}
+                    style={{height: '75%', paddingRight: '5%'}}
+                    data={scannedImageArray}
+                    scrollAnimationDuration={1000}
+                    onSnapToItem={(index) => console.log('current index:', index)}
+                    renderItem={({ index }) => (
+                        <View
+                            style={{
+                                flex: 1,
+                                borderWidth: 1,
+                                justifyContent: 'center',
+                                width: '100%',
+                                height: '100%'
+                            }}
+                        >
+                            <Image 
+                              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                              source={{uri: scannedImageArray[index]}}
+                            />
+                        </View>
+                    )}
+                    />
+                <View style={{height: '25%'}}>
+                  <View style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '100%',
+                    marginBottom: '8%'
+                    }}>
+                      <View style={{
+                        width: '60%',
+                        borderColor: '#777',
+                        borderRadius: 25,
+                        backgroundColor: 'white',
+                        borderWidth: 1,
+                        paddingTop: '2%',
+                        paddingBottom: '2%',
+                      }}>
+                          <TouchableOpacity onPress={() => scanDocument()}>
+                          <Text style={{
+                            textAlign: 'center',
+                            fontSize: 15,
+                            width: '100%',
+                          }}>Scan More Documents</Text>
+                          </TouchableOpacity>
                       </View>
-                  )}
-                  />
+                  </View>
+
+                  <View style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '100%',
+                    marginBottom: '8%'
+                    }}>
+                      <View style={{
+                        width: '60%',
+                        borderColor: '#777',
+                        borderRadius: 25,
+                        backgroundColor: 'white',
+                        borderWidth: 1,
+                        paddingTop: '2%',
+                        paddingBottom: '2%',
+                      }}>
+                        <TouchableOpacity onPress={() => alert('Converting')}>
+                        <Text style={{
+                          textAlign: 'center',
+                          fontSize: 15,
+                          width: '100%',
+                        }}>Convert To PDF</Text>
+                        </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+            </>
+              
             :
+            <>
               <View style={{height: '75%'}} width={width}>
                 <Image 
                   style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                   source={{uri: scannedImageArray[0]}}
                 />
-              </View>          
+              </View>  
+              <View style={{height: '25%'}}>
+              <View style={{
+                display: 'flex',
+                alignItems: 'center',
+                width: '100%',
+                marginBottom: '8%'
+                }}>
+                  <View style={{
+                    width: '60%',
+                    borderColor: '#777',
+                    borderRadius: 25,
+                    backgroundColor: 'white',
+                    borderWidth: 1,
+                    paddingTop: '2%',
+                    paddingBottom: '2%',
+                  }}>
+                      <TouchableOpacity onPress={() => scanDocument()}>
+                      <Text style={{
+                        textAlign: 'center',
+                        fontSize: 15,
+                        width: '100%',
+                      }}>Scan More Documents</Text>
+                      </TouchableOpacity>
+                  </View>
+              </View>
+  
+              <View style={{
+                display: 'flex',
+                alignItems: 'center',
+                width: '100%',
+                marginBottom: '8%'
+                }}>
+                  <View style={{
+                    width: '60%',
+                    borderColor: '#777',
+                    borderRadius: 25,
+                    backgroundColor: 'white',
+                    borderWidth: 1,
+                    paddingTop: '2%',
+                    paddingBottom: '2%',
+                  }}>
+                    <TouchableOpacity onPress={() => alert('Converting')}>
+                    <Text style={{
+                      textAlign: 'center',
+                      fontSize: 15,
+                      width: '100%',
+                    }}>Convert To PDF</Text>
+                    </TouchableOpacity>
+                </View>
+              </View>
+            </View>  
+            </>      
           }  
 
-          <View style={{
-            display: 'flex',
-            alignItems: 'center',
-            width: '100%',
-            marginBottom: '8%'
-            }}>
-              <View style={{
-                width: '60%',
-                borderColor: '#777',
-                borderRadius: 25,
-                backgroundColor: 'white',
-                borderWidth: 1,
-                paddingTop: '2%',
-                paddingBottom: '2%',
-              }}>
-                  <TouchableOpacity onPress={() => scanDocument()}>
-                  <Text style={{
-                    textAlign: 'center',
-                    fontSize: 15,
-                    width: '100%',
-                  }}>Scan More Documents</Text>
-                  </TouchableOpacity>
-              </View>
-          </View>
-
-          <View style={{
-            display: 'flex',
-            alignItems: 'center',
-            width: '100%',
-            marginBottom: '8%'
-            }}>
-              <View style={{
-                width: '60%',
-                borderColor: '#777',
-                borderRadius: 25,
-                backgroundColor: 'white',
-                borderWidth: 1,
-                paddingTop: '2%',
-                paddingBottom: '2%',
-              }}>
-                <TouchableOpacity onPress={() => alert('Converting')}>
-                <Text style={{
-                  textAlign: 'center',
-                  fontSize: 15,
-                  width: '100%',
-                }}>Convert To PDF</Text>
-                </TouchableOpacity>
-            </View>
-          </View>
         </View>
       :
         <></>
