@@ -34,7 +34,7 @@ const DocScanner = () => {
     if (scannedImages.length > 0) {
       // set the img src, so we can view the first scanned image
       if (scannedImageArray.length > 1) {
-        setScannedImageArray(prev => [...prev, scannedImages])
+        setScannedImageArray(prev => [...prev, ...scannedImages])
       } else {
         setScannedImageArray(scannedImages)
       }
@@ -45,6 +45,10 @@ const DocScanner = () => {
     // call scanDocument on load
     scanDocument()
   }, []);
+
+  useEffect(() => {
+    alert(scannedImageArray[0]) 
+  }, [scannedImageArray])
 
   return (
     <>
