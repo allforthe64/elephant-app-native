@@ -9,7 +9,7 @@ const DocScanner = () => {
   try {
 
   
-  const [scannedImageArray, setScannedImageArray] = useState();
+  const [scannedImageArray, setScannedImageArray] = useState([]);
 
   const toast = useToast()
 
