@@ -3,7 +3,8 @@ import { Image, Platform, PermissionsAndroid, Dimensions, View, TouchableOpacity
 import DocumentScanner from 'react-native-document-scanner-plugin'
 import Carousel from 'react-native-reanimated-carousel';
 import { useToast } from 'react-native-toast-notifications'
-import RNImageToPdf from 'react-native-image-to-pdf';
+import { createPdf } from 'react-native-images-to-pdf';
+import RNBlobUtil from 'react-native-blob-util';
 
 const DocScanner = () => {
 
@@ -49,23 +50,15 @@ const DocScanner = () => {
 
   //generate a pdf using the scanned images
   const generatePDF = async () => {
-    try {
-        const options = {
-            imagePaths: scannedImageArray,
-            name: 'PDFName',
-            maxSize: { // optional maximum image dimension - larger images will be resized
-                width: 900,
-                height: Math.round(deviceHeight() / deviceWidth() * 900),
-            }/* ,
-            quality: .7, // optional compression paramter */
-        };
-        const pdf = await RNImageToPdf.createPDFbyImages(options);
-        
-        alert(pdf.filePath);
-    } catch(e) {
-        console.log(e);
-    }
+    return createPdf({
+      pages: scannedImageArray,
+      outputPath: `file://${RNBlobUtil.fs.dirs.DocumentDir}/file.pdf`
+    })
   }
+
+  useEffect(() => {
+    console.log('ScannedImageArray: ', scannedImageArray)
+  }, scannedImageArray)
 
   return (
     <>
