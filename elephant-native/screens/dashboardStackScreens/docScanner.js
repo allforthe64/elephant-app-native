@@ -3,7 +3,6 @@ import { Image, Platform, PermissionsAndroid, Dimensions, View, TouchableOpacity
 import DocumentScanner from 'react-native-document-scanner-plugin'
 import Carousel from 'react-native-reanimated-carousel';
 import { useToast } from 'react-native-toast-notifications'
-import RNImageToPdf from 'react-native-image-to-pdf';
 
 const DocScanner = () => {
 
@@ -46,26 +45,6 @@ const DocScanner = () => {
     // call scanDocument on load
     scanDocument()
   }, []);
-
-  //generate a pdf using the scanned images
-  const generatePDF = async () => {
-    try {
-        const options = {
-            imagePaths: scannedImageArray,
-            name: 'PDFName',
-            maxSize: { // optional maximum image dimension - larger images will be resized
-                width: 900,
-                height: Math.round(deviceHeight() / deviceWidth() * 900),
-            }/* ,
-            quality: .7, // optional compression paramter */
-        };
-        const pdf = await RNImageToPdf.createPDFbyImages(options);
-        
-        alert(pdf.filePath);
-    } catch(e) {
-        console.log(e);
-    }
-  }
 
   return (
     <>
@@ -139,7 +118,7 @@ const DocScanner = () => {
                         paddingTop: '2%',
                         paddingBottom: '2%',
                       }}>
-                        <TouchableOpacity onPress={() => generatePDF()}>
+                        <TouchableOpacity onPress={() => alert('Converting')}>
                         <Text style={{
                           textAlign: 'center',
                           fontSize: 15,
@@ -200,7 +179,7 @@ const DocScanner = () => {
                     paddingTop: '2%',
                     paddingBottom: '2%',
                   }}>
-                    <TouchableOpacity onPress={() => generatePDF()}>
+                    <TouchableOpacity onPress={() => alert('Converting')}>
                     <Text style={{
                       textAlign: 'center',
                       fontSize: 15,
