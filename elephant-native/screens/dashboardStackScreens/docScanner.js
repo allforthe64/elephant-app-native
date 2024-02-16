@@ -33,7 +33,7 @@ const DocScanner = () => {
     // get back an array with scanned image file paths
     if (scannedImages.length > 0) {
       // set the img src, so we can view the first scanned image
-      if (scannedImageArray.length > 1) {
+      if (scannedImageArray.length >= 1) {
         setScannedImageArray(prev => [...prev, ...scannedImages])
       } else {
         setScannedImageArray(scannedImages)
@@ -46,14 +46,10 @@ const DocScanner = () => {
     scanDocument()
   }, []);
 
-  useEffect(() => {
-    alert(scannedImageArray[0]) 
-  }, [scannedImageArray])
-
   return (
     <>
       {scannedImageArray ? 
-        <View style={{ paddingLeft: '5%', paddingRight: '5%' }}>
+        <View>
           {scannedImageArray.length > 1
             ?    
             <>
