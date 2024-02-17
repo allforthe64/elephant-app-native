@@ -54,6 +54,8 @@ const DocScanner = () => {
       pages: scannedImageArray.map(imagePath => ({imagePath})),
       outputPath: `file://${RNBlobUtil.fs.dirs.DocumentDir}/file.pdf`
     })
+    .then(path => console.log(`PDF created successfully: ${path}`))
+    .catch(error => console.log(`Failed to create PDF: ${error}`));
   }
 
   useEffect(() => {
