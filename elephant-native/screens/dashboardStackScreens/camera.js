@@ -156,7 +156,7 @@ const CameraComponent = () => {
                             uri: videoObj.uri,
                             user: currentUser,
                             version: 0,
-                            timeStamp: `${formattedDate}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}`
+                            timeStamp: formattedDate
                         })
                     const updatedUser = {...userInst, fileRefs: [...userInst.fileRefs, reference], spaceUsed: userInst.spaceUsed + result.metadata.size}
                     updateUser(updatedUser)
@@ -281,7 +281,7 @@ const CameraComponent = () => {
                         if (newZoom > 1) newZoom = 1
                         return newZoom
                     } else {
-                        let newZoom = prev += .009
+                        let newZoom = prev += .01
                         if (newZoom > 1) newZoom = 1
                         return newZoom
                     }

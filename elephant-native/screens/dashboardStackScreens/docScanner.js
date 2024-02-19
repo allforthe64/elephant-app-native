@@ -5,6 +5,10 @@ import Carousel from 'react-native-reanimated-carousel';
 import { useToast } from 'react-native-toast-notifications'
 import { createPdf } from 'react-native-images-to-pdf';
 import RNBlobUtil from 'react-native-blob-util';
+import { format } from 'date-fns';
+import { firebaseAuth } from '../../firebaseConfig'
+import { userListener } from '../../storage'
+import { updateUser } from '../../storage';
 
 const DocScanner = () => {
 
@@ -12,10 +16,29 @@ const DocScanner = () => {
 
   
   const [scannedImageArray, setScannedImageArray] = useState([]);
+  const [userInst, setUserInst] = useState()
+
+  const currentUser = firebaseAuth.currentUser.uid
 
   const toast = useToast()
 
   const width = Dimensions.get('window').width
+  
+
+  //get the current user 
+  useEffect(() => {
+    if (firebaseAuth) {
+    try {
+        const getCurrentUser = async () => {
+        const unsubscribe = await userListener(setUserInst, false, currentUser)
+    
+        return () => unsubscribe()
+        }
+        getCurrentUser()
+    } catch (err) {console.log(err)}
+    } else console.log('no user yet')
+    
+  }, [firebaseAuth])
 
   const scanDocument = async () => {
 
@@ -50,12 +73,61 @@ const DocScanner = () => {
 
   //generate a pdf using the scanned images
   const generatePDF = async () => {
+
+    const formattedDate = format(new Date(), `yyyy-MM-dd:hh:mm:ss::${Date.now()}`)
+
     return createPdf({
       pages: scannedImageArray.map(imagePath => ({imagePath})),
-      outputPath: `file://${RNBlobUtil.fs.dirs.DocumentDir}/file.pdf`
+      outputPath: `file://${RNBlobUtil.fs.dirs.DocumentDir}/${formattedDate}.pdf`
     })
-    .then(path => console.log(`PDF created successfully: ${path}`))
+    .then(path => uploadPDF(path))
     .catch(error => console.log(`Failed to create PDF: ${error}`));
+  }
+
+  const uploadPDF = async (path) => {
+      
+    //upload the pdf into staging
+    let uploadSize = 0
+
+    //generate formatted date for file name
+    const formattedDate = format(new Date(), `yyyy-MM-dd:hh:mm:ss::${Date.now()}`)
+
+    //create blob and upload it into firebase storage
+      const blob = await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest()
+          xhr.onload = () => {
+              resolve(xhr.response) 
+          }
+          xhr.onerror = (e) => {
+              reject(e)
+              reject(new TypeError('Network request failed'))
+          }
+          xhr.responseType = 'blob'
+          xhr.open('GET', path, true)
+          xhr.send(null)
+      })
+      
+      const filename = `${currentUser}/${formattedDate}`
+      const fileRef = ref(storage, filename)
+      const result = uploadBytes(fileRef, blob)
+      
+      //generate references
+      const reference = await addfile({
+        name: `${filename}.pdf`,
+        fileType: 'pdf',
+        size: result.metadata.size,
+        uri: path,
+        user: currentUser,
+        version: 0,
+        timeStamp: formattedDate
+      })
+      
+      const updatedUser = {...userInst, fileRefs: [...userInst.fileRefs, reference], spaceUsed: userInst.spaceUsed + result.metadata.size}
+      updateUser(updatedUser)
+      toast.show('Upload successful', {
+          type: 'success'
+      })
+
   }
 
   useEffect(() => {
