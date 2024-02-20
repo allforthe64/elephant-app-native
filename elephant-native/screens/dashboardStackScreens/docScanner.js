@@ -78,10 +78,10 @@ const DocScanner = () => {
 
     return createPdf({
       pages: scannedImageArray.map(imagePath => ({imagePath})),
-      outputPath: `file://${RNBlobUtil.fs.dirs.DocumentDir}/${formattedDate}.pdf`
+      outputPath: `file://${RNBlobUtil.fs.dirs.DocumentDir}/file.pdf`
     })
     .then(path => uploadPDF(path))
-    .catch(error => console.log(`Failed to create PDF: ${error}`));
+    .catch(error => console.log(`Failed to create PDF: ${error.message}`));
   }
 
   const uploadPDF = async (path) => {
