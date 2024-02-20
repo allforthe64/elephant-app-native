@@ -92,7 +92,7 @@ const DocScanner = () => {
     try {
       console.log('This is the path within the upload function: ', path)
 
-    /* //generate formatted date for file name
+    //generate formatted date for file name
     const formattedDate = format(new Date(), `yyyy-MM-dd:hh:mm:ss::${Date.now()}`)
 
     //create blob and upload it into firebase storage
@@ -108,7 +108,7 @@ const DocScanner = () => {
           xhr.responseType = 'blob'
           xhr.open('GET', path, true)
           xhr.send(null)
-      }) */
+      })
       
       /* const filename = `${currentUser}/${formattedDate}`
       const fileRef = ref(storage, filename)
