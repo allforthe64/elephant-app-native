@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 import { firebaseAuth } from '../../firebaseConfig'
 import { userListener } from '../../storage'
 import { updateUser } from '../../storage';
+import { storage } from '../../firebaseConfig';
 
 const DocScanner = () => {
 
