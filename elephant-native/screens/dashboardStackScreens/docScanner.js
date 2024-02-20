@@ -81,12 +81,15 @@ const DocScanner = () => {
       outputPath: `file://${RNBlobUtil.fs.dirs.DocumentDir}/file.pdf`
     })
     .then(path => uploadPDF(path))
-    .catch(error => console.log(`Failed to create PDF: ${error.message}`));
+    .catch(error => {
+      console.log(`Failed to create PDF: ${error}`)
+      alert(error)
+    });
   }
 
   const uploadPDF = async (path) => {
-      
-    //upload the pdf into staging
+    try {
+       //upload the pdf into staging
     let uploadSize = 0
 
     //generate formatted date for file name
@@ -127,6 +130,10 @@ const DocScanner = () => {
       toast.show('Upload successful', {
           type: 'success'
       })
+    } catch (error) {
+      console.log('error within pdf upload function: ', error)
+      alert('Error within pdf upload function: ', error)
+    }
 
   }
 
