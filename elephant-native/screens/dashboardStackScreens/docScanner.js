@@ -112,7 +112,7 @@ const DocScanner = () => {
           xhr.send(null)
       })
       
-      /* const filename = `${currentUser}/${formattedDate}`
+      const filename = `${currentUser}/${formattedDate}`
       const fileRef = ref(storage, filename)
       const result = uploadBytes(fileRef, blob)
       
@@ -131,7 +131,7 @@ const DocScanner = () => {
       updateUser(updatedUser)
       toast.show('Upload successful', {
           type: 'success'
-      }) */
+      })
     } catch (error) {
       console.log('error within pdf upload function: ', error)
       alert('Error within pdf upload function: ', error)
