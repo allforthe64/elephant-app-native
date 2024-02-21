@@ -80,9 +80,9 @@ const DocScanner = () => {
 
     return createPdf({
       pages: scannedImageArray.map(imagePath => ({imagePath})),
-      outputPath: `file:${FileSystem.documentDirectory}file.pdf`
+      outputPath: `file://${FileSystem.documentDirectory}/file.pdf`
     })
-    .then(result=> uploadPDF(`file:${FileSystem.documentDirectory}file.pdf`))
+    .then(path => uploadPDF(path))
     .catch(error => {
       console.log(`Failed to create PDF: ${error}`)
       alert(error)
