@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Platform} from 'react-native'
+import {View, Text, StyleSheet, Image, ScrollView, TouchableOpacity} from 'react-native'
 import FileRow from '../../components/fileRow'
 import * as DocumentPicker from 'expo-document-picker'
 import * as ImagePicker from 'expo-image-picker'
@@ -194,7 +194,7 @@ const FilePicker = () => {
                         }
                     </>
                 }
-            <View style={Platform.OS === 'ios' ? styles.buttonCon : styles.buttonConAndroid}>
+            <View style={styles.buttonCon}>
 
                 <View style={styles.buttonWrapperSm}>
                     <TouchableOpacity onPress={() => selectFile()}>
@@ -202,15 +202,12 @@ const FilePicker = () => {
                     </TouchableOpacity>
                 </View>
 
-                {Platform.OS === 'ios' ?
-                    <View style={styles.buttonWrapperSm}>
-                        <TouchableOpacity onPress={() => selectImage()}>
-                        <Text style={styles.input}>Select Photo</Text>
-                        </TouchableOpacity>
-                    </View>
-                    : <></>
-                }
                 
+                <View style={styles.buttonWrapperSm}>
+                    <TouchableOpacity onPress={() => selectImage()}>
+                    <Text style={styles.input}>Select Photo</Text>
+                    </TouchableOpacity>
+                </View>
                 {/* <Button title='Select File' onPress={() => selectFile()}/>
                 <Button title='Select Photo' onPress={()=> selectImage()}/> */}
             </View>
@@ -250,13 +247,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginBottom: '12%',
-        width: '100%'
-    },
-    buttonConAndroid: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
         marginBottom: '12%',
         width: '100%'
     },

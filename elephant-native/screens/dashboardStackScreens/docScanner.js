@@ -10,7 +10,6 @@ import { firebaseAuth } from '../../firebaseConfig'
 import { userListener } from '../../storage'
 import { updateUser } from '../../storage';
 import { storage } from '../../firebaseConfig';
-import * as FileSystem from 'expo-file-system'
 
 const DocScanner = () => {
 
@@ -80,7 +79,7 @@ const DocScanner = () => {
 
     return createPdf({
       pages: scannedImageArray.map(imagePath => ({imagePath})),
-      outputPath: `file://${FileSystem.documentDirectory}/file.pdf`
+      outputPath: `file://${RNBlobUtil.fs.dirs.DocumentDir}/file.pdf`
     })
     .then(path => uploadPDF(path))
     .catch(error => {
@@ -111,7 +110,7 @@ const DocScanner = () => {
           xhr.send(null)
       })
       
-      const filename = `${currentUser}/${formattedDate}`
+      /* const filename = `${currentUser}/${formattedDate}`
       const fileRef = ref(storage, filename)
       const result = uploadBytes(fileRef, blob)
       
@@ -130,7 +129,7 @@ const DocScanner = () => {
       updateUser(updatedUser)
       toast.show('Upload successful', {
           type: 'success'
-      })
+      }) */
     } catch (error) {
       console.log('error within pdf upload function: ', error)
       alert('Error within pdf upload function: ', error)

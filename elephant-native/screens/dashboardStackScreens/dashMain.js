@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFolder, faCamera, faBox } from '@fortawesome/free-solid-svg-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useToast } from 'react-native-toast-notifications';
-import * as FileSystem from 'expo-file-system'
+import RNBlobUtil from 'react-native-blob-util';
 
 export default function DashMain({navigation: { navigate }}) {
   const auth = firebaseAuth
@@ -21,7 +21,7 @@ export default function DashMain({navigation: { navigate }}) {
 
   const insets = useSafeAreaInsets()
 
-  console.log(FileSystem.documentDirectory)
+  console.log(RNBlobUtil.fs.dirs.DocumentDir)
 
   return (
     <View>
