@@ -92,6 +92,8 @@ const DocScanner = () => {
     try {
       console.log('This is the path within the upload function: ', path)
 
+      const modifiedPath = `file://${path}`
+
     //generate formatted date for file name
     const formattedDate = format(new Date(), `yyyy-MM-dd:hh:mm:ss::${Date.now()}`)
 
@@ -106,7 +108,7 @@ const DocScanner = () => {
               reject(new TypeError('Network request failed'))
           }
           xhr.responseType = 'blob'
-          xhr.open('GET', path, true)
+          xhr.open('GET', modifiedPath, true)
           xhr.send(null)
       })
       
