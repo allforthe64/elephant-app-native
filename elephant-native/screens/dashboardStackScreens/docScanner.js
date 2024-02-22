@@ -11,6 +11,7 @@ import { userListener } from '../../storage'
 import { updateUser } from '../../storage';
 import { storage } from '../../firebaseConfig';
 import {ref, uploadBytes} from 'firebase/storage'
+import { addfile, updateUser } from '../../storage'
 
 const DocScanner = () => {
 
