@@ -118,7 +118,7 @@ const Scanner = () => {
                 const fileUri = `${currentUser}/${formattedDate}`
                 const fileRef = ref(storage, fileUri)
 
-                uploadBytes(fileRef, textFile)
+                await uploadBytes(fileRef, textFile)
 
                 const reference = await addfile({
                     name: fileName,
