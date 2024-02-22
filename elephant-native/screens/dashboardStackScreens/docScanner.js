@@ -116,6 +116,8 @@ const DocScanner = () => {
       const filename = `${currentUser}/${formattedDate}`
       const fileRef = ref(storage, filename)
       const result = uploadBytes(fileRef, blob)
+
+      console.log('this is the result object: ', result)
       
       //generate references
       const reference = await addfile({
