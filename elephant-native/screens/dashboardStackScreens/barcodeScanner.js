@@ -198,7 +198,7 @@ const Scanner = () => {
     )
 
     } catch (error) {
-        console.log(error)
+        alert(error)
     }
 }
 
