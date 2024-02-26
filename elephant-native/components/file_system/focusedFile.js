@@ -270,6 +270,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                             if (f.nestedUnder === focusedFolder) {
                                                     <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
                                                         if (!destination) {
+                                                            alert('No destination')
                                                             setDestination({id: f.id, fileName: f.fileName})
                                                         } else {
                                                             setDestination(null)
@@ -289,6 +290,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                 return (
                                                     <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
                                                             if (!destination) {
+                                                                alert('No destination')
                                                                 setDestination({id: f.id, fileName: f.fileName})
                                                             } else {
                                                                 setDestination(null)
