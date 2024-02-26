@@ -166,6 +166,10 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
               : undefined;
         }, [sound]);
 
+        useEffect(() => {
+            alert(focusedFolder)
+        }, [focusedFolder])
+
     return (
         <>
                 {fileObj ? 
