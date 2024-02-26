@@ -175,6 +175,10 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
             setSubFolders(exists)
         }, [focusedFolder])
 
+        useEffect(() => {
+            console.log('This is the destination: ', destination)
+        }, [destination])
+
     return (
         <>
                 {fileObj ? 
