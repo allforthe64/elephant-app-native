@@ -253,7 +253,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                             {/* map over each of the folders from the filesystem and display them as a pressable element // call movefile function when one of them is pressed */}
                             {folders.map((f, index) => {
                                 if (focusedFolder) {
-                                    if (f.flag === focusedFolder) {
+                                    if (f.nestedUnder === focusedFolder) {
                                         <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
                                                 if (!destination) {
                                                     setDestination({id: f.id, fileName: f.fileName})
@@ -277,7 +277,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                         setDestination({id: f.id, fileName: f.fileName})
                                                     } else {
                                                         setDestination(null)
-                                                        setFocusedFolder(destination.id)
+                                                        setFocusedFolder(f.id)
                                                     }
                                                 }
                                                 }>
