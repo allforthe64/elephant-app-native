@@ -269,8 +269,8 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                             </View>
                                         </Pressable>
                                     }
-                                }
-                                if (f.id !== file.flag) {
+                                } else {
+                                    if (f.id !== file.flag && f.nestedUnder === '') {
                                         return (
                                             <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
                                                     if (!destination) {
@@ -286,7 +286,8 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                 <Text style={f.id === destination.id ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>{f.fileName}</Text>
                                                 </View>
                                             </Pressable>
-                                        )
+                                            )
+                                        }
                                     }
                                 }
                             )}
