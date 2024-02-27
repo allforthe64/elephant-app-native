@@ -261,11 +261,11 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                 <View style={{width: '100%', height: '95%', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                     <Text style={{fontSize: 40, color: 'white', fontWeight: 'bold', textAlign: 'left', width: '100%', paddingLeft: '5%', marginBottom: '10%'}}>Move To...</Text>
 
-                    <View style={{width: '100%', height: '55%', marginBottom: '10%'}}>
+                    <View style={focusedFolder && !subFolders ? {width: '100%', height: '55%', marginBottom: '10%', display: 'flex', justifyContent: 'center'} : {width: '100%', height: '55%', marginBottom: '10%'}}>
                             <ScrollView>
                             {/* map over each of the folders from the filesystem and display them as a pressable element // call movefile function when one of them is pressed */}
                             {focusedFolder && !subFolders ? 
-                                <Text style={{fontSize: 20, color: 'white'}}>No Folders</Text>
+                                <Text style={{fontSize: 30, color: 'white', fontWeight: 'bold'}}>No Folders</Text>
                             
                             :   
                                 <>
@@ -275,9 +275,8 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                     <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
                                                         if (destination.id === null) {
                                                             alert('No destination')
-                                                            setDestination({id: f.id, fileName: f.fileName})
+                                                            setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
                                                         } else {
-                                                            setDestination(null)
                                                             setFocusedFolder(f.id)
                                                         }
                                                     }
@@ -295,9 +294,8 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                     <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
                                                             if (destination.id === null) {
                                                                 alert('No destination')
-                                                                setDestination({id: f.id, fileName: f.fileName})
+                                                                setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
                                                             } else {
-                                                                setDestination(null)
                                                                 setFocusedFolder(f.id)
                                                             }
                                                         }
