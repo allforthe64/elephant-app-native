@@ -1,6 +1,6 @@
 import { View, Text, Modal, TouchableOpacity, Pressable, TextInput, ScrollView} from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faXmark, faFile, faFolder, faArrowUpRightFromSquare, faImage, faPlay, faPause } from '@fortawesome/free-solid-svg-icons'
+import { faXmark, faFile, faFolder, faArrowUpRightFromSquare, faImage, faPlay, faPause, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import React, {useEffect, useState} from 'react'
 import { getFile, getFileDownloadURL } from '../../storage'
 import { shareAsync } from 'expo-sharing'
@@ -262,6 +262,39 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                     <Text style={{fontSize: 40, color: 'white', fontWeight: 'bold', textAlign: 'left', width: '100%', paddingLeft: '5%', marginBottom: '10%'}}>Move To...</Text>
 
                     <View style={focusedFolder && !subFolders ? {width: '100%', height: '55%', marginBottom: '10%', display: 'flex', justifyContent: 'center'} : {width: '100%', height: '55%', marginBottom: '10%'}}>
+                            {focusedFolder ? 
+                                <>
+                                    <TouchableOpacity onPress={() => {
+                                        if (destination.nestedUnder !== '') {
+                                            setDestination(() => {
+                                                try {
+                                                    var result
+                                                    folders.map(folder => {
+                                                        if (folder.id === destination.nestedUnder) {
+                                                            result = folder
+                                                        }
+                                                    })
+
+                                                    if (result !== null) {
+                                                        setFocusedFolder(result.id)
+                                                        return {id: result.id, fileName: result.fileName, nestedUnder: result.nestedUnder}
+                                                    }
+                                                } catch (err) {
+                                                    console.log(err)
+                                                }
+                                            })
+                                        } else {
+                                            setDestination({id: null, fileName: null, nestedUnder: null})
+                                            setFocusedFolder(null)
+                                        }
+                                    }}>
+                                        <FontAwesomeIcon icon={faArrowLeft} size={'lg'} color='white' /> 
+                                        <Text style={{color: 'white'}}>Back</Text>
+                                    </TouchableOpacity>
+                                </>
+                            :
+                                <></>
+                            }
                             <ScrollView>
                             {/* map over each of the folders from the filesystem and display them as a pressable element // call movefile function when one of them is pressed */}
                             {focusedFolder && !subFolders ? 
