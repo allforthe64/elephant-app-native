@@ -305,20 +305,23 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                     {folders.map((f, index) => {
                                         if (focusedFolder) {
                                             if (f.nestedUnder === focusedFolder) {
-                                                    <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
-                                                        if (destination.id === null) {
-                                                            alert('No destination')
-                                                            setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
-                                                        } else {
-                                                            setFocusedFolder(f.id)
-                                                        }
-                                                    }
-                                                    }>
-                                                    <View style={f.id === destination.id ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
-                                                    <FontAwesomeIcon icon={faFolder} size={30} color={f.id === destination.id ? 'black' : 'white'}/>
-                                                    <Text style={f.id === destination.id ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>{f.fileName}</Text>
-                                                    </View>
-                                                </Pressable>
+                                                    console.log(f) 
+                                                    return (
+                                                        <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
+                                                                if (destination.id === null) {
+                                                                    alert('No destination')
+                                                                    setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
+                                                                } else {
+                                                                    setFocusedFolder(f.id)
+                                                                }
+                                                            }
+                                                            }>
+                                                            <View style={f.id === destination.id ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
+                                                            <FontAwesomeIcon icon={faFolder} size={30} color={f.id === destination.id ? 'black' : 'white'}/>
+                                                            <Text style={f.id === destination.id ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>{f.fileName}</Text>
+                                                            </View>
+                                                        </Pressable>
+                                                    )
                                                 
                                             }
                                         } else {
