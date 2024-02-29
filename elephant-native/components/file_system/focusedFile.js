@@ -170,7 +170,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
         useEffect(() => {
             alert(focusedFolder)
             const exists = Object.values(folders).some((value) => {
-                return value === focusedFolder
+                return value.nestedUnder === focusedFolder
             })
             setSubFolders(exists)
         }, [focusedFolder])
@@ -264,7 +264,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                     <View style={focusedFolder && !subFolders ? {width: '100%', height: '55%', marginBottom: '10%', display: 'flex', justifyContent: 'center'} : {width: '100%', height: '55%', marginBottom: '10%'}}>
                             {focusedFolder ? 
                                 <>
-                                    <TouchableOpacity onPress={() => {
+                                    <TouchableOpacity style={{display: 'flex', flexDirection: 'row'}} onPress={() => {
                                         if (destination.nestedUnder !== '') {
                                             setDestination(() => {
                                                 try {
@@ -288,8 +288,8 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                             setFocusedFolder(null)
                                         }
                                     }}>
-                                        <FontAwesomeIcon icon={faArrowLeft} size={20} color='white' /> 
-                                        <Text style={{color: 'white'}}>Back</Text>
+                                        <FontAwesomeIcon icon={faArrowLeft} size={40} color='white' /> 
+                                        <Text style={{color: 'white', fontSize: 20}}>Back</Text>
                                     </TouchableOpacity>
                                 </>
                             :
