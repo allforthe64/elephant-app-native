@@ -288,7 +288,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                             setFocusedFolder(null)
                                         }
                                     }}>
-                                        <FontAwesomeIcon icon={faArrowLeft} size={'lg'} color='white' /> 
+                                        <FontAwesomeIcon icon={faArrowLeft} size={20} color='white' /> 
                                         <Text style={{color: 'white'}}>Back</Text>
                                     </TouchableOpacity>
                                 </>
