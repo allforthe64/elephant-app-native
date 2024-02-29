@@ -289,7 +289,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                         }
                                     }}>
                                         <FontAwesomeIcon icon={faArrowLeft} size={40} color='white' /> 
-                                        <Text style={{color: 'white', fontSize: 20}}>Back</Text>
+                                        <Text style={{color: 'white', fontSize: 30}}>Back</Text>
                                     </TouchableOpacity>
                                 </>
                             :
@@ -303,9 +303,10 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                             :   
                                 <>
                                     {folders.map((f, index) => {
+                                        console.log(`this is f: ${}. this is focusedFolder: ${focusedFolder}`)
                                         if (focusedFolder) {
                                             if (f.nestedUnder === focusedFolder) {
-                                                    console.log(f) 
+                                                    console.log('within nestedCheck: ', f) 
                                                     return (
                                                         <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
                                                                 if (destination.id === null) {
