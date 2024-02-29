@@ -82,18 +82,35 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
 
         //move a file by changing its flag property
         const handleMove = () => {
-            const newFile = {
-                ...file,
-                flag: destination.id,
-                fileName: newFileName ? newFileName + '.' + file.fileName.split('.')[1] : file.fileName
+            if (destination !== null) {
+                const newFile = {
+                    ...file,
+                    flag: destination.id,
+                    fileName: newFileName ? newFileName + '.' + file.fileName.split('.')[1] : file.fileName
+                }
+                focus(false)
+                setDestination(null)
+                setMoveFile(false)
+                handleFileMove(newFile)
+                toast.show(`Moved file to ${destination.fileName}`, {
+                    type: 'success'
+                })
+            } else if (destination === null && focusedFolder !== null && focusedFolder !== undefined) {
+
+                const folderInst = folders.filter(folder => folder.id === focusedFolder)
+                const newFile = {
+                    ...file,
+                    flag: folderInst.id,
+                    fileName: newFileName ? newFileName + '.' + file.fileName.split('.')[1] : file.fileName
+                }
+                focus(false)
+                setDestination(null)
+                setMoveFile(false)
+                handleFileMove(newFile)
+                toast.show(`Moved file to ${folderInst.fileName}`, {
+                    type: 'success'
+                })
             }
-            focus(false)
-            setDestination(null)
-            setMoveFile(false)
-            handleFileMove(newFile)
-            toast.show(`Moved file to ${destination.fileName}`, {
-                type: 'success'
-            })
         }
 
         //get the downloadable url from firebase storage from the file doc and save it in state
@@ -265,7 +282,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                             {focusedFolder ? 
                                 <>
                                     <TouchableOpacity style={{display: 'flex', flexDirection: 'row'}} onPress={() => {
-                                        if (destination.nestedUnder !== '') {
+                                        if (destination.nestedUnder !== '' && destination.nestedUnder !== null) {
                                             setDestination(() => {
                                                 try {
                                                     var result
@@ -314,6 +331,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                                     setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
                                                                 } else {
                                                                     setFocusedFolder(f.id)
+                                                                    setDestination(null)
                                                                 }
                                                             }
                                                             }>
@@ -334,6 +352,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                                 setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
                                                             } else {
                                                                 setFocusedFolder(f.id)
+                                                                setDestination(null)
                                                             }
                                                         }
                                                         }>
