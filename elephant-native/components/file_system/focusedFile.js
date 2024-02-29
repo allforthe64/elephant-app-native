@@ -303,7 +303,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                             :   
                                 <>
                                     {folders.map((f, index) => {
-                                        console.log(`this is f: ${}. this is focusedFolder: ${focusedFolder}`)
+                                        console.log(`this is f: ${f}. this is focusedFolder: ${focusedFolder}`)
                                         if (focusedFolder) {
                                             if (f.nestedUnder === focusedFolder) {
                                                     console.log('within nestedCheck: ', f) 
