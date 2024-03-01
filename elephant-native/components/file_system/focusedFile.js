@@ -282,30 +282,9 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                             {focusedFolder ? 
                                 <>
                                     <TouchableOpacity style={{display: 'flex', flexDirection: 'row'}} onPress={() => {
-                                        if (destination.nestedUnder !== '' && destination.nestedUnder !== null) {
-                                            console.log('in the correct loop')
-                                            setDestination(() => {
-                                                try {
-                                                    var result
-                                                    folders.map(folder => {
-                                                        if (folder.id === destination.nestedUnder) {
-                                                            result = folder
-                                                        }
-                                                    })
-
-                                                    if (result !== null) {
-                                                        setFocusedFolder(result.id)
-                                                        return {id: result.id, fileName: result.fileName, nestedUnder: result.nestedUnder}
-                                                    }
-                                                } catch (err) {
-                                                    console.log(err)
-                                                }
-                                            })
-                                        } else {
-                                            console.log('in the else loop')
-                                            setDestination({id: null, fileName: null, nestedUnder: null})
-                                            setFocusedFolder(null)
-                                        }
+                                        const folderInst = folders.filter(folder => folder.id === focusedFolder) 
+                                        setFocusedFolder(folderInst[0].id)
+                                        setDestination({id: folderInst[0].id, fileName: folderInst[0].fileName, nestedUnder: folderInst[0].nestedUnder})
                                     }}>
                                         <FontAwesomeIcon icon={faArrowLeft} size={40} color='white' /> 
                                         <Text style={{color: 'white', fontSize: 30}}>Back</Text>
