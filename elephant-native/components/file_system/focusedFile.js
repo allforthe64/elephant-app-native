@@ -284,12 +284,14 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                     <TouchableOpacity style={{display: 'flex', flexDirection: 'row'}} onPress={() => {
                                         const folderInst = folders.filter(folder => folder.id === focusedFolder) 
                                         console.log('this is focusedFolder: ', folderInst[0])
-                                        setFocusedFolder(folderInst[0].nestedUnder)
+                                        
                                         const parentFolderInst = folders.filter(folder => folder.id === folderInst[0].nestedUnder)
-                                        if (parentFolderInst[0].nestedUnder !== '') {
+                                        if (parentFolderInst) {
                                             setDestination({id: parentFolderInst[0].id, fileName: parentFolderInst[0].fileName, nestedUnder: parentFolderInst[0].nestedUnder})
+                                            setFocusedFolder(folderInst[0].nestedUnder)
                                         } else {
                                             setDestination({id: null, fileName: null, nestedUnder: null})
+                                            setFocusedFolder(null)
                                         }
                                     }}>
                                         <FontAwesomeIcon icon={faArrowLeft} size={40} color='white' /> 
