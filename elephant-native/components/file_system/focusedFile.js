@@ -288,6 +288,8 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                         const parentFolderInst = folders.filter(folder => folder.id === folderInst[0].nestedUnder)
                                         if (parentFolderInst[0].nestedUnder !== '') {
                                             setDestination({id: parentFolderInst[0].id, fileName: parentFolderInst[0].fileName, nestedUnder: parentFolderInst[0].nestedUnder})
+                                        } else {
+                                            setDestination({id: null, fileName: null, nestedUnder: null})
                                         }
                                     }}>
                                         <FontAwesomeIcon icon={faArrowLeft} size={40} color='white' /> 
