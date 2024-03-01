@@ -21,7 +21,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
     const [add, setAdd] = useState(false)
     const [newFileName, setNewFileName] = useState(file ? file.fileName.split('.')[0] + (file.version > 0 ? ` (${file.version}).${file.fileName.split('.')[1]}` : '.' + file.fileName.split('.')[1]) : '') 
     const [moveFile, setMoveFile] = useState(false)
-    const [destination, setDestination] = useState({id: null, fileName: ''})
+    const [destination, setDestination] = useState({id: null, fileName: null, nestedUnder: null})
     const [expanded, setExpanded] = useState(false)
     const [sound, setSound] = useState()
     const [playing, setPlaying] = useState(false)
@@ -89,7 +89,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                     fileName: newFileName ? newFileName + '.' + file.fileName.split('.')[1] : file.fileName
                 }
                 focus(false)
-                setDestination(null)
+                setDestination({id: null, fileName: null, nestedUnder: null})
                 setMoveFile(false)
                 handleFileMove(newFile)
                 toast.show(`Moved file to ${destination.fileName}`, {
@@ -104,7 +104,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                     fileName: newFileName ? newFileName + '.' + file.fileName.split('.')[1] : file.fileName
                 }
                 focus(false)
-                setDestination(null)
+                setDestination({id: null, fileName: null, nestedUnder: null})
                 setMoveFile(false)
                 handleFileMove(newFile)
                 toast.show(`Moved file to ${folderInst.fileName}`, {
@@ -324,6 +324,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                         if (focusedFolder) {
                                             if (f.nestedUnder === focusedFolder) {
                                                     console.log('within nestedCheck: ', f) 
+                                                    console.log('destination within nested check: ', destination)
                                                     return (
                                                         <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
                                                                 if (destination.id === null) {
@@ -331,7 +332,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                                     setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
                                                                 } else {
                                                                     setFocusedFolder(f.id)
-                                                                    setDestination(null)
+                                                                    setDestination({id: null, fileName: null, nestedUnder: null})
                                                                 }
                                                             }
                                                             }>
@@ -352,7 +353,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                                 setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
                                                             } else {
                                                                 setFocusedFolder(f.id)
-                                                                setDestination(null)
+                                                                setDestination({id: null, fileName: null, nestedUnder: null})
                                                             }
                                                         }
                                                         }>
