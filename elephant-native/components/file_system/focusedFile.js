@@ -286,7 +286,8 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                         console.log('this is focusedFolder: ', folderInst[0])
                                         
                                         const parentFolderInst = folders.filter(folder => folder.id === folderInst[0].nestedUnder)
-                                        if (parentFolderInst) {
+                                        console.log(parentFolderInst)
+                                        if (parentFolderInst.length > 0) {
                                             setDestination({id: parentFolderInst[0].id, fileName: parentFolderInst[0].fileName, nestedUnder: parentFolderInst[0].nestedUnder})
                                             setFocusedFolder(folderInst[0].nestedUnder)
                                         } else {
