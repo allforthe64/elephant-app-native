@@ -283,6 +283,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                 <>
                                     <TouchableOpacity style={{display: 'flex', flexDirection: 'row'}} onPress={() => {
                                         if (destination.nestedUnder !== '' && destination.nestedUnder !== null) {
+                                            console.log('in the correct loop')
                                             setDestination(() => {
                                                 try {
                                                     var result
@@ -301,6 +302,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                 }
                                             })
                                         } else {
+                                            console.log('in the else loop')
                                             setDestination({id: null, fileName: null, nestedUnder: null})
                                             setFocusedFolder(null)
                                         }
@@ -328,7 +330,6 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                     return (
                                                         <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
                                                                 if (destination.id === null) {
-                                                                    alert('No destination')
                                                                     setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
                                                                 } else {
                                                                     setFocusedFolder(f.id)
