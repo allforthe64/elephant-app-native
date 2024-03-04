@@ -87,7 +87,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                 const newFile = {
                     ...file,
                     flag: destination.id,
-                    fileName: newFileName ? newFileName + '.' + file.fileName.split('.')[1] : file.fileName
+                    fileName: newFileName ? newFileName : file.fileName
                 }
                 focus(false)
                 setDestination({id: null, fileName: null, nestedUnder: null})
@@ -108,7 +108,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                 setDestination({id: null, fileName: null, nestedUnder: null})
                 setMoveFile(false)
                 handleFileMove(newFile)
-                toast.show(`Moved file to ${folderInst.fileName}`, {
+                toast.show(`Moved file to ${folderInst[0].fileName}`, {
                     type: 'success'
                 })
             }
