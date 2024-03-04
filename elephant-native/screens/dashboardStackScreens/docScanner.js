@@ -55,7 +55,9 @@ const DocScanner = () => {
     }
 
     // start the document scanner
-    const { scannedImages } = await DocumentScanner.scanDocument()
+    const { scannedImages } = await DocumentScanner.scanDocument({
+      letUserAdjustCrop: false
+    })
   
     // get back an array with scanned image file paths
     if (scannedImages.length > 0) {

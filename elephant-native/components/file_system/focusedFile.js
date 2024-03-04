@@ -101,7 +101,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                 const folderInst = folders.filter(folder => folder.id === focusedFolder)
                 const newFile = {
                     ...file,
-                    flag: folderInst.id,
+                    flag: folderInst[0].id,
                     fileName: newFileName ? newFileName + '.' + file.fileName.split('.')[1] : file.fileName
                 }
                 focus(false)
