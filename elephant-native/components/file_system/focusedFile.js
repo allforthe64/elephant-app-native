@@ -82,7 +82,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
 
         //move a file by changing its flag property
         const handleMove = () => {
-            if (destination !== null) {4
+            if (destination.id !== null) {4
                 console.log('In the destination !== null check')
                 const newFile = {
                     ...file,
@@ -96,7 +96,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                 toast.show(`Moved file to ${destination.fileName}`, {
                     type: 'success'
                 })
-            } else if (destination === null && focusedFolder !== null && focusedFolder !== undefined) {
+            } else if (destination.id === null && focusedFolder !== null && focusedFolder !== undefined) {
                 console.log('in the destination does equal null check')
                 const folderInst = folders.filter(folder => folder.id === focusedFolder)
                 const newFile = {
