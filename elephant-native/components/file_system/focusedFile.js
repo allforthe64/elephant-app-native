@@ -186,7 +186,6 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
         }, [sound]);
 
         useEffect(() => {
-            alert(focusedFolder)
             const exists = Object.values(folders).some((value) => {
                 return value.nestedUnder === focusedFolder
             })
@@ -341,7 +340,6 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                 return (
                                                     <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
                                                             if (destination.id === null) {
-                                                                alert('No destination')
                                                                 setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
                                                             } else {
                                                                 setFocusedFolder(f.id)
