@@ -49,7 +49,7 @@ export default function Files({navigation: { navigate }, route}) {
       } catch (err) {console.log(err)}
     } else console.log('no user yet')
     
-  }, [auth])
+  }, [])
 
   //once a current user has been pushed into state, allow component to render files/folders
   useEffect(() => {

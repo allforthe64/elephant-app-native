@@ -99,7 +99,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
         }}>
         {loading ? <></> 
         : focusedFile ?
-            <FocusedFileComp file={focusedFile} focus={setFocusedFile} deleteFile={deleteFile} renameFileFunction={renameFile} folders={folders} handleFileMove={moveFile}/>
+            <FocusedFileComp file={focusedFile} focus={setFocusedFile} deleteFile={deleteFile} renameFileFunction={renameFile} folders={folders} handleFileMove={moveFile} addFolder={addFolder}/>
         :      
                 <ScrollView scrollEnabled={add ? true : false}>
 
