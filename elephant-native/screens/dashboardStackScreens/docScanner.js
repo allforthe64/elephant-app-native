@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+/* import React, { useState, useEffect } from 'react'
 import { Image, Platform, PermissionsAndroid, Dimensions, View, TouchableOpacity, Text } from 'react-native'
 import DocumentScanner from 'react-native-document-scanner-plugin'
 import Carousel from 'react-native-reanimated-carousel';
@@ -306,3 +306,4 @@ const DocScanner = () => {
 }
 
 export default DocScanner
+ */

@@ -52,18 +52,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
             } catch (err) {console.log(err)}
         } else console.log('no user yet')
         
-    }, [auth])
-
-    useEffect(() => {
-        try {
-            const getCurrentUser = async () => {
-            const unsubscribe = await userListener(setUserInst, false, auth.currentUser.uid)
-        
-            return () => unsubscribe()
-            }
-            getCurrentUser()
-        } catch (err) {console.log(err)}
-    }, [addFolder])
+    }, [auth, addFolder])
 
 
         //rename a file by overwriting the fileName property
@@ -205,10 +194,6 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
             setSubFolders(exists)
         }, [focusedFolder])
 
-        useEffect(() => {
-            console.log('This is the destination: ', destination)
-        }, [destination])
-
     return (
         <>
                 {fileObj ? 
@@ -284,7 +269,14 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                 {/* if the moveFile state is true, display the modal with the file movement code*/}
                 {/* xMark icon for closing out the moveFile modal */}
                 <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '10%', width: '100%'}}>
-                    <Pressable onPress={() => setMoveFile(false)}>
+                    <Pressable onPress={() => {
+                            if (addFolderForm) setAddFolderForm(false)
+                            else {
+                                setFocusedFolder(null)
+                                setMoveFile(false)
+                            }
+                        }
+                        }>
                         <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
                     </Pressable>
                 </View>
