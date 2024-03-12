@@ -62,11 +62,7 @@ const DocScanner = () => {
     // get back an array with scanned image file paths
     if (scannedImages.length > 0) {
       // set the img src, so we can view the first scanned image
-      if (scannedImageArray.length >= 1) {
-        setScannedImageArray(prev => [...prev, ...scannedImages])
-      } else {
-        setScannedImageArray(scannedImages)
-      }
+      setScannedImageArray(prev => [...prev, ...scannedImages])
     }
   }
 
