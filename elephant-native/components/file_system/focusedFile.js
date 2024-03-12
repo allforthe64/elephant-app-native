@@ -35,6 +35,8 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
     const [subFolders, setSubFolders] = useState()
     const [addFolderForm, setAddFolderForm] = useState(false)
     const [newFolderName, setNewFolderName] = useState('')
+    const [editNote, setEditNote] = useState(false)
+    const [noteText, setNoteText] = useState('')
 
     const auth = firebaseAuth
     const toast = useToast()
@@ -193,6 +195,15 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
             })
             setSubFolders(exists)
         }, [focusedFolder])
+
+        useEffect(() => {
+            if (fileURL && fileObj && fileObj.documentType === 'txt') {
+                fetch(fileURL).then(result => result.text())
+                .then(text => {
+                    setNoteText(text)
+                })
+            }
+        }, [fileURL, fileObj])
 
     return (
         <>
@@ -456,6 +467,39 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
             </View>
         </Modal>
     )
+    : editNote ?
+        (
+            <Modal animationType='slide' presentationStyle='pageSheet' >
+                <View style={{height: '100%', width: '100%', backgroundColor: 'rgb(23 23 23)'}}>
+                    {/* if the moveFile state is true, display the modal with the file movement code*/}
+                    {/* xMark icon for closing out the moveFile modal */}
+                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '10%', width: '100%'}}>
+                        <Pressable onPress={() => {
+                                setEditNote(false)
+                            }
+                            }>
+                            <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
+                        </Pressable>
+                    </View>
+                    <Text style={{fontSize: 40, color: 'white', fontWeight: 'bold', textAlign: 'left', width: '100%', paddingLeft: '5%', marginBottom: '10%'}}>Edit Note:</Text>
+                    <View style={{width: '100%', height: '100%', paddingLeft: '5%', paddingRight: '5%'}}>
+                    <TextInput 
+                        multiline={true}
+                        value={noteText}
+                        style={{
+                            width: '100%',
+                            height: '50%',
+                            backgroundColor: 'white',
+                            fontSize: 20,
+                            textAlignVertical: 'top',
+                            padding: '3%'
+                        }}
+                        onChange={(e) => setNoteText(e.target.value)}
+                        />
+                    </View>
+                </View>
+            </Modal>
+        )
     :
     <View style={{ paddingTop: '10%', backgroundColor: 'rgb(23 23 23)', height: '100%', width: '100%'}}>
             
@@ -642,7 +686,33 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                                     </TouchableOpacity>
                                             </View>
                                         </View>
-                                    : 
+                                    : fileObj.documentType === 'txt' ?
+                                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
+                                            <View style={{width: '70%',
+                                                    borderColor: '#777',
+                                                    borderRadius: 25,
+                                                    backgroundColor: 'white',
+                                                    borderWidth: 1,
+                                                    paddingTop: '2%',
+                                                    paddingBottom: '2%',
+                                                    marginLeft: '2%',
+                                                    paddingLeft: '12%',
+                                                    paddingRight: '12%'}}>
+                                                    <TouchableOpacity style={{
+                                                    display: 'flex', 
+                                                    flexDirection: 'row', 
+                                                    width: '100%', 
+                                                    justifyContent: 'space-around',
+
+                                                    }}
+                                                    disabled={fileURL ? false : true}
+                                                    onPress={() => setEditNote(true)}
+                                                    >
+                                                        <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>Edit Note</Text>
+                                                    </TouchableOpacity>
+                                            </View>
+                                        </View>
+                                        :
                                         <></>}
                                     <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
                                         <View style={{width: '70%',
