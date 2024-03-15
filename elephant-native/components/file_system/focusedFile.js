@@ -188,43 +188,49 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
         
         const updateNote = async () => {
             
-
-            const fileDoc = getFile(fileObj.fileId)
+            //get file doc and setup a formatted date
+            const fileDoc = await getFile(file.fileId)
+            const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
 
             //delete out the old note
             const deleteRef = refFunction(storage, fileObj.uri)
             deleteObject(deleteRef)
 
-            const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
-
-            /* 
             //create a new note and upload it
             const textFile = new Blob([`${noteText}`], {
                 type: "text/plain;charset=utf-8",
              });
              const fileUri = `${userInst.uid}/${formattedDate}`
             const fileRef = refFunction(storage, fileUri)
-            uploadBytes(fileRef, textFile)  */
+            uploadBytes(fileRef, textFile) 
 
+            //create a new file object
             const newFileObj = {
-                ...fileObj,
+                ...fileDoc,
                 fileId: file.fileId,
                 uri: 'gs://elephantapp-21e34.appspot.com' + '/' + userInst.uid + '/' + formattedDate
             }
 
+            //update the file object
+            await updateFileObj(newFileObj)
+
+            //create a new fileRef
             const newFileRef = {
                 ...file,
                 uri: 'gs://elephantapp-21e34.appspot.com' + '/' + userInst.uid + '/' + formattedDate
             }
 
-            await updateFileObj(newFileObj)
 
+            //append newFileRef to the user's fileRef array
+            //update the user
             const newFileRefs = userInst.fileRefs.map(fileRef => fileRef.fileId === newFileRef.fileId ? newFileRef : fileRef)
-
             await updateUser({...userInst, fileRefs: newFileRefs})
 
+            toast.show('Note successfully edited', {
+                type: 'success'
+            })
 
-
+            setEditNote(false)
         }
 
         //unload the sound
@@ -548,7 +554,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                             textAlignVertical: 'top',
                             padding: '3%'
                         }}
-                        onChange={(e) => setNoteText(e.target.value)}
+                        onChangeText={(text) => setNoteText(text)}
                         autoFocus={true}
                         onFocus={() => setEditingMode(true)}
                         ref={ref}

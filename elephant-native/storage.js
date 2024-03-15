@@ -137,6 +137,7 @@ export const deleteFileObj = async (id) => {
 export const updateFileObj = async (input) => {
     console.log(input)
     const fileRef = doc(db, 'files', input.fileId)
+    console.log(fileRef)
     await updateDoc(fileRef, {...input})
 }
 
