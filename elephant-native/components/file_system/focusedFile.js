@@ -226,10 +226,6 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
             const newFileRefs = userInst.fileRefs.map(fileRef => fileRef.fileId === newFileRef.fileId ? newFileRef : fileRef)
             await updateUser({...userInst, fileRefs: newFileRefs})
 
-            toast.show('Note successfully edited', {
-                type: 'success'
-            })
-
             setEditNote(false)
         }
 
@@ -581,6 +577,9 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                         if (editingMode) setEditingMode(false)
                                         else {
                                             updateNote()
+                                            toast.show('Note successfully edited', {
+                                                type: 'success'
+                                            })
                                         }
                                     }}
                                     >
