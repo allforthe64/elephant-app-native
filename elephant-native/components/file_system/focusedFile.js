@@ -1,17 +1,20 @@
-import { View, Text, Modal, TouchableOpacity, Pressable, TextInput, ScrollView} from 'react-native'
+import { View, Text, Modal, TouchableOpacity, Pressable, TextInput, ScrollView, Keyboard} from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faXmark, faFile, faFolder, faArrowUpRightFromSquare, faImage, faPlay, faPause, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import React, {useEffect, useState, useRef} from 'react'
-import { getFile, getFileDownloadURL } from '../../storage'
+import { deleteFileObj, getFile, getFileDownloadURL, updateFileObj, updateUser } from '../../storage'
 import { shareAsync } from 'expo-sharing'
 import * as MediaLibrary from 'expo-media-library'
 import * as FileSystem from 'expo-file-system'
 import { Image } from 'react-native'
 import { Linking } from 'react-native'
 import { Audio, Video } from 'expo-av'
-import { firebaseAuth } from '../../firebaseConfig'
+import { firebaseAuth, storage } from '../../firebaseConfig'
 import { userListener } from '../../storage'
 import { useToast } from 'react-native-toast-notifications'
+import { uploadBytes, ref as refFunction, deleteObject } from 'firebase/storage'
+import { format } from 'date-fns'
+
 
 const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, handleFileMove, addFolder}) => {
 
@@ -37,6 +40,9 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
     const [newFolderName, setNewFolderName] = useState('')
     const [editNote, setEditNote] = useState(false)
     const [noteText, setNoteText] = useState('')
+    const [editingMode, setEditingMode] = useState(false)
+
+    const ref = useRef()
 
     const auth = firebaseAuth
     const toast = useToast()
@@ -180,6 +186,47 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
             } catch (error) {}
         };
         
+        const updateNote = async () => {
+            
+
+            const fileDoc = getFile(fileObj.fileId)
+
+            //delete out the old note
+            const deleteRef = refFunction(storage, fileObj.uri)
+            deleteObject(deleteRef)
+
+            const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
+
+            /* 
+            //create a new note and upload it
+            const textFile = new Blob([`${noteText}`], {
+                type: "text/plain;charset=utf-8",
+             });
+             const fileUri = `${userInst.uid}/${formattedDate}`
+            const fileRef = refFunction(storage, fileUri)
+            uploadBytes(fileRef, textFile)  */
+
+            const newFileObj = {
+                ...fileObj,
+                fileId: file.fileId,
+                uri: 'gs://elephantapp-21e34.appspot.com' + '/' + userInst.uid + '/' + formattedDate
+            }
+
+            const newFileRef = {
+                ...file,
+                uri: 'gs://elephantapp-21e34.appspot.com' + '/' + userInst.uid + '/' + formattedDate
+            }
+
+            await updateFileObj(newFileObj)
+
+            const newFileRefs = userInst.fileRefs.map(fileRef => fileRef.fileId === newFileRef.fileId ? newFileRef : fileRef)
+
+            await updateUser({...userInst, fileRefs: newFileRefs})
+
+
+
+        }
+
         //unload the sound
         useEffect(() => {
             return sound
@@ -204,6 +251,13 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                 })
             }
         }, [fileURL, fileObj])
+
+        useEffect(() => {
+            if (editingMode === false) Keyboard.dismiss()
+            else {
+                if (ref.current) ref.current.focus()
+            } 
+        }, [editingMode])
 
     return (
         <>
@@ -495,7 +549,39 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                             padding: '3%'
                         }}
                         onChange={(e) => setNoteText(e.target.value)}
+                        autoFocus={true}
+                        onFocus={() => setEditingMode(true)}
+                        ref={ref}
                         />
+                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
+                            <View style={{width: '70%',
+                                    borderColor: '#777',
+                                    borderRadius: 25,
+                                    backgroundColor: 'white',
+                                    borderWidth: 1,
+                                    paddingTop: '2%',
+                                    paddingBottom: '2%',
+                                    marginLeft: '2%',
+                                    paddingLeft: '2%',
+                                    paddingRight: '3%'}}>
+                                    <TouchableOpacity style={{
+                                    display: 'flex', 
+                                    flexDirection: 'row', 
+                                    width: '100%', 
+                                    justifyContent: 'space-around',
+
+                                    }}
+                                    onPress={() => {
+                                        if (editingMode) setEditingMode(false)
+                                        else {
+                                            updateNote()
+                                        }
+                                    }}
+                                    >
+                                        <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>{editingMode ? 'Finished Editing' : 'Save Note'}</Text>
+                                    </TouchableOpacity>
+                            </View>
+                        </View>
                     </View>
                 </View>
             </Modal>
