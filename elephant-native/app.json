@@ -37,12 +37,6 @@
         {
           "cameraPermission": "Allow Elephant App to access camera."
         }
-      ],
-      [
-        "react-native-document-scanner-plugin",
-        {
-          "cameraPermission": "Allow Elephant App to access camera."
-        }
       ]
     ],
     "android": {

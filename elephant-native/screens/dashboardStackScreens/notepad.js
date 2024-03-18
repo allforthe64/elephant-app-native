@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Keyboard, KeyboardAvoidingView, Modal, Pressable, ScrollView } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faCheck, faPencil, faXmark, faFolder, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faPencil, faXmark, faFolder, faArrowLeft, faFile } from '@fortawesome/free-solid-svg-icons'
 import { ref as refFunction, uploadBytes} from 'firebase/storage'
 import { format } from 'date-fns'
 import { firebaseAuth, storage } from '../../firebaseConfig';
@@ -25,7 +25,8 @@ const Notepad = () => {
     const [subFolders, setSubFolders] = useState()
     const [folders, setFolders] = useState({})
     const [newFolderName, setNewFolderName] = useState('')
-    
+    const [nameGiven, setNameGiven] = useState(false)
+    const [noteName, setNoteName] = useState('')
 
     const toast = useToast()
 
@@ -110,7 +111,7 @@ const Notepad = () => {
 
       //generate formatted date, fileName, and upload size
       const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
-      const fileName = `Note from: ${formattedDate}.txt`
+      const fileName = noteName !== '' ? `${noteName}.txt` : `Note from: ${formattedDate}.txt`
       let uploadSize = 0
 
       //increase version number if other files exist with the same name
@@ -126,8 +127,8 @@ const Notepad = () => {
         const textFile = new Blob([`${body}`], {
           type: "text/plain;charset=utf-8",
        });
-        const fileUri = `${currentUser.uid}/${formattedDate}`
-        const fileRef = refFunction(storage, fileUri)
+        const fileUri = `${currentUser.uid}/${noteName !== '' ? noteName : formattedDate}`
+        const fileRef = refFunction(storage, `${currentUser.uid}/${formattedDate}`)
         uploadBytes(fileRef, textFile)
 
         uploadSize += textFile.size
@@ -171,6 +172,7 @@ const Notepad = () => {
       setDestination({id: null, fileName: null, nestedUnder: null})
       setFocusedFolder(null)
       setPreAdd(false)
+      setNameGiven(false)
       } catch (err) {
         console.log(err)
       }
@@ -204,13 +206,83 @@ const Notepad = () => {
                     else {
                       setPreAdd(false)
                       setFocusedFolder(null)
+                      setNameGiven(false)
+                      setNoteName('')
                     }
                     }}>
                       <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
                   </Pressable>
               </View>
               
-              {addFolderForm ? 
+              { 
+
+              !nameGiven ?
+              <>
+                  <Text style={{color: 'white', fontSize: 35, fontWeight: '700', marginTop: '35%', textAlign: 'center'}}>Name Note:</Text>
+                  <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: '10%'}}>
+                      <FontAwesomeIcon icon={faFile} size={30} color='white'/>
+                      <TextInput value={noteName} style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '40%'}} onChangeText={(e) => setNoteName(e)} autoFocus/>
+                      <View style={noteName === '' ? {
+
+                            width: '25%',
+                            borderColor: '#777',
+                            borderRadius: 25,
+                            backgroundColor: 'white',
+                            borderWidth: 1,
+                            paddingTop: '2%',
+                            paddingBottom: '2%',
+                            marginLeft: '2%',
+                            opacity: .5                        
+
+                      } : {width: '25%',
+                              borderColor: '#777',
+                              borderRadius: 25,
+                              backgroundColor: 'white',
+                              borderWidth: 1,
+                              paddingTop: '2%',
+                              paddingBottom: '2%',
+                              marginLeft: '2%'}}>
+                              <TouchableOpacity style={{
+                              display: 'flex', 
+                              flexDirection: 'row', 
+                              width: '100%', 
+                              justifyContent: 'center',
+                              }}
+                              disabled={noteName === '' ? true : false}
+                              onPress={() => {
+                                  setNameGiven(true)
+                              }}
+                              >
+                                  <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save</Text>
+                              </TouchableOpacity>
+                        </View>
+                    </View>
+                    <Text style={{color: 'white', fontSize: 20, marginTop: '7%', textAlign: 'center'}}>Or</Text>
+                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', width: '100%', marginTop: '7%'}}>
+                      <View style={{width: '35%',
+                          borderColor: '#777',
+                          borderRadius: 25,
+                          backgroundColor: 'white',
+                          borderWidth: 1,
+                          paddingTop: '2%',
+                          paddingBottom: '2%',
+                          marginLeft: '2%'}}>
+                          <TouchableOpacity style={{
+                          display: 'flex', 
+                          flexDirection: 'row', 
+                          width: '100%', 
+                          justifyContent: 'center',
+                          }}
+                          onPress={() => {
+                              setNameGiven(true)
+                          }}
+                          >
+                              <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Use Timestamp</Text>
+                          </TouchableOpacity>
+                      </View>
+                    </View>
+              </>
+              : addFolderForm ? 
                   <>
                       <Text style={{color: 'white', fontSize: 35, fontWeight: '700', marginTop: '40%', textAlign: 'center'}}>Add A New Folder:</Text>
                       <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: '10%'}}>
@@ -438,7 +510,8 @@ const Notepad = () => {
                             fontSize: 18,
                             textAlignVertical: 'top',
                             width: '100%',
-                            height: '75%'
+                            height: '100%',
+                            color: 'black'
                         } : {
                           backgroundColor: 'white',
                           paddingLeft: 10,
@@ -448,7 +521,8 @@ const Notepad = () => {
                           fontSize: 18,
                           textAlignVertical: 'top',
                           width: '100%',
-                          height: '100%'
+                          height: '100%',
+                          color: 'black'
                       }}
                         editable={open ? true : false}
                         multiline
