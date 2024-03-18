@@ -8,8 +8,8 @@ import AudioRecorder from './dashboardStackScreens/audioRecorder';
 import FilePicker from './dashboardStackScreens/documentPicker';
 import BarcodeScanner from './dashboardStackScreens/barcodeScanner';
 import Scanner from './dashboardStackScreens/barcodeScanner';
-/* import DocScanner from './dashboardStackScreens/docScanner';
- */
+import DocScanner from './dashboardStackScreens/docScanner';
+
 const Stack = createStackNavigator()
 
 export default function Dashboard() {
@@ -23,7 +23,7 @@ export default function Dashboard() {
       <Stack.Screen name="Record Audio" component={AudioRecorder} />
       <Stack.Screen name="Upload A File" component={FilePicker} />
       <Stack.Screen name='QR Scanner' component={Scanner} />
-      {/* <Stack.Screen name='Scan Document' component={DocScanner} /> */}
+      <Stack.Screen name='Scan Document' component={DocScanner} />
     </Stack.Navigator> 
   );
 }
