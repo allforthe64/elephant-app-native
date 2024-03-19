@@ -196,7 +196,7 @@ const Notepad = () => {
     <>
       {preAdd ? 
 
-        <Modal animationType='slide' presentationStyle='pageSheet' >
+        <Modal animationType='slide' presentationStyle='pageSheet'>
           <View style={{height: '100%', width: '100%', backgroundColor: 'rgb(23 23 23)'}}>
               {/* if the moveFile state is true, display the modal with the file movement code*/}
               {/* xMark icon for closing out the moveFile modal */}
