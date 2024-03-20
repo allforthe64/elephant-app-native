@@ -185,113 +185,119 @@ const CameraComponent = () => {
 
         const saveToElephant = async (videoMode) => {
 
-            //save video
-            if (videoMode) {
-                
-                saveVideo()
-                setVideoObj(undefined)
+            try {
+                 //save video
+                if (videoMode) {
+                    
+                    setVideoObj(undefined)
 
-                //create new formatted date for file
-                const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
+                    //create new formatted date for file
+                    const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
 
-                try {  
-                    //create blob using the photo from state and save it to elephant staging
-                    const blob = await new Promise(async (resolve, reject) => {
-                        const xhr = new XMLHttpRequest()
-                        xhr.onload = () => {
-                        resolve(xhr.response) 
-                        }
-                        xhr.onerror = (e) => {
-                            reject(new TypeError('Network request failed'))
-                        }
-                        xhr.responseType = 'blob'
-                        xhr.open('GET', videoObj.uri, true)
-                        xhr.send(null)
-                    })
+                    try {  
+                        //create blob using the photo from state and save it to elephant staging
+                        const blob = await new Promise(async (resolve, reject) => {
+                            const xhr = new XMLHttpRequest()
+                            xhr.onload = () => {
+                            resolve(xhr.response) 
+                            }
+                            xhr.onerror = (e) => {
+                                reject(new TypeError('Network request failed'))
+                            }
+                            xhr.responseType = 'blob'
+                            xhr.open('GET', videoObj.uri, true)
+                            xhr.send(null)
+                        })
 
-                    const filename = mediaName !== '' ? `${mediaName}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}` : `${formattedDate}}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}`
-                    const fileRef = ref(storage, `${currentUser}/${formattedDate}`)
-                    const result = await uploadBytes(fileRef, blob)
+                        const filename = mediaName !== '' ? `${mediaName}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}` : `${formattedDate}}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}`
+                        const fileRef = ref(storage, `${currentUser}/${formattedDate}`)
+                        const result = await uploadBytes(fileRef, blob)
 
-                    let finalDestintation 
-                    if (destination.id !== null) finalDestintation = destination.id
-                    else if (focusedFolder) finalDestintation = focusedFolder 
-                    else finalDestintation = false
+                        let finalDestintation 
+                        if (destination.id !== null) finalDestintation = destination.id
+                        else if (focusedFolder) finalDestintation = focusedFolder 
+                        else finalDestintation = false
 
-                    const reference = await addfile({
-                            name: filename,
-                            fileType: `${Platform.OS === 'ios' ? 'mov' : 'mp4'}`,
-                            size: result.metadata.size,
-                            uri: videoObj.uri,
-                            user: currentUser,
-                            version: 0,
-                            timeStamp: formattedDate
-                        }, finalDestintation)
-                    const updatedUser = {...userInst, fileRefs: [...userInst.fileRefs, reference], spaceUsed: userInst.spaceUsed + result.metadata.size}
-                    updateUser(updatedUser)
-                    toast.show('Upload successful', {
-                        type: 'success'
-                    })
+                        const reference = await addfile({
+                                name: filename,
+                                fileType: `${Platform.OS === 'ios' ? 'mov' : 'mp4'}`,
+                                size: result.metadata.size,
+                                uri: videoObj.uri,
+                                user: currentUser,
+                                version: 0,
+                                timeStamp: formattedDate
+                            }, finalDestintation)
+                        const updatedUser = {...userInst, fileRefs: [...userInst.fileRefs, reference], spaceUsed: userInst.spaceUsed + result.metadata.size}
+                        updateUser(updatedUser)
+                        toast.show('Upload successful', {
+                            type: 'success'
+                        })
 
-                } catch (err) {
-                    alert(err)
+                        saveVideo()
+
+                    } catch (err) {
+                        alert(err)
+                    }
+                } else {
+                    setPhoto(undefined)
+
+                    //create new formatted date for file
+                    const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
+
+                    try {  
+                        //create blob using the photo from state and save it to elephant staging
+                        const blob = await new Promise(async (resolve, reject) => {
+                            const xhr = new XMLHttpRequest()
+                            xhr.onload = () => {
+                            resolve(xhr.response) 
+                            }
+                            xhr.onerror = (e) => {
+                                reject(new TypeError('Network request failed'))
+                            }
+                            xhr.responseType = 'blob'
+                            xhr.open('GET', photo.uri, true)
+                            xhr.send(null)
+                        })
+
+                        const filename = mediaName !== '' ? `${mediaName}.jpg` : `${formattedDate}.jpg`
+                        const fileRef = ref(storage, `${currentUser}/${formattedDate}`)
+                        const result = await uploadBytes(fileRef, blob)
+
+                        let finalDestintation 
+                        if (destination.id !== null) finalDestintation = destination.id
+                        else if (focusedFolder) finalDestintation = focusedFolder 
+                        else finalDestintation = false
+
+                        const reference = await addfile({
+                                name: filename,
+                                fileType: 'jpg',
+                                size: result.metadata.size,
+                                uri: photo.uri,
+                                user: currentUser,
+                                version: 0,
+                                timeStamp: `${formattedDate}`
+                            }, finalDestintation)
+                        const updatedUser = {...userInst, fileRefs: [...userInst.fileRefs, reference], spaceUsed: userInst.spaceUsed + result.metadata.size}
+                        updateUser(updatedUser)
+                        toast.show('Upload successful', {
+                            type: 'success'
+                        })
+
+                        savePhoto()
+
+                    } catch (err) {
+                        alert(err)
+                    }
                 }
-            } else {
-                setPhoto(undefined)
+                setMediaName('')
+                setDestination({id: null, fileName: null, nestedUnder: null})
+                setFocusedFolder(null)
+                setPreAdd(false)
+                setNameGiven(false)
 
-                savePhoto()
-
-                //create new formatted date for file
-                const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
-
-                try {  
-                    //create blob using the photo from state and save it to elephant staging
-                    const blob = await new Promise(async (resolve, reject) => {
-                        const xhr = new XMLHttpRequest()
-                        xhr.onload = () => {
-                        resolve(xhr.response) 
-                        }
-                        xhr.onerror = (e) => {
-                            reject(new TypeError('Network request failed'))
-                        }
-                        xhr.responseType = 'blob'
-                        xhr.open('GET', photo.uri, true)
-                        xhr.send(null)
-                    })
-
-                    const filename = mediaName !== '' ? `${mediaName}.jpg` : `${formattedDate}.jpg`
-                    const fileRef = ref(storage, `${currentUser}/${formattedDate}`)
-                    const result = await uploadBytes(fileRef, blob)
-
-                    let finalDestintation 
-                    if (destination.id !== null) finalDestintation = destination.id
-                    else if (focusedFolder) finalDestintation = focusedFolder 
-                    else finalDestintation = false
-
-                    const reference = await addfile({
-                            name: filename,
-                            fileType: 'jpg',
-                            size: result.metadata.size,
-                            uri: photo.uri,
-                            user: currentUser,
-                            version: 0,
-                            timeStamp: `${formattedDate}`
-                        }, finalDestintation)
-                    const updatedUser = {...userInst, fileRefs: [...userInst.fileRefs, reference], spaceUsed: userInst.spaceUsed + result.metadata.size}
-                    updateUser(updatedUser)
-                    toast.show('Upload successful', {
-                        type: 'success'
-                    })
-
-                } catch (err) {
-                    alert(err)
-                }
+            } catch (error) {
+                alert('Error within media upload function: ', error)
             }
-            setMediaName('')
-            setDestination({id: null, fileName: null, nestedUnder: null})
-            setFocusedFolder(null)
-            setPreAdd(false)
-            setNameGiven(false)
         }
 
         //allow photo to be shared using shareAsync method
