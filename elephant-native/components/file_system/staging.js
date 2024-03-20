@@ -42,7 +42,7 @@ const Staging = ({staging, reset, folders, deleteFile, renameFile, moveFile, use
                     <FontAwesomeIcon icon={faXmark} size={35} color='white' />
                 </TouchableOpacity>
             </View>
-            <View>
+            <View style={{height: '80%', paddingBottom: '5%'}}>
                 {staging.length > 0 ? 
                     <ScrollView>
                         {staging.map((file, i) => {
