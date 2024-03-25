@@ -21,7 +21,7 @@ const Scanner = () => {
         const [scanData, setScanData] = useState()
         const [urls, setUrls] = useState([])
         const [userInst, setUserInst] = useState()
-        const [preAdd, setPreAdd] = useState(true)
+        const [preAdd, setPreAdd] = useState(false)
         const [addFolderForm, setAddFolderForm] = useState(false)
         const [focusedFolder, setFocusedFolder] = useState()
         const [subFolders, setSubFolders] = useState()
@@ -47,7 +47,6 @@ const Scanner = () => {
         }, [currentUser])
 
         useEffect(() => {
-            console.log('running useEffect')
             if(userInst)
             setFolders(userInst.files)
           }, [userInst, addFolderForm])
@@ -400,7 +399,7 @@ const Scanner = () => {
                                         opacity: .5
                                         }
                                         }>
-                                        <TouchableOpacity onPress={() => addToStorage()} style={{
+                                        <TouchableOpacity onPress={() => submit()} style={{
                                         display: 'flex', 
                                         flexDirection: 'row', 
                                         width: '100%', 
@@ -421,7 +420,7 @@ const Scanner = () => {
                                         paddingBottom: '2%',
                                         marginBottom: '10%',
                                         marginLeft: '2%'}}>
-                                        <TouchableOpacity onPress={() => addToStorage()} style={{
+                                        <TouchableOpacity onPress={() => submit()} style={{
                                         display: 'flex', 
                                         flexDirection: 'row', 
                                         width: '100%', 
