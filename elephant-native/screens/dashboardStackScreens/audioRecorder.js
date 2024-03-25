@@ -120,7 +120,7 @@ const AudioRecorder = () => {
             //check if a file already exists with this file's name. If it does, increase version number
             let versionNo = 0
             userInst.fileRefs.forEach(fileRef => {
-                if (fileRef.fileName === (el.name + '.' + el.file.split('.')[1]) && fileRef.fileName.split('.')[1] === el.file.split('.')[1]) {
+                if (fileRef.fileName === (el.name + '.' + el.file.split('.')[1]) && fileRef.fileName.split('.')[1] === 'mp3') {
                     versionNo ++
                 }
             })
@@ -149,7 +149,7 @@ const AudioRecorder = () => {
     
             //create file reference
             const reference = await addfile({
-                name: el.name + '.' + el.file.split('.')[1],
+                name: el.name + '.' + 'mp3',
                 fileType: el.file.split('.')[1],
                 size: result.metadata.size,
                 uri: el.file,
