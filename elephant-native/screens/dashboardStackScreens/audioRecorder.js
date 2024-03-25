@@ -172,6 +172,10 @@ const AudioRecorder = () => {
 
         const references = await Promise.all(recordings.map(async (el) => {
 
+            try {
+
+            
+
             //check if a file already exists with this file's name. If it does, increase version number
             let versionNo = 0
             userInst.fileRefs.forEach(fileRef => {
@@ -202,10 +206,10 @@ const AudioRecorder = () => {
             const fileRef = ref(storage, filename)
             const result = await uploadBytes(fileRef, blob)
 
-            let finalDestintation 
-            if (destination.id !== null) finalDestintation = destination.id
-            else if (focusedFolder) finalDestintation = focusedFolder 
-            else finalDestintation = false
+            let finalDestination 
+            if (destination.id !== null) finalDestination = destination.id
+            else if (focusedFolder) finalDestination = focusedFolder 
+            else finalDestination = false
     
             //create file reference
             const reference = await addfile({
@@ -223,6 +227,10 @@ const AudioRecorder = () => {
 
             return reference
 
+        } catch (err) {
+            alert(err)
+        }
+
         }))
 
         //increase the ammount of space the user is consuming and add the references to the user's staging
@@ -236,6 +244,9 @@ const AudioRecorder = () => {
         toast.show('File upload successful', {
             type: 'success'
         })
+        setDestination({id: null, fileName: null, nestedUnder: null})
+        setFocusedFolder(null)
+        setPreAdd(false)
           
     }
 

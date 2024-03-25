@@ -132,6 +132,9 @@ const Scanner = () => {
 
         
         const submit = async () => {
+            try {
+
+            
 
             let uploadSize = 0
             
@@ -160,10 +163,10 @@ const Scanner = () => {
 
                 await uploadBytes(fileRef, textFile)
 
-                let finalDestintation 
-                if (destination.id !== null) finalDestintation = destination.id
-                else if (focusedFolder) finalDestintation = focusedFolder 
-                else finalDestintation = false
+                let finalDestination 
+                if (destination.id !== null) finalDestination = destination.id
+                else if (focusedFolder) finalDestination = focusedFolder 
+                else finalDestination = false
 
                 const reference = await addfile({
                     name: fileName,
@@ -171,7 +174,7 @@ const Scanner = () => {
                     fileType: 'txt',
                     size: textFile.size,
                     user: currentUser, timeStamp: formattedDate, version: versionNo
-                }, finalDestintation)
+                }, finalDestination)
 
                 //increase the size of the upload
                 uploadSize += textFile.size
@@ -202,6 +205,10 @@ const Scanner = () => {
             setDestination({id: null, fileName: null, nestedUnder: null})
             setFocusedFolder(null)
             setPreAdd(false)
+
+            } catch (err) {
+                alert(err)
+            }
         }
 
         const insets = useSafeAreaInsets()
