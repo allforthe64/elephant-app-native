@@ -191,7 +191,7 @@ const Scanner = () => {
                     type: 'success'
                     })
             } else if (focusedFolder) {
-                const fileInst = currentUser.files.filter(file => file.id === focusedFolder)
+                const fileInst = userInst.files.filter(file => file.id === focusedFolder)
                 toast.show(`File upload to ${fileInst[0].fileName} successful`, {
                     type: 'success'
                     })

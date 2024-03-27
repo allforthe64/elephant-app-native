@@ -214,7 +214,7 @@ const AudioRecorder = () => {
             //create file reference
             const reference = await addfile({
                 name: el.name + '.' + 'mp3',
-                fileType: el.file.split('.')[1],
+                fileType: 'mp3',
                 size: result.metadata.size,
                 uri: el.file,
                 user: currentUser, 
@@ -238,12 +238,24 @@ const AudioRecorder = () => {
         const newUser = {...userInst, spaceUsed: newSpaceUsed, fileRefs: [...userInst.fileRefs, ...references]}
         await updateUser(newUser)
 
+        if (destination.id !== null) {
+            toast.show(`File upload to ${destination.fileName} successful`, {
+                type: 'success'
+                })
+        } else if (focusedFolder) {
+            const fileInst = userInst.files.filter(file => file.id === focusedFolder)
+            toast.show(`File upload to ${fileInst[0].fileName} successful`, {
+                type: 'success'
+                })
+        } else {
+            toast.show(`File upload to staging successful`, {
+                type: 'success'
+                })
+        }
+
         const empty = []
         setRecordings(empty)
         setLoading(false)
-        toast.show('File upload successful', {
-            type: 'success'
-        })
         setDestination({id: null, fileName: null, nestedUnder: null})
         setFocusedFolder(null)
         setPreAdd(false)
