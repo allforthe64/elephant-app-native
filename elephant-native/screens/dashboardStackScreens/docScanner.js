@@ -55,14 +55,16 @@ const DocScanner = () => {
     }
 
     // start the document scanner
-    const { scannedImages } = await DocumentScanner.scanDocument({
-      letUserAdjustCrop: false
-    })
+    const { scannedImages } = await DocumentScanner.scanDocument()
   
     // get back an array with scanned image file paths
     if (scannedImages.length > 0) {
       // set the img src, so we can view the first scanned image
-      setScannedImageArray(prev => [...prev, ...scannedImages])
+      if (scannedImageArray.length >= 1) {
+        setScannedImageArray(prev => [...prev, ...scannedImages])
+      } else {
+        setScannedImageArray(scannedImages)
+      }
     }
   }
 
