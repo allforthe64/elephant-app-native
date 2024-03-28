@@ -3,7 +3,7 @@ import { firebaseAuth } from '../../firebaseConfig';
 import DashCollectContainer from '../../components/dashCollectContainer';
 import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faFolder, faCamera, faBox } from '@fortawesome/free-solid-svg-icons';
+import { faFolder, faCamera, faBox, faFile } from '@fortawesome/free-solid-svg-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useToast } from 'react-native-toast-notifications';
 
@@ -35,6 +35,24 @@ export default function DashMain({navigation: { navigate }}) {
                   </TouchableOpacity>
                 </View>
               </View>
+
+              <View style={styles.wrapperContainer}>
+                <View style={{width: '80%',
+                    borderColor: '#777',
+                    borderRadius: 25,
+                    backgroundColor: 'white',
+                    borderWidth: 1,
+                    paddingTop: '2%',
+                    paddingBottom: '2%',
+                    marginBottom: '8%',
+                    marginLeft: '2%'}}>
+                  <TouchableOpacity onPress={() => navigate('Upload A File')} style={styles.file}>
+                      <Text style={styles.input}>Upload A Document</Text>
+                      <FontAwesomeIcon icon={faFile} size={30} style={{marginLeft: '3%', marginTop: '1%'}}/>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
               <View style={styles.wrapperContainer}>
                 <View style={{width: '80%',
                     borderColor: '#777',

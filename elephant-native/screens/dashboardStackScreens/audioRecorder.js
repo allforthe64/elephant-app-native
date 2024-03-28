@@ -135,7 +135,7 @@ const AudioRecorder = () => {
         if (folderName.length > 0) {
         if (targetNest === '') {
             const newFile = {
-            id: userInst.files.length + 1,
+            id: Math.random().toString(20).toString().split('.')[1] + Math.random().toString(20).toString().split('.')[1],
             fileName: folderName,
             nestedUnder: ''
             }
@@ -148,7 +148,7 @@ const AudioRecorder = () => {
             
         } else {           //if the incoming targetNest has a value, create the new folder with the nestedUnder property set to targetNest
             const newFile = {
-            id: userInst.files.length + 1,
+            id: Math.random().toString(20).toString().split('.')[1] + Math.random().toString(20).toString().split('.')[1],
             fileName: folderName,
             nestedUnder: targetNest
             }

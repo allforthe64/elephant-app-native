@@ -59,11 +59,8 @@ const FilePicker = () => {
           aspect: [4, 3],
           quality: 1,
         });
-    
-        if (!img.didCancel) {
-            updatedFiles.push({name: img.assets[0].fileName, uri: img.assets[0].uri, size: img.assets[0].fileSize, fileType: img.assets[0].fileName.split('.')[1]})
-            setFiles(updatedFiles)
-        }
+        updatedFiles.push({name: img.assets[0].fileName, uri: img.assets[0].uri, size: img.assets[0].fileSize, fileType: img.assets[0].fileName.split('.')[1]})
+        setFiles(updatedFiles)
     };
 
     const renderFiles = () => {

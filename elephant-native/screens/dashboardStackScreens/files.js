@@ -185,7 +185,7 @@ export default function Files({navigation: { navigate }, route}) {
     if (folderName.length > 0) {
       if (targetNest === '') {
         const newFile = {
-          id: currentUser.files.length + 1,
+          id: Math.random().toString(20).toString().split('.')[1] + Math.random().toString(20).toString().split('.')[1],
           fileName: folderName,
           nestedUnder: ''
         }
@@ -195,7 +195,7 @@ export default function Files({navigation: { navigate }, route}) {
         setAdd(false)
       } else {           //if the incoming targetNest has a value, create the new folder with the nestedUnder property set to targetNest
         const newFile = {
-          id: currentUser.files.length + 1,
+          id: Math.random().toString(20).toString().split('.')[1] + Math.random().toString(20).toString().split('.')[1],
           fileName: folderName,
           nestedUnder: targetNest
         }
