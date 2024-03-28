@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {View, Text, StyleSheet, Image, ScrollView, TouchableOpacity} from 'react-native'
+import {View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Pressable, TextInput, Modal} from 'react-native'
 import FileRow from '../../components/fileRow'
 import * as DocumentPicker from 'expo-document-picker'
 import * as ImagePicker from 'expo-image-picker'
