@@ -12,7 +12,7 @@ import { storage } from '../../firebaseConfig';
 import {ref, uploadBytes} from 'firebase/storage'
 import { addfile, updateUser } from '../../storage'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faXmark, faArrowLeft, faFolder } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faArrowLeft, faFolder, faFile } from '@fortawesome/free-solid-svg-icons';
 
 const DocScanner = () => {
 
