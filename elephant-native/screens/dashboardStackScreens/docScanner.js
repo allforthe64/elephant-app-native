@@ -28,6 +28,7 @@ const DocScanner = () => {
   const [newFolderName, setNewFolderName] = useState('')
   const [nameGiven, setNameGiven] = useState(false)
   const [docName, setDocName] = useState('')
+  const [preAdd, setPreAdd] = useState(false)
 
   const currentUser = firebaseAuth.currentUser.uid
 

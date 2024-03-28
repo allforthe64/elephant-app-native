@@ -47,7 +47,7 @@ export default function DashMain({navigation: { navigate }}) {
                     marginBottom: '8%',
                     marginLeft: '2%'}}>
                   <TouchableOpacity onPress={() => navigate('Upload A File')} style={styles.file}>
-                      <Text style={styles.input}>Upload A Document</Text>
+                      <Text style={styles.input}>Upload Doc</Text>
                       <FontAwesomeIcon icon={faFile} size={30} style={{marginLeft: '3%', marginTop: '1%'}}/>
                   </TouchableOpacity>
                 </View>
