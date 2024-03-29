@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Image, Platform, PermissionsAndroid, Dimensions, View, TouchableOpacity, Text, Pressable, TextInput, Modal } from 'react-native'
+import { Image, Platform, PermissionsAndroid, Dimensions, View, TouchableOpacity, Text, Pressable, TextInput, Modal, ScrollView } from 'react-native'
 import DocumentScanner from 'react-native-document-scanner-plugin'
 import Carousel from 'react-native-reanimated-carousel';
 import { useToast } from 'react-native-toast-notifications'
@@ -240,7 +240,7 @@ const DocScanner = () => {
 
               !nameGiven ?
               <>
-                  <Text style={{color: 'white', fontSize: 35, fontWeight: '700', marginTop: '35%', textAlign: 'center'}}>Name Note:</Text>
+                  <Text style={{color: 'white', fontSize: 35, fontWeight: '700', marginTop: '35%', textAlign: 'center'}}>Name PDF:</Text>
                   <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: '10%'}}>
                       <FontAwesomeIcon icon={faFile} size={30} color='white'/>
                       <TextInput value={docName} style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '40%'}} onChangeText={(e) => setDocName(e)} autoFocus/>
