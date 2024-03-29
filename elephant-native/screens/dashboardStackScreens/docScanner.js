@@ -29,6 +29,7 @@ const DocScanner = () => {
   const [nameGiven, setNameGiven] = useState(false)
   const [docName, setDocName] = useState('')
   const [preAdd, setPreAdd] = useState(false)
+  const [destination, setDestination] = useState({id: null, fileName: null, nestedUnder: null})
 
   const currentUser = firebaseAuth.currentUser.uid
 
