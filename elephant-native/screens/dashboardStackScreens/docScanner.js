@@ -165,7 +165,7 @@ const DocScanner = () => {
           xhr.send(null)
       })
       
-      const filename = docName !== '' ? `${currentUser}/${docName}` : `${currentUser}/${formattedDate}`
+      const filename = docName !== '' ? `${currentUser}/${docName}.pdf` : `${currentUser}/${formattedDate}.pdf`
       const fileRef = ref(storage, filename)
       const result = await uploadBytes(fileRef, blob)
 
@@ -178,7 +178,7 @@ const DocScanner = () => {
       
       //generate references
       const reference = await addfile({
-        name: `${formattedDate}.pdf`,
+        name: fileName,
         fileType: 'pdf',
         size: result.metadata.size,
         uri: path,
