@@ -210,7 +210,7 @@ const CameraComponent = () => {
                         })
 
                         const filename = mediaName !== '' ? `${mediaName}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}` : `${formattedDate}}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}`
-                        const fileRef = ref(storage, `${currentUser}/${formattedDate}`)
+                        const fileRef = ref(storage, `${currentUser}/${filename}`)
                         const result = await uploadBytes(fileRef, blob)
 
                         let finalDestintation 
@@ -260,7 +260,7 @@ const CameraComponent = () => {
                         })
 
                         const filename = mediaName !== '' ? `${mediaName}.jpg` : `${formattedDate}.jpg`
-                        const fileRef = ref(storage, `${currentUser}/${formattedDate}`)
+                        const fileRef = ref(storage, `${currentUser}/${filename}`)
                         const result = await uploadBytes(fileRef, blob)
 
                         let finalDestintation 
