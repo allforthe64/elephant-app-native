@@ -164,7 +164,7 @@ const DocScanner = () => {
           xhr.send(null)
       })
       
-      const filename = `${currentUser}/${formattedDate}`
+      const filename = docName !== '' ? `${currentUser}/${docName}` : `${currentUser}/${formattedDate}`
       const fileRef = ref(storage, filename)
       const result = await uploadBytes(fileRef, blob)
 
