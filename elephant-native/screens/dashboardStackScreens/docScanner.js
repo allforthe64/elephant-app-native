@@ -178,7 +178,7 @@ const DocScanner = () => {
       
       //generate references
       const reference = await addfile({
-        name: fileName,
+        name: filename,
         fileType: 'pdf',
         size: result.metadata.size,
         uri: path,
