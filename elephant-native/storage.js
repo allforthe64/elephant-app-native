@@ -52,6 +52,7 @@ export async function userListener(setCurrentUser, setStaging, user) {
     const unsub = onSnapshot(doc(db, 'users', user), (doc) => {
         try {
             //filter file references from the current user that are in staging
+            console.log(doc.data())
             const stagingRefs = doc.data().fileRefs.filter(el => el.flag === 'Staging')
             if (setStaging) setStaging(stagingRefs)
             setCurrentUser({...doc.data(), uid: user})

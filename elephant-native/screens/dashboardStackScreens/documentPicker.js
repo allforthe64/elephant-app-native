@@ -59,7 +59,11 @@ const FilePicker = () => {
           aspect: [4, 3],
           quality: 1,
         });
-        updatedFiles.push({name: img.assets[0].fileName, uri: img.assets[0].uri, size: img.assets[0].fileSize, fileType: img.assets[0].fileName.split('.')[1]})
+        
+
+        const fileName = img.assets[0].uri.substring(img.assets[0].uri.lastIndexOf('/') + 1, img.assets[0].uri.length)
+
+        updatedFiles.push({name: fileName, uri: img.assets[0].uri, fileType: fileName.split('.')[1]})
         setFiles(updatedFiles)
     };
 
@@ -88,9 +92,6 @@ const FilePicker = () => {
         let uploadSize = 0
 
         const references =  await Promise.all(files.map(async (el) => {
-
-            //increase the upload size
-            uploadSize += el.size
 
             //check for files with the same name and increase the version number
             let versionNo = 0
@@ -126,10 +127,14 @@ const FilePicker = () => {
                     filename = `${currentUser}/${formattedDate}`
                 }
                 const fileRef = ref(storage, filename)
-                uploadBytes(fileRef, blob)
+                const result = await uploadBytes(fileRef, blob)
+
+                //increase the upload size
+                uploadSize += result.metadata.size
+
                 
                 //generate references
-                const reference = await addfile({...el, name: el.name, user: currentUser, timeStamp: formattedDate, version: versionNo})
+                const reference = await addfile({...el, name: el.name, user: currentUser, size: result.metadata.size, timeStamp: formattedDate, version: versionNo})
                 
                 return reference
 
