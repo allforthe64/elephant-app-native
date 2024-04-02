@@ -94,7 +94,7 @@ const DocScanner = () => {
     }
   }
 
-  /* const scanDocument = async () => {
+  const scanDocument = async () => {
 
     // prompt user to accept camera permission request if they haven't already
     if (Platform.OS === 'android' && await PermissionsAndroid.request(
@@ -123,7 +123,7 @@ const DocScanner = () => {
   useEffect(() => {
     // call scanDocument on load
     scanDocument()
-  }, []); */
+  }, []);
 
   //generate a pdf using the scanned images
   const generatePDF = async () => {
