@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Image, Platform, PermissionsAndroid, Dimensions, View, TouchableOpacity, Text, Pressable, TextInput, Modal, ScrollView } from 'react-native'
-import DocumentScanner from 'react-native-document-scanner-plugin'
+/* import DocumentScanner from 'react-native-document-scanner-plugin' */
 import Carousel from 'react-native-reanimated-carousel';
 import { useToast } from 'react-native-toast-notifications'
 import { createPdf } from 'react-native-images-to-pdf';
@@ -94,7 +94,7 @@ const DocScanner = () => {
     }
   }
 
-  const scanDocument = async () => {
+  /* const scanDocument = async () => {
 
     // prompt user to accept camera permission request if they haven't already
     if (Platform.OS === 'android' && await PermissionsAndroid.request(
@@ -123,7 +123,7 @@ const DocScanner = () => {
   useEffect(() => {
     // call scanDocument on load
     scanDocument()
-  }, []);
+  }, []); */
 
   //generate a pdf using the scanned images
   const generatePDF = async () => {

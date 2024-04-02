@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {View, Text, StyleSheet, Image, ScrollView, TouchableOpacity} from 'react-native'
+import {View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Modal, Pressable, TextInput} from 'react-native'
 import FileRow from '../../components/fileRow'
 import * as DocumentPicker from 'expo-document-picker'
 import * as ImagePicker from 'expo-image-picker'
@@ -11,12 +11,21 @@ import { storage } from '../../firebaseConfig'
 import {ref, uploadBytes} from 'firebase/storage'
 import { userListener } from '../../storage'
 import { useToast } from 'react-native-toast-notifications'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faFolder, faXmark, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 const FilePicker = () => {
 
     const [files, setFiles] = useState([])
     const [userInst, setUserInst] = useState()
     const [loading, setLoading] = useState(false)
+    const [preAdd, setPreAdd] = useState(false)
+    const [addFolderForm, setAddFolderForm] = useState(false)
+    const [focusedFolder, setFocusedFolder] = useState()
+    const [subFolders, setSubFolders] = useState()
+    const [folders, setFolders] = useState([])
+    const [newFolderName, setNewFolderName] = useState('')
+    const [destination, setDestination] = useState({id: null, fileName: null, nestedUnder: null})
 
     const currentUser = firebaseAuth.currentUser.uid
     const auth = firebaseAuth
@@ -36,6 +45,20 @@ const FilePicker = () => {
         } else console.log('no user yet')
         
     }, [auth])
+
+    //set folders 
+    useEffect(() => {
+        if(userInst)
+        setFolders(userInst.files)
+    }, [userInst, addFolderForm])
+
+    //determine if a folder has any subfolders
+    useEffect(() => {
+        const exists = Object.values(folders).some((value) => {
+            return value.nestedUnder === focusedFolder
+        })
+        setSubFolders(exists)
+    }, [focusedFolder, addFolderForm])
 
     const selectFile = async () => {
         let updatedFiles = [...files]
@@ -70,7 +93,7 @@ const FilePicker = () => {
     const renderFiles = () => {
         return files.map((file, index) => {
             return (
-                <FileRow file={file} files={files} index={index} key={index} deleteFunc={filterFiles}/>
+                <FileRow file={file} files={files} index={index} key={index} deleteFunc={filterFiles} setFiles={setFiles}/>
             )
         })
     }
@@ -129,12 +152,17 @@ const FilePicker = () => {
                 const fileRef = ref(storage, filename)
                 const result = await uploadBytes(fileRef, blob)
 
+                let finalDestination 
+                if (destination.id !== null) finalDestination = destination.id
+                else if (focusedFolder) finalDestination = focusedFolder 
+                else finalDestination = false
+
                 //increase the upload size
                 uploadSize += result.metadata.size
 
                 
                 //generate references
-                const reference = await addfile({...el, name: el.name, user: currentUser, size: result.metadata.size, timeStamp: formattedDate, version: versionNo})
+                const reference = await addfile({...el, name: el.name, user: currentUser, size: result.metadata.size, timeStamp: formattedDate, version: versionNo}, finalDestination)
                 
                 return reference
 
@@ -153,8 +181,10 @@ const FilePicker = () => {
 
             //reset the form
             setLoading(false)
-            const empty = []
-            setFiles(empty)
+            setFiles([])
+            setDestination({id: null, fileName: null, nestedUnder: null})
+            setFocusedFolder(null)
+            setPreAdd(false)
             toast.show('File upload successful', {
                 type: 'success'
             }) 
@@ -162,66 +192,358 @@ const FilePicker = () => {
           
     }
 
+    //add a folder
+    const addFolder = async (folderName, targetNest) => {
+        //if the incoming targetNest is empty string, create the new folder under the home directory
+        if (folderName.length > 0) {
+        if (targetNest === '') {
+            const newFile = {
+            id: Math.random().toString(20).toString().split('.')[1] + Math.random().toString(20).toString().split('.')[1],
+            fileName: folderName,
+            nestedUnder: ''
+            }
+    
+            const newFiles = [...userInst.files, newFile]
+            const updatedUser = {...userInst, files: newFiles}
+            await updateUser(updatedUser)
+            setNewFolderName('')
+            setFolders(newFiles)
+            
+        } else {           //if the incoming targetNest has a value, create the new folder with the nestedUnder property set to targetNest
+            const newFile = {
+            id: Math.random().toString(20).toString().split('.')[1] + Math.random().toString(20).toString().split('.')[1],
+            fileName: folderName,
+            nestedUnder: targetNest
+            }
+
+            const newFiles = [...userInst.files, newFile]
+            const updatedUser = {...userInst, files: newFiles}
+    
+            updateUser(updatedUser)
+            setAddFolderForm(false)
+            setFolders(newFiles)
+        }
+        } else {
+        alert('Please enter a folder name')
+        }
+    }
+
     const insets = useSafeAreaInsets()
 
   return (
-    <View style={styles.container}>
-        <Image style={styles.bgImg } source={require('../../assets/elephant-dashboard.jpg')} />
-        <View style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            position: 'absolute',
-            paddingTop: insets.top,
-            paddingBottom: insets.bottom
-        }}>
-            <Text style={styles.bigHeader}>Files to upload:</Text>
-                {loading ? 
-                    <View style={styles.noFileCon}>
-                        <Text style={styles.bigHeader}>Uploading Files...</Text>
+    <>
+        {preAdd ? 
+            <Modal animationType='slide' presentationStyle='pageSheet'>
+                <View style={{height: '100%', width: '100%', backgroundColor: 'rgb(23 23 23)'}}>
+                    {/* if the moveFile state is true, display the modal with the file movement code*/}
+                    {/* xMark icon for closing out the moveFile modal */}
+                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '10%', width: '100%'}}>
+                        <Pressable onPress={() => {
+                            if (addFolderForm) setAddFolderForm(false) 
+                            else {
+                            setPreAdd(false)
+                            setFocusedFolder(null)
+                            }
+                            }}>
+                            <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
+                        </Pressable>
                     </View>
-                :   
-                    <>
-                        {files.length === 0 ? 
+                    
+                    { 
+                    addFolderForm ? 
+                        <>
+                            <Text style={{color: 'white', fontSize: 35, fontWeight: '700', marginTop: '40%', textAlign: 'center'}}>Add A New Folder:</Text>
+                            <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: '10%'}}>
+                                <FontAwesomeIcon icon={faFolder} size={30} color='white'/>
+                                <TextInput value={newFolderName} style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '40%'}} onChangeText={(e) => setNewFolderName(e)} autoFocus onBlur={() => {if (newFolderName === '') setAddFolderForm(false)}}/>
+                                <View style={{width: '25%',
+                                        borderColor: '#777',
+                                        borderRadius: 25,
+                                        backgroundColor: 'white',
+                                        borderWidth: 1,
+                                        paddingTop: '2%',
+                                        paddingBottom: '2%',
+                                        marginLeft: '2%'}}>
+                                        <TouchableOpacity style={{
+                                        display: 'flex', 
+                                        flexDirection: 'row', 
+                                        width: '100%', 
+                                        justifyContent: 'center',
+                                        }}
+                                        onPress={() => {
+                                            addFolder(newFolderName, focusedFolder ? focusedFolder : '')
+                                            setNewFolderName('')
+                                            setAddFolderForm(false)
+                                        }}
+                                        >
+                                            <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save</Text>
+                                        </TouchableOpacity>
+                                </View>
+                            </View>
+                        </>
+
+                    :
+
+                        <View style={{width: '100%', height: '95%', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                            <Text style={{fontSize: 40, color: 'white', fontWeight: 'bold', textAlign: 'left', width: '100%', paddingLeft: '5%', marginBottom: '10%'}}>Save Note To...</Text>
+
+                            <View style={focusedFolder && !subFolders ? {width: '100%', height: '55%', marginBottom: '10%', display: 'flex', justifyContent: 'center'} : {width: '100%', height: '55%', marginBottom: '10%'}}>
+                                    {focusedFolder ? 
+                                        <>
+                                            <TouchableOpacity style={{display: 'flex', flexDirection: 'row', marginLeft: '5%', marginTop: '5%'}} onPress={() => {
+                                                const folderInst = folders.filter(folder => folder.id === focusedFolder) 
+                                                
+                                                const parentFolderInst = folders.filter(folder => folder.id === folderInst[0].nestedUnder)
+                                                console.log(parentFolderInst)
+                                                if (parentFolderInst.length > 0) {
+                                                    console.log("we're within the first if check")
+                                                    setDestination({id: parentFolderInst[0].id, fileName: parentFolderInst[0].fileName, nestedUnder: parentFolderInst[0].nestedUnder})
+                                                    setFocusedFolder(folderInst[0].nestedUnder)
+                                                } else {
+                                                    console.log("we're within the else check")
+                                                    setDestination({id: null, fileName: null, nestedUnder: null})
+                                                    setFocusedFolder(null)
+                                                }
+                                            }}>
+                                                <FontAwesomeIcon icon={faArrowLeft} size={40} color='white' /> 
+                                                <Text style={{color: 'white', fontSize: 30, marginLeft: '3%'}}>Back</Text>
+                                            </TouchableOpacity>
+                                        </>
+                                    :
+                                        <></>
+                                    }
+                                    <ScrollView style={focusedFolder ? {paddingTop: '5%', marginTop: '2%'} : {}}>
+                                    {/* map over each of the folders from the filesystem and display them as a pressable element // call movefile function when one of them is pressed */}
+                                    {focusedFolder && !subFolders ? 
+                                        <Text style={{fontSize: 30, color: 'white', fontWeight: 'bold', marginTop: '30%', textAlign: 'center'}}>No Subfolders...</Text>
+                                    
+                                    :   
+                                        <>
+                                            {folders.map((f, index) => {
+                                                if (focusedFolder) {
+                                                    if (f.nestedUnder === focusedFolder) {
+                                                            return (
+                                                                <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
+                                                                        if (destination.id === null || f.id !== destination.id) {
+                                                                            setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
+                                                                        } else {
+                                                                            setFocusedFolder(f.id)
+                                                                            setDestination({id: null, fileName: null, nestedUnder: null})
+                                                                        }
+                                                                    }
+                                                                    }>
+                                                                    <View style={f.id === destination.id ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
+                                                                    <FontAwesomeIcon icon={faFolder} size={30} color={f.id === destination.id ? 'black' : 'white'}/>
+                                                                    <Text style={f.id === destination.id ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>{f.fileName}</Text>
+                                                                    </View>
+                                                                </Pressable>
+                                                            )
+                                                        
+                                                    }
+                                                } else {
+                                                    if (f.nestedUnder === '') {
+                                                        return (
+                                                            <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
+                                                                    if (destination.id === null || f.id !== destination.id) {
+                                                                        setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
+                                                                    } else {
+                                                                        setFocusedFolder(f.id)
+                                                                        setDestination({id: null, fileName: null, nestedUnder: null})
+                                                                    }
+                                                                }
+                                                                }>
+                                                                <View style={f.id === destination.id ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
+                                                                <FontAwesomeIcon icon={faFolder} size={30} color={f.id === destination.id ? 'black' : 'white'}/>
+                                                                <Text style={f.id === destination.id ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>{f.fileName}</Text>
+                                                                </View>
+                                                            </Pressable>
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            )}   
+                                        </>
+                                    }
+                                    {/* 
+                                    
+                                        IF EVENTUALLY THE USER WILL BE ABLE TO MOVE A FILE TO THE HOMEPAGE, THIS IS WHERE THAT COULD WOULD BE
+
+                                    <Pressable style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => setDestination('home')}>
+                                            <View style={destination === 'home' ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
+                                            <FontAwesomeIcon icon={faFolder} size={30} color={destination === 'home' ? 'black' : 'white'}/>
+                                            <Text style={destination === 'home' ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>Home</Text>
+                                            </View>
+                                        </Pressable> */}
+                                    </ScrollView>
+                            </View>
+                            
+                                <View style={{width: '50%',
+                                    borderColor: '#777',
+                                    borderRadius: 25,
+                                    backgroundColor: 'white',
+                                    borderWidth: 1,
+                                    paddingTop: '2%',
+                                    paddingBottom: '2%',
+                                    marginBottom: '10%',
+                                    marginLeft: '2%'}}>
+                                    <TouchableOpacity onPress={() => setAddFolderForm(true)} style={{
+                                    display: 'flex', 
+                                    flexDirection: 'row', 
+                                    width: '100%', 
+                                    justifyContent: 'center',
+                                    }}>
+                                        <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Add New Folder</Text>
+                                    </TouchableOpacity>
+                                </View>
+
+                            <View style={{display: 'flex', flexDirection: 'row'}}>
+                                <View style={ destination.id !== null || focusedFolder ? {width: '40%',
+                                    borderColor: '#777',
+                                    borderRadius: 25,
+                                    backgroundColor: 'white',
+                                    borderWidth: 1,
+                                    paddingTop: '2%',
+                                    paddingBottom: '2%',
+                                    marginBottom: '5%',
+                                    marginLeft: '2%',
+                                    height: '45%'
+                                    }
+                                    :
+                                    {width: '40%',
+                                    borderColor: '#777',
+                                    borderRadius: 25,
+                                    backgroundColor: 'white',
+                                    borderWidth: 1,
+                                    paddingTop: '2%',
+                                    paddingBottom: '2%',
+                                    marginBottom: '5%',
+                                    marginLeft: '2%',
+                                    height: '45%',
+                                    opacity: .5
+                                    }
+                                    }>
+                                    <TouchableOpacity onPress={() => saveFiles()} style={{
+                                    display: 'flex', 
+                                    flexDirection: 'row', 
+                                    width: '100%', 
+                                    justifyContent: 'center',
+                                    }}
+                                        disabled={destination.id !== null || focusedFolder ? false : true}
+                                    >
+                                        <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Confirm Move</Text>
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={{width: '40%',
+                                    borderColor: '#777',
+                                    borderRadius: 25,
+                                    backgroundColor: 'white',
+                                    borderWidth: 1,
+                                    paddingTop: '2%',
+                                    paddingBottom: '2%',
+                                    marginBottom: '10%',
+                                    marginLeft: '2%'}}>
+                                    <TouchableOpacity onPress={() => saveFiles()} style={{
+                                    display: 'flex', 
+                                    flexDirection: 'row', 
+                                    width: '100%', 
+                                    justifyContent: 'center',
+                                    }}>
+                                        <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save To Staging</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+
+
+
+                        </View>
+                        
+                    }
+
+                </View>
+            </Modal>
+        :
+            <View style={styles.container}>
+                <Image style={styles.bgImg } source={require('../../assets/elephant-dashboard.jpg')} />
+                <View style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    position: 'absolute',
+                    paddingTop: insets.top,
+                    paddingBottom: insets.bottom
+                }}>
+                    <Text style={styles.bigHeader}>Files to upload:</Text>
+                        {loading ? 
                             <View style={styles.noFileCon}>
-                                <Text style={styles.bigHeader}>No Files Selected</Text>
+                                <Text style={styles.bigHeader}>Uploading Files...</Text>
                             </View>
-                        :
-                            <View style={styles.scrollCon}>
-                                <ScrollView>
-                                    {renderFiles()}
-                                </ScrollView>
-                            </View>
+                        :   
+                            <>
+                                {files.length === 0 ? 
+                                    <View style={styles.noFileCon}>
+                                        <Text style={styles.bigHeader}>No Files Selected</Text>
+                                    </View>
+                                :
+                                    <View style={styles.scrollCon}>
+                                        <ScrollView>
+                                            {renderFiles()}
+                                        </ScrollView>
+                                    </View>
+                                }
+                            </>
                         }
-                    </>
-                }
-            <View style={styles.buttonCon}>
+                    <View style={styles.buttonCon}>
 
-                <View style={styles.buttonWrapperSm}>
-                    <TouchableOpacity onPress={() => selectFile()}>
-                    <Text style={styles.input}>Select File</Text>
-                    </TouchableOpacity>
-                </View>
+                        <View style={styles.buttonWrapperSm}>
+                            <TouchableOpacity onPress={() => selectFile()}>
+                            <Text style={styles.input}>Select File</Text>
+                            </TouchableOpacity>
+                        </View>
 
-                
-                <View style={styles.buttonWrapperSm}>
-                    <TouchableOpacity onPress={() => selectImage()}>
-                    <Text style={styles.input}>Select Photo</Text>
-                    </TouchableOpacity>
+                        
+                        <View style={styles.buttonWrapperSm}>
+                            <TouchableOpacity onPress={() => selectImage()}>
+                            <Text style={styles.input}>Select Photo</Text>
+                            </TouchableOpacity>
+                        </View>
+                        {/* <Button title='Select File' onPress={() => selectFile()}/>
+                        <Button title='Select Photo' onPress={()=> selectImage()}/> */}
+                    </View>
+                    <View style={styles.wrapperContainer}>
+                        <View style={files.length === 0 ? 
+                                {
+                                    width: '60%',
+                                    borderColor: '#777',
+                                    borderRadius: 25,
+                                    backgroundColor: 'white',
+                                    borderWidth: 1,
+                                    paddingTop: '2%',
+                                    paddingBottom: '2%',
+                                    opacity: .5
+                                }
+                            :                            
+
+                                {
+                                    width: '60%',
+                                    borderColor: '#777',
+                                    borderRadius: 25,
+                                    backgroundColor: 'white',
+                                    borderWidth: 1,
+                                    paddingTop: '2%',
+                                    paddingBottom: '2%',
+                                }
+                            }>
+                            <TouchableOpacity onPress={() => setPreAdd(true)} disabled={files.length === 0 ? true : false}>
+                            <Text style={styles.input}>Upload Files</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View>
-                {/* <Button title='Select File' onPress={() => selectFile()}/>
-                <Button title='Select Photo' onPress={()=> selectImage()}/> */}
             </View>
-            <View style={styles.wrapperContainer}>
-                <View style={styles.buttonWrapper}>
-                    <TouchableOpacity onPress={() => saveFiles()}>
-                    <Text style={styles.input}>Upload Files</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </View>
-    </View>
+        }
+    </>
   )
 }
 
@@ -231,7 +553,8 @@ const styles = StyleSheet.create({
         fontSize: 25,
         textAlign: 'center',
         fontWeight: '700',
-        marginBottom: '8%'
+        marginBottom: '8%',
+        marginTop: '2%'
       },
     container: {
         flex: 1,
