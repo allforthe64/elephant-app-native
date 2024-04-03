@@ -210,7 +210,8 @@ const CameraComponent = () => {
                         })
 
                         const filename = mediaName !== '' ? `${mediaName}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}` : `${formattedDate}}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}`
-                        const fileRef = ref(storage, `${currentUser}/${filename}`)
+                        const fileUri = `${currentUser}/${mediaName !== '' ? mediaName : formattedDate}`
+                        const fileRef = ref(storage, `${currentUser}/${formattedDate}`)
                         const result = await uploadBytes(fileRef, blob)
 
                         let finalDestintation 
@@ -222,7 +223,7 @@ const CameraComponent = () => {
                                 name: filename,
                                 fileType: `${Platform.OS === 'ios' ? 'mov' : 'mp4'}`,
                                 size: result.metadata.size,
-                                uri: videoObj.uri,
+                                uri: fileUri,
                                 user: currentUser,
                                 version: 0,
                                 timeStamp: formattedDate
@@ -240,6 +241,8 @@ const CameraComponent = () => {
                     }
                 } else {
                     setPhoto(undefined)
+
+                    console.log(mediaName)
 
                     //create new formatted date for file
                     const formattedDate = format(new Date(), "yyyy-MM-dd:hh:mm:ss")
@@ -260,7 +263,8 @@ const CameraComponent = () => {
                         })
 
                         const filename = mediaName !== '' ? `${mediaName}.jpg` : `${formattedDate}.jpg`
-                        const fileRef = ref(storage, `${currentUser}/${filename}`)
+                        const fileUri = `${currentUser}/${mediaName !== '' ? mediaName : formattedDate}`
+                        const fileRef = ref(storage, `${currentUser}/${formattedDate}`)
                         const result = await uploadBytes(fileRef, blob)
 
                         let finalDestintation 
@@ -272,7 +276,7 @@ const CameraComponent = () => {
                                 name: filename,
                                 fileType: 'jpg',
                                 size: result.metadata.size,
-                                uri: photo.uri,
+                                uri: fileUri,
                                 user: currentUser,
                                 version: 0,
                                 timeStamp: `${formattedDate}`

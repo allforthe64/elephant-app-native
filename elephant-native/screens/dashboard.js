@@ -6,7 +6,6 @@ import Notepad from './dashboardStackScreens/notepad';
 import CameraComponent from './dashboardStackScreens/camera';
 import AudioRecorder from './dashboardStackScreens/audioRecorder';
 import FilePicker from './dashboardStackScreens/documentPicker';
-import BarcodeScanner from './dashboardStackScreens/barcodeScanner';
 import Scanner from './dashboardStackScreens/barcodeScanner';
 import DocScanner from './dashboardStackScreens/docScanner';
 
