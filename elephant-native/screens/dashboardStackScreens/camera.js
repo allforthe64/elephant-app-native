@@ -209,7 +209,7 @@ const CameraComponent = () => {
                             xhr.send(null)
                         })
 
-                        const filename = mediaName !== '' ? `${mediaName}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}` : `${formattedDate}}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}`
+                        const filename = mediaName !== '' ? `${mediaName}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}` : `${formattedDate}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}`
                         const fileUri = `${currentUser}/${mediaName !== '' ? mediaName : formattedDate}`
                         const fileRef = ref(storage, `${currentUser}/${formattedDate}`)
                         const result = await uploadBytes(fileRef, blob)

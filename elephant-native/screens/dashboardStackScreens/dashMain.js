@@ -144,8 +144,7 @@ const styles = StyleSheet.create({
   },
   input: {
     textAlign: 'left',
-    fontSize: 26,
-    fontWeight: '500',
+    fontSize: 18,
     marginRight: '3%'
   },
   inputLogout: {

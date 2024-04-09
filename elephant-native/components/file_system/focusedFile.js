@@ -693,7 +693,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                     : 
                                         <View style={{height: 150}}>
                                             <FontAwesomeIcon icon={faImage} color='white' size={125}/>
-                                            <Text style={{color: 'white', textAlign: 'center', marginTop: 15, fontSize: 10}}>Fetching Video...</Text>
+                                                <Text style={{color: 'white', textAlign: 'center', marginTop: 15, fontSize: 10}}>Fetching Video...</Text>
                                         </View>
                                     }
                                 </View>
