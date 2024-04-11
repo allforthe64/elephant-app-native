@@ -750,7 +750,7 @@ const CameraComponent = () => {
                         alignItems: 'center',
                         justifyContent: 'flex-end',
                     }}>
-                        <Video style={{flex: 1, alignSelf: 'stretch', height: '100%'}} source={{uri: videoObj.uri}} useNativeControls resizeMode='contain' isLooping/>
+                        <Video style={{flex: 1, alignSelf: 'stretch', height: '100%'}} source={{uri: videoObj.uri}} useNativeControls resizeMode='contain' isLooping onError={(error) => alert(error)}/>
                         <View style={{position: 'absolute', top: '8%', right: '2.5%'}} >
                             {/* <Button title='Share' onPress={sharePic} />
                             { hasMediaLibraryPermission ? <Button title='Save to photos' onPress={savePhoto} /> : undefined} 

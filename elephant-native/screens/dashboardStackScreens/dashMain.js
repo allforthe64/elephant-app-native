@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
     paddingBottom: '2%',
   },
   input: {
+    paddingTop: 4,
     textAlign: 'left',
     fontSize: 18,
     marginRight: '3%'

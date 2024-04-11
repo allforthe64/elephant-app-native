@@ -689,7 +689,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                             :(file.fileName.split('.')[1] === 'mp4' || file.fileName.split('.')[1] === 'mov') ? 
                                 <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '10%', marginBottom: '10%', height: 200, width: 340}}>
                                     {fileURL ? 
-                                        <Video style={{flex: 1, alignSelf: 'stretch', height: '100%'}} source={{uri: `${fileURL}`}} useNativeControls resizeMode ='contain' isLooping/>
+                                        <Video style={{flex: 1, alignSelf: 'stretch', height: '100%'}} source={{uri: `${fileURL}`}} useNativeControls resizeMode ='contain' isLooping onError={(error) => alert(error)}/>
                                     : 
                                         <View style={{height: 150}}>
                                             <FontAwesomeIcon icon={faImage} color='white' size={125}/>
