@@ -66,7 +66,9 @@
     "react-native-toast-notifications": "^3.4.0",
     "react-native-video": "^5.2.1",
     "styled-components": "^5.3.11",
-    "toastify-react-native": "^5.0.0"
+    "toastify-react-native": "^5.0.0",
+    "react-native-web": "~0.19.6",
+    "@expo/webpack-config": "^19.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
