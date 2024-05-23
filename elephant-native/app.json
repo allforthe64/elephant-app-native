@@ -1,6 +1,7 @@
 {
   "expo": {
     "version": "1.0.0",
+    "icon": "./assets/images/icon.png",
     "ios": {
       "usesIcloudStorage": true,
       "bundleIdentifier": "com.billiam.elephantapp",
