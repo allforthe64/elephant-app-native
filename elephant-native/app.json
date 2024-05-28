@@ -47,6 +47,14 @@
             "useFrameworks": "static"
           }
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow MyElephantApp to access your camera",
+          "microphonePermission": "Allow MyElephantApp to access your microphone",
+          "recordAudioAndroid": true
+        }
       ]
     ],
     "android": {
