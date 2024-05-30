@@ -5,6 +5,22 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Main from './screens/main';
 import { ToastProvider } from 'react-native-toast-notifications';
 
+import { setNativeExceptionHandler, setJSExceptionHandler } from 'react-native-exception-handler';
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://d460ada50918758584a197b5b1d0793e@o4507346968772608.ingest.us.sentry.io/4507346971328512',
+});
+
+setNativeExceptionHandler((errorString) => {
+  alert(errorString)
+});
+
+setJSExceptionHandler((error, isFatal) => {
+  alert(error.name, + ' ' + isFatal)
+})
+
+
 
 export default function App() {
 
