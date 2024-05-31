@@ -16,9 +16,9 @@ setNativeExceptionHandler((errorString) => {
   Sentry.captureException(new Error(errorString))
 });
 
-/* setJSExceptionHandler((error, isFatal) => {
-  alert(error.name, + ' ' + isFatal)
-}) */
+setJSExceptionHandler((error, isFatal) => {
+  const sentryId = Sentry.captureException(error);
+})
 
 
 

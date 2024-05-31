@@ -7,6 +7,8 @@ import { faFolder, faCamera, faBox, faFile } from '@fortawesome/free-solid-svg-i
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useToast } from 'react-native-toast-notifications';
 
+import * as Sentry from '@sentry/react-native';
+
 export default function DashMain({navigation: { navigate }}) {
   const auth = firebaseAuth
 
