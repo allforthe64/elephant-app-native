@@ -10,7 +10,7 @@ import * as MediaLibrary from 'expo-media-library'
 import { format } from 'date-fns'
 import { addfile, updateUser } from '../../storage'
 import { storage } from '../../firebaseConfig'
-import {ref, uploadBytes} from 'firebase/storage'
+import {ref, uploadBytes, uploadBytesResumable} from 'firebase/storage'
 import { faCircle as solidCircle } from '@fortawesome/free-solid-svg-icons'
 import { PinchGestureHandler } from 'react-native-gesture-handler'
 import { useToast } from 'react-native-toast-notifications'
@@ -213,7 +213,7 @@ const CameraComponent = () => {
                         const filename = mediaName !== '' ? `${mediaName}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}` : `${formattedDate}.${Platform.OS === 'ios' ? 'mov' : 'mp4'}`
                         const fileUri = `${currentUser}/${mediaName !== '' ? mediaName : formattedDate}`
                         const fileRef = ref(storage, `${currentUser}/${formattedDate}`)
-                        const result = await uploadBytes(fileRef, blob)
+                        const result = await uploadBytesResumable(fileRef, blob)
 
                         let finalDestintation 
                         if (destination.id !== null) finalDestintation = destination.id
@@ -263,10 +263,10 @@ const CameraComponent = () => {
                             xhr.send(null)
                         })
 
-                        /* const filename = mediaName !== '' ? `${mediaName}.jpg` : `${formattedDate}.jpg`
+                        const filename = mediaName !== '' ? `${mediaName}.jpg` : `${formattedDate}.jpg`
                         const fileUri = `${currentUser}/${mediaName !== '' ? mediaName : formattedDate}`
                         const fileRef = ref(storage, `${currentUser}/${formattedDate}`)
-                        const result = await uploadBytes(fileRef, blob) */
+                        const result = await uploadBytesResumable(fileRef, blob)
 
                         /* let finalDestintation 
                         if (destination.id !== null) finalDestintation = destination.id
