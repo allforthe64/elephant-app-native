@@ -250,7 +250,7 @@ const CameraComponent = () => {
 
                     try {  
                         //create blob using the photo from state and save it to elephant staging
-                        const blob = await new Promise(async (resolve, reject) => {
+                        /* const blob = await new Promise(async (resolve, reject) => {
                             const xhr = new XMLHttpRequest()
                             xhr.onload = () => {
                             resolve(xhr.response) 
@@ -286,7 +286,7 @@ const CameraComponent = () => {
                         updateUser(updatedUser)
                         toast.show('Upload successful', {
                             type: 'success'
-                        })
+                        }) */
 
                         savePhoto()
 
