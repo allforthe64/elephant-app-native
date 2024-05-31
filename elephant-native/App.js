@@ -13,12 +13,12 @@ Sentry.init({
 });
 
 setNativeExceptionHandler((errorString) => {
-  alert(errorString)
+  Sentry.captureException(new Error(errorString))
 });
 
-setJSExceptionHandler((error, isFatal) => {
+/* setJSExceptionHandler((error, isFatal) => {
   alert(error.name, + ' ' + isFatal)
-})
+}) */
 
 
 
