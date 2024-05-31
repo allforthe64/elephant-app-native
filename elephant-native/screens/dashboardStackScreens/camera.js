@@ -263,10 +263,10 @@ const CameraComponent = () => {
                             xhr.send(null)
                         })
 
-                        const filename = mediaName !== '' ? `${mediaName}.jpg` : `${formattedDate}.jpg`
+                        /* const filename = mediaName !== '' ? `${mediaName}.jpg` : `${formattedDate}.jpg`
                         const fileUri = `${currentUser}/${mediaName !== '' ? mediaName : formattedDate}`
                         const fileRef = ref(storage, `${currentUser}/${formattedDate}`)
-                        const result = await uploadBytes(fileRef, blob)
+                        const result = await uploadBytes(fileRef, blob) */
 
                         /* let finalDestintation 
                         if (destination.id !== null) finalDestintation = destination.id
