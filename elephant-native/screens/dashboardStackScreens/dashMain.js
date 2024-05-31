@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity, Image } from 'react-native';
 import { firebaseAuth } from '../../firebaseConfig';
 import DashCollectContainer from '../../components/dashCollectContainer';
 import { useEffect } from 'react';
