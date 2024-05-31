@@ -8,7 +8,7 @@ import { addfile, updateStaging, updateUser } from '../../storage'
 import { firebaseAuth } from '../../firebaseConfig'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { storage } from '../../firebaseConfig'
-import {ref, uploadBytes} from 'firebase/storage'
+import {ref, uploadBytes, uploadBytesResumable} from 'firebase/storage'
 import { userListener } from '../../storage'
 import { useToast } from 'react-native-toast-notifications'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
@@ -150,7 +150,7 @@ const FilePicker = () => {
                     filename = `${currentUser}/${formattedDate}`
                 }
                 const fileRef = ref(storage, filename)
-                const result = await uploadBytes(fileRef, blob)
+                const result = await uploadBytesResumable(fileRef, blob)
 
                 let finalDestination 
                 if (destination.id !== null) finalDestination = destination.id

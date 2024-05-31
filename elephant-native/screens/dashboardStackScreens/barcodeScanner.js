@@ -7,7 +7,7 @@ import { addfile, updateUser } from '../../storage'
 import { firebaseAuth } from '../../firebaseConfig'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { storage } from '../../firebaseConfig'
-import {ref, uploadBytes} from 'firebase/storage'
+import {ref, uploadBytes, uploadBytesResumable} from 'firebase/storage'
 import {format} from 'date-fns'
 import { userListener } from '../../storage'
 import { useToast } from 'react-native-toast-notifications'
@@ -161,7 +161,7 @@ const Scanner = () => {
                 const fileUri = `${currentUser}/${formattedDate}`
                 const fileRef = ref(storage, fileUri)
 
-                await uploadBytes(fileRef, textFile)
+                await uploadBytesResumable(fileRef, textFile)
 
                 let finalDestination 
                 if (destination.id !== null) finalDestination = destination.id

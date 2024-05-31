@@ -9,7 +9,7 @@ import { format } from 'date-fns';
 import { firebaseAuth } from '../../firebaseConfig'
 import { userListener } from '../../storage'
 import { storage } from '../../firebaseConfig';
-import {ref, uploadBytes} from 'firebase/storage'
+import {ref, uploadBytes, uploadBytesResumable} from 'firebase/storage'
 import { addfile, updateUser } from '../../storage'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark, faArrowLeft, faFolder, faFile } from '@fortawesome/free-solid-svg-icons';
@@ -167,7 +167,7 @@ const DocScanner = () => {
       
       const filename = `${currentUser}/${formattedDate}`
       const fileRef = ref(storage, filename)
-      const result = await uploadBytes(fileRef, blob)
+      const result = await uploadBytesResumable(fileRef, blob)
 
       console.log('this is the result object: ', result)
 

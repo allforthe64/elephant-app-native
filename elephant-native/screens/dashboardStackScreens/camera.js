@@ -268,7 +268,7 @@ const CameraComponent = () => {
                         const fileRef = ref(storage, `${currentUser}/${formattedDate}`)
                         const result = await uploadBytesResumable(fileRef, blob)
 
-                        /* let finalDestintation 
+                        let finalDestintation 
                         if (destination.id !== null) finalDestintation = destination.id
                         else if (focusedFolder) finalDestintation = focusedFolder 
                         else finalDestintation = false
@@ -286,7 +286,7 @@ const CameraComponent = () => {
                         updateUser(updatedUser)
                         toast.show('Upload successful', {
                             type: 'success'
-                        }) */
+                        })
 
                         savePhoto()
 

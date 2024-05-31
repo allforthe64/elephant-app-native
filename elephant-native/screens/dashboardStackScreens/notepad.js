@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Keyboard, KeyboardAvoidingView, Modal, Pressable, ScrollView } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faCheck, faPencil, faXmark, faFolder, faArrowLeft, faFile } from '@fortawesome/free-solid-svg-icons'
-import { ref as refFunction, uploadBytes} from 'firebase/storage'
+import { ref as refFunction, uploadBytes, uploadBytesResumable} from 'firebase/storage'
 import { format } from 'date-fns'
 import { firebaseAuth, storage } from '../../firebaseConfig';
 import { addfile, userListener, updateUser } from '../../storage'
@@ -129,7 +129,7 @@ const Notepad = () => {
        });
         const fileUri = `${currentUser.uid}/${noteName !== '' ? noteName : formattedDate}`
         const fileRef = refFunction(storage, `${currentUser.uid}/${formattedDate}`)
-        uploadBytes(fileRef, textFile)
+        uploadBytesResumable(fileRef, textFile)
 
         uploadSize += textFile.size
 

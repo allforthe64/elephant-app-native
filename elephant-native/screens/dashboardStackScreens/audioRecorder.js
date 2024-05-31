@@ -8,7 +8,7 @@ import { updateUser, addfile } from '../../storage'
 import { firebaseAuth } from '../../firebaseConfig'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { storage } from '../../firebaseConfig'
-import {ref, uploadBytes} from 'firebase/storage'
+import {ref, uploadBytes, uploadBytesResumable} from 'firebase/storage'
 import { userListener } from '../../storage'
 import { format } from 'date-fns'
 import { useToast } from 'react-native-toast-notifications'
@@ -204,7 +204,7 @@ const AudioRecorder = () => {
 
             const filename = `${currentUser}/${formattedDate}`
             const fileRef = ref(storage, filename)
-            const result = await uploadBytes(fileRef, blob)
+            const result = await uploadBytesResumable(fileRef, blob)
 
             let finalDestination 
             if (destination.id !== null) finalDestination = destination.id
