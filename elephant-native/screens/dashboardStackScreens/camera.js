@@ -146,7 +146,6 @@ const CameraComponent = () => {
 
         //take photo using takePictureAsync method
         const takePic = async () => {
-            alert('running picture function')
             try {
                 const options = {
                     quality: 1,
