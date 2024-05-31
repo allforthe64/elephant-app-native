@@ -250,7 +250,7 @@ const CameraComponent = () => {
 
                     try {  
                         //create blob using the photo from state and save it to elephant staging
-                        /* const blob = await new Promise(async (resolve, reject) => {
+                        const blob = await new Promise(async (resolve, reject) => {
                             const xhr = new XMLHttpRequest()
                             xhr.onload = () => {
                             resolve(xhr.response) 
@@ -268,7 +268,7 @@ const CameraComponent = () => {
                         const fileRef = ref(storage, `${currentUser}/${formattedDate}`)
                         const result = await uploadBytes(fileRef, blob)
 
-                        let finalDestintation 
+                        /* let finalDestintation 
                         if (destination.id !== null) finalDestintation = destination.id
                         else if (focusedFolder) finalDestintation = focusedFolder 
                         else finalDestintation = false
