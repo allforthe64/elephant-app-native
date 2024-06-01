@@ -73,7 +73,6 @@ export default function DashMain({navigation: { navigate }}) {
               </View>
             </View>
           </View>
-          <Button title='Try!' onPress={ () => { Sentry.captureException(new Error('First error')) }}/>
           <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
             <View style={styles.buttonWrapperLogout}>
                   <TouchableOpacity onPress={async () => {
