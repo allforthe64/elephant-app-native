@@ -183,24 +183,29 @@ export default function Files({navigation: { navigate }, route}) {
   const addFolder = (folderName, targetNest) => {
     //if the incoming targetNest is empty string, create the new folder under the home directory
     if (folderName.length > 0) {
-      if (targetNest === '') {
-        const newFile = {
-          id: Math.random().toString(20).toString().split('.')[1] + Math.random().toString(20).toString().split('.')[1],
-          fileName: folderName,
-          nestedUnder: ''
+      try {
+        alert('running addFolder function')
+        if (targetNest === '') {
+          const newFile = {
+            id: Math.random().toString(20).toString().split('.')[1] + Math.random().toString(20).toString().split('.')[1],
+            fileName: folderName,
+            nestedUnder: ''
+          }
+    
+          editUser('folder', newFile, 'add')
+          setNewFolderName('')
+          setAdd(false)
+        } else {           //if the incoming targetNest has a value, create the new folder with the nestedUnder property set to targetNest
+          const newFile = {
+            id: Math.random().toString(20).toString().split('.')[1] + Math.random().toString(20).toString().split('.')[1],
+            fileName: folderName,
+            nestedUnder: targetNest
+          }
+    
+          editUser('folder', newFile, 'add')
         }
-  
-        editUser('folder', newFile, 'add')
-        setNewFolderName('')
-        setAdd(false)
-      } else {           //if the incoming targetNest has a value, create the new folder with the nestedUnder property set to targetNest
-        const newFile = {
-          id: Math.random().toString(20).toString().split('.')[1] + Math.random().toString(20).toString().split('.')[1],
-          fileName: folderName,
-          nestedUnder: targetNest
-        }
-  
-        editUser('folder', newFile, 'add')
+      } catch (err) {
+        alert(err)
       }
     } else {
       alert('Please enter a folder name')
