@@ -123,7 +123,7 @@ export default function Files({navigation: { navigate }, route}) {
           }
 
       } else if (index === 'add') {
-        console.log('current user in function: ', currentUser)
+        alert('running editUser function, addFolder loop')
         //add the new file to the user
         const newFiles = [...currentUser.files, input]
         const updatedUser = {...currentUser, files: newFiles}

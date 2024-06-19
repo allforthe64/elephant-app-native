@@ -392,21 +392,17 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                         <TouchableOpacity style={{display: 'flex', flexDirection: 'row', marginLeft: '5%', marginTop: '5%'}} onPress={() => {
                                             try {
                                                 const folderInst = folders.filter(folder => folder.id === focusedFolder) 
-                                                console.log('this is focusedFolder: ', folderInst[0])
-                                                
                                                 const parentFolderInst = folders.filter(folder => folder.id === folderInst[0].nestedUnder)
                                                 console.log(parentFolderInst)
                                                 if (parentFolderInst.length > 0) {
-                                                    console.log("we're within the first if check")
                                                     setDestination({id: parentFolderInst[0].id, fileName: parentFolderInst[0].fileName, nestedUnder: parentFolderInst[0].nestedUnder})
                                                     setFocusedFolder(folderInst[0].nestedUnder)
                                                 } else {
-                                                    console.log("we're within the else check")
                                                     setDestination({id: null, fileName: null, nestedUnder: null})
                                                     setFocusedFolder(null)
                                                 }
                                             } catch (error) {
-                                                console.log(error)
+                                                console.log('this is an error within focusedFile: ', error)
                                             }
                                         }}>
                                             <FontAwesomeIcon icon={faArrowLeft} size={40} color='white' /> 
