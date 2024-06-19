@@ -369,7 +369,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                     justifyContent: 'center',
                                     }}
                                     onPress={async () => {
-                                        alert('addFolder button click')
+                                        /* alert('addFolder button click') */
                                         addFolder(newFolderName, focusedFolder ? focusedFolder : '')
                                         setNewFolderName('')
                                         setAddFolderForm(false)
