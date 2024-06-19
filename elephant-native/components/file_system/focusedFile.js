@@ -308,609 +308,686 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
 
     return (
         <>
-                {fileObj ? 
+            {fileObj ? 
 
                 <Modal animationType='slide' presentationStyle='pageSheet'>
-            <>
-                    
-    {preDelete ? 
-        (   
-            <Modal animationType='slide' presentationStyle='pageSheet'>
-                <View style={{ paddingTop: '10%', backgroundColor: 'rgb(23 23 23)', height: '100%', width: '100%'}}>
-                    {/* if the user hits the delete button on a file, open a modal that confirms they want to delete the file*/}
-                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '10%',     width: '100%'}}>
-                        <Pressable onPress={() => setPreDelete(false)}>
-                        <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
-                        </Pressable>
-                    </View>
-                    <View style={{width: '100%', height: '95%', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <Text style={{fontSize: 22, color: 'white', textAlign: 'center'}}>Are you sure you want to delete {file.fileName}?</Text>
-
-                    {/* button with onPress function to delete the file */}
-                    <View style={{width: '50%',
-                            borderRadius: 25,
-                            backgroundColor: 'red',
-                            paddingTop: '2%',
-                            paddingBottom: '2%',
-                            marginTop: '10%',
-                            marginLeft: '2%'}}>
-                        <TouchableOpacity onPress={() => {
-                            setPreDelete(false)
-                            focus(false)
-                            deleteFile(file.fileId)
-                        }} style={{
-                        display: 'flex', 
-                        flexDirection: 'row', 
-                        width: '100%', 
-                        justifyContent: 'center',
-                        }}>
-                            <Text style={{fontSize: 15, color: 'white', fontWeight: '600'}}>Delete</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={{width: '50%',
-                        borderColor: '#777',
-                        borderRadius: 25,
-                        backgroundColor: 'white',
-                        borderWidth: 1,
-                        paddingTop: '2%',
-                        paddingBottom: '2%',
-                        marginTop: '7%',
-                        marginBottom: '10%',
-                        marginLeft: '2%'}}>
-                        <TouchableOpacity onPress={() => setPreDelete(false)} style={{
-                        display: 'flex', 
-                        flexDirection: 'row', 
-                        width: '100%', 
-                        justifyContent: 'center',
-                        }}>
-                            <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Cancel</Text>
-                        </TouchableOpacity>
-                    </View>
-
-
-                    </View>
-                </View>
-            </Modal>
-        )
-    :
-    moveFile ? 
-    (
-        <Modal animationType='slide' presentationStyle='pageSheet' >
-            <View style={{height: '100%', width: '100%', backgroundColor: 'rgb(23 23 23)'}}>
-                {/* if the moveFile state is true, display the modal with the file movement code*/}
-                {/* xMark icon for closing out the moveFile modal */}
-                <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '10%', width: '100%'}}>
-                    <Pressable onPress={() => {
-                            if (addFolderForm) setAddFolderForm(false)
-                            else {
-                                setFocusedFolder(null)
-                                setMoveFile(false)
-                            }
-                        }
-                        }>
-                        <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
-                    </Pressable>
-                </View>
-                
-                {addFolderForm ? 
                     <>
-                        <Text style={{color: 'white', fontSize: 35, fontWeight: '700', marginTop: '40%', textAlign: 'center'}}>Add A New Folder:</Text>
-                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: '10%'}}>
-                            <FontAwesomeIcon icon={faFolder} size={30} color='white'/>
-                            <TextInput value={newFolderName} style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '40%'}} onChangeText={(e) => setNewFolderName(e)} autoFocus onBlur={() => {if (newFolderName === '') setAddFolderForm(false)}}/>
-                            <View style={{width: '25%',
-                                    borderColor: '#777',
-                                    borderRadius: 25,
-                                    backgroundColor: 'white',
-                                    borderWidth: 1,
-                                    paddingTop: '2%',
-                                    paddingBottom: '2%',
-                                    marginLeft: '2%'}}>
-                                    <TouchableOpacity style={{
-                                    display: 'flex', 
-                                    flexDirection: 'row', 
-                                    width: '100%', 
-                                    justifyContent: 'center',
-                                    }}
-                                    onPress={async () => {
-                                        addFolder(newFolderName, focusedFolder ? focusedFolder : '')
-                                    }}
-                                    >
-                                        <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save</Text>
-                                    </TouchableOpacity>
-                            </View>
-                        </View>
-                    </>
-
-                :
-
-                    <View style={{width: '100%', height: '95%', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={{fontSize: 40, color: 'white', fontWeight: 'bold', textAlign: 'left', width: '100%', paddingLeft: '5%', marginBottom: '10%'}}>Move To...</Text>
-
-                        <View style={focusedFolder && !subFolders ? {width: '100%', height: '50%', marginBottom: '10%', display: 'flex', justifyContent: 'center'} : {width: '100%', height: '50%', marginBottom: '10%'}}>
-                                {focusedFolder ? 
-                                    <>
-                                        <TouchableOpacity style={{display: 'flex', flexDirection: 'row', marginLeft: '5%', marginTop: '5%'}} onPress={() => {
-                                            try {
-                                                const folderInst = folders.filter(folder => folder.id === focusedFolder) 
-                                                const parentFolderInst = folders.filter(folder => folder.id === folderInst[0].nestedUnder)
-                                                console.log(parentFolderInst)
-                                                if (parentFolderInst.length > 0) {
-                                                    setDestination({id: parentFolderInst[0].id, fileName: parentFolderInst[0].fileName, nestedUnder: parentFolderInst[0].nestedUnder})
-                                                    setFocusedFolder(folderInst[0].nestedUnder)
-                                                } else {
-                                                    setDestination({id: null, fileName: null, nestedUnder: null})
-                                                    setFocusedFolder(null)
-                                                }
-                                            } catch (error) {
-                                                console.log('this is an error within focusedFile: ', error)
-                                            }
-                                        }}>
-                                            <FontAwesomeIcon icon={faArrowLeft} size={40} color='white' /> 
-                                            <Text style={{color: 'white', fontSize: 30, marginLeft: '3%'}}>Back</Text>
-                                        </TouchableOpacity>
-                                    </>
-                                :
-                                    <></>
-                                }
-                                <ScrollView style={focusedFolder ? {paddingTop: '5%', marginTop: '2%'} : {}}>
-                                {/* map over each of the folders from the filesystem and display them as a pressable element // call movefile function when one of them is pressed */}
-                                {focusedFolder && !subFolders ? 
-                                    <Text style={{fontSize: 30, color: 'white', fontWeight: 'bold', marginTop: '30%', textAlign: 'center'}}>No Subfolders...</Text>
-                                
-                                :   
-                                    <>
-                                        {folders.map((f, index) => {
-                                            console.log(`this is f: ${f}. this is focusedFolder: ${focusedFolder}`)
-                                            if (focusedFolder) {
-                                                if (f.nestedUnder === focusedFolder) {
-                                                        return (
-                                                            <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
-                                                                    if (destination.id === null || f.id !== destination.id) {
-                                                                        setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
-                                                                    } else {
-                                                                        setFocusedFolder(f.id)
-                                                                        setDestination({id: null, fileName: null, nestedUnder: null})
-                                                                    }
-                                                                }
-                                                                }>
-                                                                <View style={f.id === destination.id ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
-                                                                <FontAwesomeIcon icon={faFolder} size={30} color={f.id === destination.id ? 'black' : 'white'}/>
-                                                                <Text style={f.id === destination.id ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>{f.fileName}</Text>
-                                                                </View>
-                                                            </Pressable>
-                                                        )
-                                                    
-                                                }
-                                            } else {
-                                                if (f.id !== file.flag && f.nestedUnder === '') {
-                                                    return (
-                                                        <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
-                                                                if (destination.id === null || f.id !== destination.id) {
-                                                                    setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
-                                                                } else {
-                                                                    setFocusedFolder(f.id)
-                                                                    setDestination({id: null, fileName: null, nestedUnder: null})
-                                                                }
-                                                            }
-                                                            }>
-                                                            <View style={f.id === destination.id ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
-                                                            <FontAwesomeIcon icon={faFolder} size={30} color={f.id === destination.id ? 'black' : 'white'}/>
-                                                            <Text style={f.id === destination.id ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>{f.fileName}</Text>
-                                                            </View>
-                                                        </Pressable>
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        )}   
-                                    </>
-                                }
-                                {/* 
-                                
-                                    IF EVENTUALLY THE USER WILL BE ABLE TO MOVE A FILE TO THE HOMEPAGE, THIS IS WHERE THAT COULD WOULD BE
-
-                                <Pressable style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => setDestination('home')}>
-                                        <View style={destination === 'home' ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
-                                        <FontAwesomeIcon icon={faFolder} size={30} color={destination === 'home' ? 'black' : 'white'}/>
-                                        <Text style={destination === 'home' ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>Home</Text>
-                                        </View>
-                                    </Pressable> */}
-                                </ScrollView>
-                        </View>
                         
-                            <View style={{width: '50%',
-                                borderColor: '#777',
-                                borderRadius: 25,
-                                backgroundColor: 'white',
-                                borderWidth: 1,
-                                paddingTop: '2%',
-                                paddingBottom: '2%',
-                                marginBottom: '10%',
-                                marginLeft: '2%'}}>
-                                <TouchableOpacity onPress={() => setAddFolderForm(true)} style={{
-                                display: 'flex', 
-                                flexDirection: 'row', 
-                                width: '100%', 
-                                justifyContent: 'center',
-                                }}>
-                                    <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Add New Folder</Text>
-                                </TouchableOpacity>
-                            </View>
+                    {preDelete ? 
+                            (   
+                                <Modal animationType='slide' presentationStyle='pageSheet'>
+                                    <View style={{ paddingTop: '10%', backgroundColor: 'rgb(23 23 23)', height: '100%', width: '100%'}}>
+                                        {/* if the user hits the delete button on a file, open a modal that confirms they want to delete the file*/}
+                                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '10%',     width: '100%'}}>
+                                            <Pressable onPress={() => setPreDelete(false)}>
+                                            <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
+                                            </Pressable>
+                                        </View>
+                                        <View style={{width: '100%', height: '95%', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                                        <Text style={{fontSize: 22, color: 'white', textAlign: 'center'}}>Are you sure you want to delete {file.fileName}?</Text>
 
-                        <View style={{width: '50%',
-                            borderColor: '#777',
-                            borderRadius: 25,
-                            backgroundColor: 'white',
-                            borderWidth: 1,
-                            paddingTop: '2%',
-                            paddingBottom: '2%',
-                            marginBottom: '10%',
-                            marginLeft: '2%'}}>
-                            <TouchableOpacity onPress={handleMove} style={{
-                            display: 'flex', 
-                            flexDirection: 'row', 
-                            width: '100%', 
-                            justifyContent: 'center',
-                            }}>
-                                <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Confirm Move</Text>
-                            </TouchableOpacity>
-                        </View>
+                                        {/* button with onPress function to delete the file */}
+                                        <View style={{width: '50%',
+                                                borderRadius: 25,
+                                                backgroundColor: 'red',
+                                                paddingTop: '2%',
+                                                paddingBottom: '2%',
+                                                marginTop: '10%',
+                                                marginLeft: '2%'}}>
+                                            <TouchableOpacity onPress={() => {
+                                                setPreDelete(false)
+                                                focus(false)
+                                                deleteFile(file.fileId)
+                                            }} style={{
+                                            display: 'flex', 
+                                            flexDirection: 'row', 
+                                            width: '100%', 
+                                            justifyContent: 'center',
+                                            }}>
+                                                <Text style={{fontSize: 15, color: 'white', fontWeight: '600'}}>Delete</Text>
+                                            </TouchableOpacity>
+                                        </View>
+
+                                        <View style={{width: '50%',
+                                            borderColor: '#777',
+                                            borderRadius: 25,
+                                            backgroundColor: 'white',
+                                            borderWidth: 1,
+                                            paddingTop: '2%',
+                                            paddingBottom: '2%',
+                                            marginTop: '7%',
+                                            marginBottom: '10%',
+                                            marginLeft: '2%'}}>
+                                            <TouchableOpacity onPress={() => setPreDelete(false)} style={{
+                                            display: 'flex', 
+                                            flexDirection: 'row', 
+                                            width: '100%', 
+                                            justifyContent: 'center',
+                                            }}>
+                                                <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Cancel</Text>
+                                            </TouchableOpacity>
+                                        </View>
 
 
-                    </View>
-                    
-                }
-
-            </View>
-        </Modal>
-    )
-    : editNote ?
-        (
-            <Modal animationType='slide' presentationStyle='pageSheet' >
-                <View style={{height: '100%', width: '100%', backgroundColor: 'rgb(23 23 23)'}}>
-                    {/* if the moveFile state is true, display the modal with the file movement code*/}
-                    {/* xMark icon for closing out the moveFile modal */}
-                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '10%', width: '100%'}}>
-                        <Pressable onPress={() => {
-                                setEditNote(false)
-                            }
-                            }>
-                            <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
-                        </Pressable>
-                    </View>
-                    <Text style={{fontSize: 40, color: 'white', fontWeight: 'bold', textAlign: 'left', width: '100%', paddingLeft: '5%', marginBottom: '10%'}}>Edit Note:</Text>
-                    <View style={{width: '100%', height: '100%', paddingLeft: '5%', paddingRight: '5%'}}>
-                    <TextInput 
-                        multiline={true}
-                        value={noteText}
-                        style={{
-                            width: '100%',
-                            height: '50%',
-                            backgroundColor: 'white',
-                            fontSize: 20,
-                            textAlignVertical: 'top',
-                            padding: '3%'
-                        }}
-                        onChangeText={(text) => setNoteText(text)}
-                        autoFocus={true}
-                        onFocus={() => setEditingMode(true)}
-                        ref={ref}
-                        />
-                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
-                            <View style={{width: '70%',
-                                    borderColor: '#777',
-                                    borderRadius: 25,
-                                    backgroundColor: 'white',
-                                    borderWidth: 1,
-                                    paddingTop: '2%',
-                                    paddingBottom: '2%',
-                                    marginLeft: '2%',
-                                    paddingLeft: '2%',
-                                    paddingRight: '3%'}}>
-                                    <TouchableOpacity style={{
-                                    display: 'flex', 
-                                    flexDirection: 'row', 
-                                    width: '100%', 
-                                    justifyContent: 'space-around',
-
-                                    }}
-                                    onPress={() => {
-                                        if (editingMode) setEditingMode(false)
-                                        else {
-                                            updateNote()
-                                            toast.show('Note successfully edited', {
-                                                type: 'success'
-                                            })
-                                        }
-                                    }}
-                                    >
-                                        <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>{editingMode ? 'Finished Editing' : 'Save Note'}</Text>
-                                    </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
-        )
-    :
-    <View style={{ paddingTop: '10%', backgroundColor: 'rgb(23 23 23)', height: '100%', width: '100%'}}>
-            
-            {/*x button container */}
-            <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%'}}>
-            <Pressable onPress={() => focus(null)}>
-                <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
-            </Pressable>
-            </View>
-            <View style={{paddingLeft: '5%'}}>
-
-            {/* handle file rename*/}
-            {add ?  
-                    <View style={{paddingTop: '25%'}}>
-                        <Text style={{color: 'white', fontSize: 35, fontWeight: '700'}}>Rename File:</Text>
-                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',  marginTop: '10%'}}>
-                            <FontAwesomeIcon icon={faFile} size={30} color='white'/>
-                            <TextInput style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '70%', marginRight: '15%'}} onChangeText={(e) => setNewFileName(e)} autoFocus/>
-                        </View>
-                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', paddingRight: '5%', marginTop: '10%'}}>
-                            <View style={{width: '40%',
-                                    borderColor: '#777',
-                                    borderRadius: 25,
-                                    backgroundColor: 'white',
-                                    borderWidth: 1,
-                                    paddingTop: '2%',
-                                    paddingBottom: '2%',
-                                    marginLeft: '2%'}}>
-                                    <TouchableOpacity style={{
-                                    display: 'flex', 
-                                    flexDirection: 'row', 
-                                    width: '100%', 
-                                    justifyContent: 'center',
-                                    }}
-                                    onPress={() => {
-                                        if (newFileName !== file.fileName.split('.')[0] && newFileName !== '') {
-                                            renameFile()
-                                            setAdd(false)
-                                        } else setAdd(false)
-                                    }}
-                                    >
-                                        <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save</Text>
-                                    </TouchableOpacity>
-                            </View>
-                            <View style={{width: '40%',
-                                    borderColor: '#777',
-                                    borderRadius: 25,
-                                    backgroundColor: 'white',
-                                    borderWidth: 1,
-                                    paddingTop: '2%',
-                                    paddingBottom: '2%',
-                                    marginLeft: '2%'}}>
-                                    <TouchableOpacity style={{
-                                    display: 'flex', 
-                                    flexDirection: 'row', 
-                                    width: '100%', 
-                                    justifyContent: 'center',
-                                    }}
-                                    onPress={() => setAdd(false)}
-                                    >
-                                        <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Cancel</Text>
-                                    </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>            
-                    : expanded ? 
-                    <Modal animationType='slide' presentationStyle='pageSheet'>
-                        {/* code to render expanded images */}
-                        <View style={{ paddingTop: '10%', backgroundColor: 'rgb(23 23 23)', height: '100%', width: '100%'}}>
-                            <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '5%', width: '100%'}}>
-                                <Pressable onPress={() => setExpanded(false)}>
-                                    <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
-                                </Pressable>
-                            </View>
-                            <View style={{height: '60%', marginTop: '20%'}}>
-                                <Image source={{uri: `${fileURL}`}} style={{width: '100%', height: '100%', objectFit: 'contain'}}/>
-                            </View>
-                        </View>
-                    </Modal>
-
-                    :
-                        <>
-                            {((file.fileName.split('.')[1] === 'jpg' || file.fileName.split('.')[1] === 'png' || file.fileName.split('.')[1] === 'JPG' || file.fileName.split('.')[1] === 'PNG' || file.fileName.split('.')[1] === 'jpeg' || file.fileName.split('.')[1] === 'JPEG')) ? 
-                                <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '10%', marginBottom: '10%'}}>
-                                    {fileURL ? 
-                                        <Pressable width={300} height={150} onPress={() => setExpanded(true)}>
-                                            <Image source={{uri: `${fileURL}`}} style={{width: '100%', height: '100%', objectFit: 'contain'}}/>
+                                        </View>
+                                    </View>
+                                </Modal>
+                            )
+                        :
+                        moveFile ? 
+                        (
+                            <Modal animationType='slide' presentationStyle='pageSheet' >
+                                <View style={{height: '100%', width: '100%', backgroundColor: 'rgb(23 23 23)'}}>
+                                    {/* if the moveFile state is true, display the modal with the file movement code*/}
+                                    {/* xMark icon for closing out the moveFile modal */}
+                                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '10%', width: '100%'}}>
+                                        <Pressable onPress={() => {
+                                                if (addFolderForm) setAddFolderForm(false)
+                                                else {
+                                                    setFocusedFolder(null)
+                                                    setMoveFile(false)
+                                                }
+                                            }
+                                            }>
+                                            <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
                                         </Pressable>
-                                    : 
-                                        <View style={{height: 150}}>
-                                            <FontAwesomeIcon icon={faImage} color='white' size={125}/>
-                                            <Text style={{color: 'white', textAlign: 'center', marginTop: 15, fontSize: 10}}>Fetching Image...</Text>
-                                        </View>
-                                    }
-                                </View>
-                            :(file.fileName.split('.')[1] === 'mp4' || file.fileName.split('.')[1] === 'mov') ? 
-                                <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '10%', marginBottom: '10%', height: 200, width: 340}}>
-                                    {fileURL ? 
-                                        <Video style={{flex: 1, alignSelf: 'stretch', height: '100%'}} source={{uri: `${fileURL}`}} useNativeControls resizeMode ='contain' isLooping onError={(error) => alert(error)}/>
-                                    : 
-                                        <View style={{height: 150}}>
-                                            <FontAwesomeIcon icon={faImage} color='white' size={125}/>
-                                                <Text style={{color: 'white', textAlign: 'center', marginTop: 15, fontSize: 10}}>Fetching Video...</Text>
-                                        </View>
-                                    }
-                                </View>
-                            : <></>
-                            }
-                            <View style={(file.fileName.split('.')[1] === 'mp4' || file.fileName.split('.')[1] === 'mov') ? {height: '37%', width: '90%'} : (file.fileName.includes('URL for') || file.fileName.split('.')[1] === 'm4a' || file.fileName.split('.')[1] === 'mp3') ? {height: '67%', width: '90%'} : (file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {height: '72.5%', width: '90%', marginTop: '5%'} : {height: '40%', width: '90%'}}>
-                                
-                                <Text style={{fontSize: 22, fontWeight: 'bold', color: 'white', marginTop: '5%'}} numberOfLines={3}>{newFileName}</Text>
-
-                                <TouchableOpacity style={{ marginTop: '10%'}} onPress={() => setAdd(true)}>
-                                    <Text style={{fontSize: 18, color: 'white'}}>Rename File</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{ marginTop: '10%'}} onPress={() => setMoveFile(true)}>
-                                    <Text style={{fontSize: 18, color: 'white'}}>Move File To...</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{ marginTop: '10%'}} onPress={() =>
-                                    setPreDelete(true)}>
-                                    <Text style={{fontSize: 18, color: 'red'}}>Delete File</Text>
-                                </TouchableOpacity>
-                            </View>
-
-                            {/* button that links to a non jpg or png file */}
-                            {(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? 
-                                <>  
-                                    {file.fileName.includes('URL for:') 
-                                        ? 
-                                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-                                        <View style={{width: '70%',
-                                                borderColor: '#777',
-                                                borderRadius: 25,
-                                                backgroundColor: 'white',
-                                                borderWidth: 1,
-                                                paddingTop: '2%',
-                                                paddingBottom: '2%',
-                                                marginLeft: '2%',
-                                                paddingLeft: '2%',
-                                                paddingRight: '3%'}}>
-                                                <TouchableOpacity style={{
-                                                display: 'flex', 
-                                                flexDirection: 'row', 
-                                                width: '100%', 
-                                                justifyContent: 'space-around',
-                                                paddingLeft: '20%',
-                                                paddingRight: '20%'
-                                                }}
-                                                disabled={fileURL ? false : true}
-                                                onPress={() => Linking.openURL(navigateURL)}
-                                                >
-                                                    <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>Go To URL</Text>
-                                                    {fileURL ? <FontAwesomeIcon icon={faArrowUpRightFromSquare} size={20} style={{marginTop: '1%'}}/> : <></>}
-                                                </TouchableOpacity>
-                                        </View>
                                     </View>
-                                    : fileObj.documentType === 'm4a' || fileObj.documentType === 'mp3' ? 
-                                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
-                                            <View style={{width: '70%',
-                                                    borderColor: '#777',
-                                                    borderRadius: 25,
-                                                    backgroundColor: 'white',
-                                                    borderWidth: 1,
-                                                    paddingTop: '2%',
-                                                    paddingBottom: '2%',
-                                                    marginLeft: '2%',
-                                                    paddingLeft: '12%',
-                                                    paddingRight: '12%'}}>
-                                                    <TouchableOpacity style={{
-                                                    display: 'flex', 
-                                                    flexDirection: 'row', 
-                                                    width: '100%', 
-                                                    justifyContent: 'space-around',
+                                    
+                                    {addFolderForm ? 
+                                        <>
+                                            <Text style={{color: 'white', fontSize: 35, fontWeight: '700', marginTop: '40%', textAlign: 'center'}}>Add A New Folder:</Text>
+                                            <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: '10%'}}>
+                                                <FontAwesomeIcon icon={faFolder} size={30} color='white'/>
+                                                <TextInput value={newFolderName} style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '40%'}} onChangeText={(e) => setNewFolderName(e)} autoFocus onBlur={() => {if (newFolderName === '') setAddFolderForm(false)}}/>
+                                                <View style={{width: '25%',
+                                                        borderColor: '#777',
+                                                        borderRadius: 25,
+                                                        backgroundColor: 'white',
+                                                        borderWidth: 1,
+                                                        paddingTop: '2%',
+                                                        paddingBottom: '2%',
+                                                        marginLeft: '2%'}}>
+                                                        <TouchableOpacity style={{
+                                                        display: 'flex', 
+                                                        flexDirection: 'row', 
+                                                        width: '100%', 
+                                                        justifyContent: 'center',
+                                                        }}
+                                                        onPress={async () => {
+                                                            addFolder(newFolderName, focusedFolder ? focusedFolder : '')
+                                                        }}
+                                                        >
+                                                            <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save</Text>
+                                                        </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                        </>
 
-                                                    }}
-                                                    disabled={fileURL ? false : true}
-                                                    onPress={() => {
-                                                        if (!playing) playSound()
-                                                        else pauseSound()
-                                                    }}
-                                                    >
-                                                        <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>{fileURL && !playing ? 'Play Sound' : fileURL && playing ? 'Pause Sound' : 'Fetching File...'}</Text>
-                                                        {fileURL ? <FontAwesomeIcon icon={playing ? faPause : faPlay} size={20} style={{marginTop: '1%'}}/> : <></>}
-                                                    </TouchableOpacity>
+                                    :
+
+                                        <View style={{width: '100%', height: '95%', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                                            <Text style={{fontSize: 40, color: 'white', fontWeight: 'bold', textAlign: 'left', width: '100%', paddingLeft: '5%', marginBottom: '10%'}}>Move To...</Text>
+
+                                            <View style={focusedFolder && !subFolders ? {width: '100%', height: '50%', marginBottom: '10%', display: 'flex', justifyContent: 'center'} : {width: '100%', height: '50%', marginBottom: '10%'}}>
+                                                    {focusedFolder ? 
+                                                        <>
+                                                            <TouchableOpacity style={{display: 'flex', flexDirection: 'row', marginLeft: '5%', marginTop: '5%'}} onPress={() => {
+                                                                try {
+                                                                    const folderInst = folders.filter(folder => folder.id === focusedFolder) 
+                                                                    const parentFolderInst = folders.filter(folder => folder.id === folderInst[0].nestedUnder)
+                                                                    console.log(parentFolderInst)
+                                                                    if (parentFolderInst.length > 0) {
+                                                                        setDestination({id: parentFolderInst[0].id, fileName: parentFolderInst[0].fileName, nestedUnder: parentFolderInst[0].nestedUnder})
+                                                                        setFocusedFolder(folderInst[0].nestedUnder)
+                                                                    } else {
+                                                                        setDestination({id: null, fileName: null, nestedUnder: null})
+                                                                        setFocusedFolder(null)
+                                                                    }
+                                                                } catch (error) {
+                                                                    console.log('this is an error within focusedFile: ', error)
+                                                                }
+                                                            }}>
+                                                                <FontAwesomeIcon icon={faArrowLeft} size={40} color='white' /> 
+                                                                <Text style={{color: 'white', fontSize: 30, marginLeft: '3%'}}>Back</Text>
+                                                            </TouchableOpacity>
+                                                        </>
+                                                    :
+                                                        <></>
+                                                    }
+                                                    <ScrollView style={focusedFolder ? {paddingTop: '5%', marginTop: '2%'} : {}}>
+                                                        {/* map over each of the folders from the filesystem and display them as a pressable element // call movefile function when one of them is pressed */}
+                                                        {focusedFolder && !subFolders ? 
+                                                            <Text style={{fontSize: 30, color: 'white', fontWeight: 'bold', marginTop: '30%', textAlign: 'center'}}>No Subfolders...</Text>
+                                                        
+                                                        :   
+                                                            <>
+                                                                {folders.map((f, index) => {
+                                                                    console.log(`this is f: ${f}. this is focusedFolder: ${focusedFolder}`)
+                                                                    if (focusedFolder) {
+                                                                        if (f.nestedUnder === focusedFolder) {
+                                                                                return (
+                                                                                    <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
+                                                                                            if (destination.id === null || f.id !== destination.id) {
+                                                                                                setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
+                                                                                            } else {
+                                                                                                setFocusedFolder(f.id)
+                                                                                                setDestination({id: null, fileName: null, nestedUnder: null})
+                                                                                            }
+                                                                                        }
+                                                                                        }>
+                                                                                        <View style={f.id === destination.id ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
+                                                                                        <FontAwesomeIcon icon={faFolder} size={30} color={f.id === destination.id ? 'black' : 'white'}/>
+                                                                                        <Text style={f.id === destination.id ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>{f.fileName}</Text>
+                                                                                        </View>
+                                                                                    </Pressable>
+                                                                                )
+                                                                            
+                                                                        }
+                                                                    } else {
+                                                                        if (f.id !== file.flag && f.nestedUnder === '') {
+                                                                            return (
+                                                                                <Pressable key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => {
+                                                                                        if (destination.id === null || f.id !== destination.id) {
+                                                                                            setDestination({id: f.id, fileName: f.fileName, nestedUnder: f.nestedUnder})
+                                                                                        } else {
+                                                                                            setFocusedFolder(f.id)
+                                                                                            setDestination({id: null, fileName: null, nestedUnder: null})
+                                                                                        }
+                                                                                    }
+                                                                                    }>
+                                                                                    <View style={f.id === destination.id ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
+                                                                                    <FontAwesomeIcon icon={faFolder} size={30} color={f.id === destination.id ? 'black' : 'white'}/>
+                                                                                    <Text style={f.id === destination.id ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>{f.fileName}</Text>
+                                                                                    </View>
+                                                                                </Pressable>
+                                                                                )
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                )}   
+                                                            </>
+                                                        }
+                                                        {/* 
+                                                        
+                                                            IF EVENTUALLY THE USER WILL BE ABLE TO MOVE A FILE TO THE HOMEPAGE, THIS IS WHERE THAT COULD WOULD BE
+
+                                                        <Pressable style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}} onPress={() => setDestination('home')}>
+                                                                <View style={destination === 'home' ? {borderBottomWidth: 2, width: '85%', backgroundColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'} : {borderBottomWidth: 2, width: '85%', borderBottomColor: 'white', display: 'flex', flexDirection: 'row', paddingLeft: '2.5%', paddingTop: '2%'}}>
+                                                                <FontAwesomeIcon icon={faFolder} size={30} color={destination === 'home' ? 'black' : 'white'}/>
+                                                                <Text style={destination === 'home' ? {color: 'black', fontSize: 30, marginLeft: '5%'} : {color: 'white', fontSize: 30, marginLeft: '5%'}}>Home</Text>
+                                                                </View>
+                                                            </Pressable> */}
+                                                    </ScrollView>
+                                            </View>
+                                            
+                                            {add ?
+                                                <>
+                                                    <View style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10}}>
+                                                        <View style={{width: '40%',
+                                                            borderColor: '#777',
+                                                            borderRadius: 25,
+                                                            backgroundColor: 'white',
+                                                            borderWidth: 1,
+                                                            paddingTop: '2%',
+                                                            paddingBottom: '2%',
+                                                            marginBottom: '10%',
+                                                            marginLeft: '2%'}}>
+                                                            <TouchableOpacity onPress={() => setAddFolderForm(true)} style={{
+                                                            display: 'flex', 
+                                                            flexDirection: 'row', 
+                                                            width: '100%', 
+                                                            justifyContent: 'center',
+                                                            }}>
+                                                                <Text style={{fontSize: 10, color: 'black', fontWeight: '600'}}>Add New Folder</Text>
+                                                            </TouchableOpacity>
+                                                        </View>
+
+                                                        <View style={{width: '40%',
+                                                            borderColor: '#777',
+                                                            borderRadius: 25,
+                                                            backgroundColor: 'white',
+                                                            borderWidth: 1,
+                                                            paddingTop: '2%',
+                                                            paddingBottom: '2%',
+                                                            marginBottom: '10%',
+                                                            marginLeft: '2%'}}>
+                                                            <TouchableOpacity onPress={() => {
+                                                                renameFile()
+                                                                handleMove()
+                                                                setAdd(false)
+                                                            }} style={{
+                                                            display: 'flex', 
+                                                            flexDirection: 'row', 
+                                                            width: '100%', 
+                                                            justifyContent: 'center',
+                                                            }}>
+                                                                <Text style={{fontSize: 10, color: 'black', fontWeight: '600'}}>Rename and Move</Text>
+                                                            </TouchableOpacity>
+                                                        </View> 
+                                                    </View>
+                                                    <Text style={{color: 'white', fontSize: 10, marginBottom: 10}}>Or</Text>
+                                                    <View style={{width: 'full', display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+                                                        <View style={{width: '40%',
+                                                                borderColor: '#777',
+                                                                borderRadius: 25,
+                                                                backgroundColor: 'white',
+                                                                borderWidth: 1,
+                                                                paddingTop: '2%',
+                                                                paddingBottom: '2%',
+                                                                marginLeft: '2%'}}>
+                                                                <TouchableOpacity style={{
+                                                                display: 'flex', 
+                                                                flexDirection: 'row', 
+                                                                width: '100%', 
+                                                                justifyContent: 'center',
+                                                                }}
+                                                                onPress={() => {
+                                                                        renameFile()
+                                                                        setAdd(false)
+                                                                        setMoveFile(true)
+                                                                }}
+                                                                >
+                                                                    <Text style={{fontSize: 10, color: 'black', fontWeight: '600'}}>Rename without moving</Text>
+                                                                </TouchableOpacity>
+                                                        </View>
+                                                    </View>
+                                                </>
+                                            :
+                                                <>
+                                                    <View style={{width: '50%',
+                                                        borderColor: '#777',
+                                                        borderRadius: 25,
+                                                        backgroundColor: 'white',
+                                                        borderWidth: 1,
+                                                        paddingTop: '2%',
+                                                        paddingBottom: '2%',
+                                                        marginBottom: '10%',
+                                                        marginLeft: '2%'}}>
+                                                        <TouchableOpacity onPress={() => setAddFolderForm(true)} style={{
+                                                        display: 'flex', 
+                                                        flexDirection: 'row', 
+                                                        width: '100%', 
+                                                        justifyContent: 'center',
+                                                        }}>
+                                                            <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Add New Folder</Text>
+                                                        </TouchableOpacity>
+                                                    </View>
+
+                                                    <View style={{width: '50%',
+                                                        borderColor: '#777',
+                                                        borderRadius: 25,
+                                                        backgroundColor: 'white',
+                                                        borderWidth: 1,
+                                                        paddingTop: '2%',
+                                                        paddingBottom: '2%',
+                                                        marginBottom: '10%',
+                                                        marginLeft: '2%'}}>
+                                                        <TouchableOpacity onPress={handleMove} style={{
+                                                        display: 'flex', 
+                                                        flexDirection: 'row', 
+                                                        width: '100%', 
+                                                        justifyContent: 'center',
+                                                        }}>
+                                                            <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Confirm Move</Text>
+                                                        </TouchableOpacity>
+                                                    </View>   
+                                                </>
+                                            }
+
+
+                                        </View>
+                                        
+                                    }
+
+                                </View>
+                            </Modal>
+                        )
+                        : editNote ?
+                            (
+                                <Modal animationType='slide' presentationStyle='pageSheet' >
+                                    <View style={{height: '100%', width: '100%', backgroundColor: 'rgb(23 23 23)'}}>
+                                        {/* if the moveFile state is true, display the modal with the file movement code*/}
+                                        {/* xMark icon for closing out the moveFile modal */}
+                                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '10%', width: '100%'}}>
+                                            <Pressable onPress={() => {
+                                                    setEditNote(false)
+                                                }
+                                                }>
+                                                <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
+                                            </Pressable>
+                                        </View>
+                                        <Text style={{fontSize: 40, color: 'white', fontWeight: 'bold', textAlign: 'left', width: '100%', paddingLeft: '5%', marginBottom: '10%'}}>Edit Note:</Text>
+                                        <View style={{width: '100%', height: '100%', paddingLeft: '5%', paddingRight: '5%'}}>
+                                        <TextInput 
+                                            multiline={true}
+                                            value={noteText}
+                                            style={{
+                                                width: '100%',
+                                                height: '50%',
+                                                backgroundColor: 'white',
+                                                fontSize: 20,
+                                                textAlignVertical: 'top',
+                                                padding: '3%'
+                                            }}
+                                            onChangeText={(text) => setNoteText(text)}
+                                            autoFocus={true}
+                                            onFocus={() => setEditingMode(true)}
+                                            ref={ref}
+                                            />
+                                            <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
+                                                <View style={{width: '70%',
+                                                        borderColor: '#777',
+                                                        borderRadius: 25,
+                                                        backgroundColor: 'white',
+                                                        borderWidth: 1,
+                                                        paddingTop: '2%',
+                                                        paddingBottom: '2%',
+                                                        marginLeft: '2%',
+                                                        paddingLeft: '2%',
+                                                        paddingRight: '3%'}}>
+                                                        <TouchableOpacity style={{
+                                                        display: 'flex', 
+                                                        flexDirection: 'row', 
+                                                        width: '100%', 
+                                                        justifyContent: 'space-around',
+
+                                                        }}
+                                                        onPress={() => {
+                                                            if (editingMode) setEditingMode(false)
+                                                            else {
+                                                                updateNote()
+                                                                toast.show('Note successfully edited', {
+                                                                    type: 'success'
+                                                                })
+                                                            }
+                                                        }}
+                                                        >
+                                                            <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>{editingMode ? 'Finished Editing' : 'Save Note'}</Text>
+                                                        </TouchableOpacity>
+                                                </View>
                                             </View>
                                         </View>
-                                    : fileObj.documentType === 'txt' ?
-                                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
-                                            <View style={{width: '70%',
-                                                    borderColor: '#777',
-                                                    borderRadius: 25,
-                                                    backgroundColor: 'white',
-                                                    borderWidth: 1,
-                                                    paddingTop: '2%',
-                                                    paddingBottom: '2%',
-                                                    marginLeft: '2%',
-                                                    paddingLeft: '12%',
-                                                    paddingRight: '12%'}}>
-                                                    <TouchableOpacity style={{
-                                                    display: 'flex', 
-                                                    flexDirection: 'row', 
-                                                    width: '100%', 
-                                                    justifyContent: 'space-around',
-
-                                                    }}
-                                                    disabled={fileURL ? false : true}
-                                                    onPress={() => setEditNote(true)}
-                                                    >
-                                                        <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>Edit Note</Text>
-                                                    </TouchableOpacity>
-                                            </View>
-                                        </View>
-                                        :
-                                        <></>}
-                                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
-                                        <View style={{width: '70%',
-                                                borderColor: '#777',
-                                                borderRadius: 25,
-                                                backgroundColor: 'white',
-                                                borderWidth: 1,
-                                                paddingTop: '2%',
-                                                paddingBottom: '2%',
-                                                marginLeft: '2%',
-                                                paddingLeft: '2%',
-                                                paddingRight: '3%'}}>
-                                                <TouchableOpacity style={{
-                                                display: 'flex', 
-                                                flexDirection: 'row', 
-                                                width: '100%', 
-                                                justifyContent: 'space-around',
-
-                                                }}
-                                                disabled={fileURL ? false : true}
-                                                onPress={() => Linking.openURL(fileURL)}
-                                                >
-                                                    <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>{fileURL ? 'View File In Browser' : 'Fetching File...'}</Text>
-                                                    {fileURL ? <FontAwesomeIcon icon={faArrowUpRightFromSquare} size={20} style={{marginTop: '1%'}}/> : <></>}
-                                                </TouchableOpacity>
-                                        </View>
                                     </View>
-                                </>
-                            : <></>}
+                                </Modal>
+                            )
+                        :
+                            <View style={{ paddingTop: '10%', backgroundColor: 'rgb(23 23 23)', height: '100%', width: '100%'}}>
+                                    
+                                    {/*x button container */}
+                                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%'}}>
+                                    <Pressable onPress={() => focus(null)}>
+                                        <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
+                                    </Pressable>
+                                    </View>
+                                    <View style={{paddingLeft: '5%'}}>
+
+                                    {/* handle file rename*/}
+                                    {add ?  
+                                            <View style={{paddingTop: '25%'}}>
+                                                <Text style={{color: 'white', fontSize: 35, fontWeight: '700'}}>Rename File:</Text>
+                                                <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',  marginTop: '10%'}}>
+                                                    <FontAwesomeIcon icon={faFile} size={30} color='white'/>
+                                                    <TextInput style={{color: 'white', fontSize: 20, fontWeight: 'bold', borderBottomColor: 'white', borderBottomWidth: 2, width: '70%', marginRight: '15%'}} onChangeText={(e) => setNewFileName(e)} autoFocus/>
+                                                </View>
+                                                <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', paddingRight: '5%', marginTop: '10%'}}>
+                                                    <View style={{width: '40%',
+                                                            borderColor: '#777',
+                                                            borderRadius: 25,
+                                                            backgroundColor: 'white',
+                                                            borderWidth: 1,
+                                                            paddingTop: '2%',
+                                                            paddingBottom: '2%',
+                                                            marginLeft: '2%'}}>
+                                                            <TouchableOpacity style={{
+                                                            display: 'flex', 
+                                                            flexDirection: 'row', 
+                                                            width: '100%', 
+                                                            justifyContent: 'center',
+                                                            }}
+                                                            onPress={() => {
+                                                                if (newFileName !== file.fileName.split('.')[0] && newFileName !== '') {
+                                                                    setMoveFile(true)
+                                                                    /* renameFile()
+                                                                    setAdd(false) */
+                                                                } else setAdd(false)
+                                                            }}
+                                                            >
+                                                                <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save</Text>
+                                                            </TouchableOpacity>
+                                                    </View>
+                                                    <View style={{width: '40%',
+                                                            borderColor: '#777',
+                                                            borderRadius: 25,
+                                                            backgroundColor: 'white',
+                                                            borderWidth: 1,
+                                                            paddingTop: '2%',
+                                                            paddingBottom: '2%',
+                                                            marginLeft: '2%'}}>
+                                                            <TouchableOpacity style={{
+                                                            display: 'flex', 
+                                                            flexDirection: 'row', 
+                                                            width: '100%', 
+                                                            justifyContent: 'center',
+                                                            }}
+                                                            onPress={() => setAdd(false)}
+                                                            >
+                                                                <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Cancel</Text>
+                                                            </TouchableOpacity>
+                                                    </View>
+                                                </View>
+                                            </View>            
+                                            : expanded ? 
+                                            <Modal animationType='slide' presentationStyle='pageSheet'>
+                                                {/* code to render expanded images */}
+                                                <View style={{ paddingTop: '10%', backgroundColor: 'rgb(23 23 23)', height: '100%', width: '100%'}}>
+                                                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: '5%', paddingTop: '5%', width: '100%'}}>
+                                                        <Pressable onPress={() => setExpanded(false)}>
+                                                            <FontAwesomeIcon icon={faXmark} color={'white'} size={30}/>
+                                                        </Pressable>
+                                                    </View>
+                                                    <View style={{height: '60%', marginTop: '20%'}}>
+                                                        <Image source={{uri: `${fileURL}`}} style={{width: '100%', height: '100%', objectFit: 'contain'}}/>
+                                                    </View>
+                                                </View>
+                                            </Modal>
+
+                                            :
+                                                <>
+                                                    {((file.fileName.split('.')[1] === 'jpg' || file.fileName.split('.')[1] === 'png' || file.fileName.split('.')[1] === 'JPG' || file.fileName.split('.')[1] === 'PNG' || file.fileName.split('.')[1] === 'jpeg' || file.fileName.split('.')[1] === 'JPEG')) ? 
+                                                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '10%', marginBottom: '10%'}}>
+                                                            {fileURL ? 
+                                                                <Pressable width={300} height={150} onPress={() => setExpanded(true)}>
+                                                                    <Image source={{uri: `${fileURL}`}} style={{width: '100%', height: '100%', objectFit: 'contain'}}/>
+                                                                </Pressable>
+                                                            : 
+                                                                <View style={{height: 150}}>
+                                                                    <FontAwesomeIcon icon={faImage} color='white' size={125}/>
+                                                                    <Text style={{color: 'white', textAlign: 'center', marginTop: 15, fontSize: 10}}>Fetching Image...</Text>
+                                                                </View>
+                                                            }
+                                                        </View>
+                                                    :(file.fileName.split('.')[1] === 'mp4' || file.fileName.split('.')[1] === 'mov') ? 
+                                                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '10%', marginBottom: '10%', height: 200, width: 340}}>
+                                                            {fileURL ? 
+                                                                <Video style={{flex: 1, alignSelf: 'stretch', height: '100%'}} source={{uri: `${fileURL}`}} useNativeControls resizeMode ='contain' isLooping onError={(error) => alert(error)}/>
+                                                            : 
+                                                                <View style={{height: 150}}>
+                                                                    <FontAwesomeIcon icon={faImage} color='white' size={125}/>
+                                                                        <Text style={{color: 'white', textAlign: 'center', marginTop: 15, fontSize: 10}}>Fetching Video...</Text>
+                                                                </View>
+                                                            }
+                                                        </View>
+                                                    : <></>
+                                                    }
+                                                    <View style={(file.fileName.split('.')[1] === 'mp4' || file.fileName.split('.')[1] === 'mov') ? {height: '37%', width: '90%'} : (file.fileName.includes('URL for') || file.fileName.split('.')[1] === 'm4a' || file.fileName.split('.')[1] === 'mp3') ? {height: '67%', width: '90%'} : (file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {height: '72.5%', width: '90%', marginTop: '5%'} : {height: '40%', width: '90%'}}>
+                                                        
+                                                        <Text style={{fontSize: 22, fontWeight: 'bold', color: 'white', marginTop: '5%'}} numberOfLines={3}>{newFileName}</Text>
+
+                                                        <TouchableOpacity style={{ marginTop: '10%'}} onPress={() => setAdd(true)}>
+                                                            <Text style={{fontSize: 18, color: 'white'}}>Rename File</Text>
+                                                        </TouchableOpacity>
+                                                        <TouchableOpacity style={{ marginTop: '10%'}} onPress={() => setMoveFile(true)}>
+                                                            <Text style={{fontSize: 18, color: 'white'}}>Move File To...</Text>
+                                                        </TouchableOpacity>
+                                                        <TouchableOpacity style={{ marginTop: '10%'}} onPress={() =>
+                                                            setPreDelete(true)}>
+                                                            <Text style={{fontSize: 18, color: 'red'}}>Delete File</Text>
+                                                        </TouchableOpacity>
+                                                    </View>
+
+                                                    {/* button that links to a non jpg or png file */}
+                                                    {(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? 
+                                                        <>  
+                                                            {file.fileName.includes('URL for:') 
+                                                                ? 
+                                                                <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+                                                                <View style={{width: '70%',
+                                                                        borderColor: '#777',
+                                                                        borderRadius: 25,
+                                                                        backgroundColor: 'white',
+                                                                        borderWidth: 1,
+                                                                        paddingTop: '2%',
+                                                                        paddingBottom: '2%',
+                                                                        marginLeft: '2%',
+                                                                        paddingLeft: '2%',
+                                                                        paddingRight: '3%'}}>
+                                                                        <TouchableOpacity style={{
+                                                                        display: 'flex', 
+                                                                        flexDirection: 'row', 
+                                                                        width: '100%', 
+                                                                        justifyContent: 'space-around',
+                                                                        paddingLeft: '20%',
+                                                                        paddingRight: '20%'
+                                                                        }}
+                                                                        disabled={fileURL ? false : true}
+                                                                        onPress={() => Linking.openURL(navigateURL)}
+                                                                        >
+                                                                            <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>Go To URL</Text>
+                                                                            {fileURL ? <FontAwesomeIcon icon={faArrowUpRightFromSquare} size={20} style={{marginTop: '1%'}}/> : <></>}
+                                                                        </TouchableOpacity>
+                                                                </View>
+                                                            </View>
+                                                            : fileObj.documentType === 'm4a' || fileObj.documentType === 'mp3' ? 
+                                                                <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
+                                                                    <View style={{width: '70%',
+                                                                            borderColor: '#777',
+                                                                            borderRadius: 25,
+                                                                            backgroundColor: 'white',
+                                                                            borderWidth: 1,
+                                                                            paddingTop: '2%',
+                                                                            paddingBottom: '2%',
+                                                                            marginLeft: '2%',
+                                                                            paddingLeft: '12%',
+                                                                            paddingRight: '12%'}}>
+                                                                            <TouchableOpacity style={{
+                                                                            display: 'flex', 
+                                                                            flexDirection: 'row', 
+                                                                            width: '100%', 
+                                                                            justifyContent: 'space-around',
+
+                                                                            }}
+                                                                            disabled={fileURL ? false : true}
+                                                                            onPress={() => {
+                                                                                if (!playing) playSound()
+                                                                                else pauseSound()
+                                                                            }}
+                                                                            >
+                                                                                <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>{fileURL && !playing ? 'Play Sound' : fileURL && playing ? 'Pause Sound' : 'Fetching File...'}</Text>
+                                                                                {fileURL ? <FontAwesomeIcon icon={playing ? faPause : faPlay} size={20} style={{marginTop: '1%'}}/> : <></>}
+                                                                            </TouchableOpacity>
+                                                                    </View>
+                                                                </View>
+                                                            : fileObj.documentType === 'txt' ?
+                                                                <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
+                                                                    <View style={{width: '70%',
+                                                                            borderColor: '#777',
+                                                                            borderRadius: 25,
+                                                                            backgroundColor: 'white',
+                                                                            borderWidth: 1,
+                                                                            paddingTop: '2%',
+                                                                            paddingBottom: '2%',
+                                                                            marginLeft: '2%',
+                                                                            paddingLeft: '12%',
+                                                                            paddingRight: '12%'}}>
+                                                                            <TouchableOpacity style={{
+                                                                            display: 'flex', 
+                                                                            flexDirection: 'row', 
+                                                                            width: '100%', 
+                                                                            justifyContent: 'space-around',
+
+                                                                            }}
+                                                                            disabled={fileURL ? false : true}
+                                                                            onPress={() => setEditNote(true)}
+                                                                            >
+                                                                                <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>Edit Note</Text>
+                                                                            </TouchableOpacity>
+                                                                    </View>
+                                                                </View>
+                                                                :
+                                                                <></>}
+                                                            <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'}}>
+                                                                <View style={{width: '70%',
+                                                                        borderColor: '#777',
+                                                                        borderRadius: 25,
+                                                                        backgroundColor: 'white',
+                                                                        borderWidth: 1,
+                                                                        paddingTop: '2%',
+                                                                        paddingBottom: '2%',
+                                                                        marginLeft: '2%',
+                                                                        paddingLeft: '2%',
+                                                                        paddingRight: '3%'}}>
+                                                                        <TouchableOpacity style={{
+                                                                        display: 'flex', 
+                                                                        flexDirection: 'row', 
+                                                                        width: '100%', 
+                                                                        justifyContent: 'space-around',
+
+                                                                        }}
+                                                                        disabled={fileURL ? false : true}
+                                                                        onPress={() => Linking.openURL(fileURL)}
+                                                                        >
+                                                                            <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>{fileURL ? 'View File In Browser' : 'Fetching File...'}</Text>
+                                                                            {fileURL ? <FontAwesomeIcon icon={faArrowUpRightFromSquare} size={20} style={{marginTop: '1%'}}/> : <></>}
+                                                                        </TouchableOpacity>
+                                                                </View>
+                                                            </View>
+                                                        </>
+                                                    : <></>}
 
 
-                            {/* button for downloading the file on the phones storage */}
-                            <View style={(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'} : {display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '25%'}}>
-                                <View style={{width: '70%',
-                                        borderColor: '#777',
-                                        borderRadius: 25,
-                                        backgroundColor: 'white',
-                                        borderWidth: 1,
-                                        paddingTop: '2%',
-                                        paddingBottom: '2%',
-                                        marginLeft: '2%'}}>
-                                        <TouchableOpacity style={{
-                                        display: 'flex', 
-                                        flexDirection: 'row', 
-                                        width: '100%', 
-                                        justifyContent: 'center',
-                                        }}
-                                        onPress={downloadFileFunction}
-                                        >
-                                            <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>Download Or Share File</Text>
-                                        </TouchableOpacity>
-                                </View>
+                                                    {/* button for downloading the file on the phones storage */}
+                                                    <View style={(file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'jpg' && file.fileName.split('.')[1] !== 'png' && file.fileName.split('.')[1] !== 'PNG' && file.fileName.split('.')[1] !== 'JPG' && file.fileName.split('.')[1] !== 'jpeg' && file.fileName.split('.')[1] !== 'JPEG') ? {display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '5%'} : {display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '25%'}}>
+                                                        <View style={{width: '70%',
+                                                                borderColor: '#777',
+                                                                borderRadius: 25,
+                                                                backgroundColor: 'white',
+                                                                borderWidth: 1,
+                                                                paddingTop: '2%',
+                                                                paddingBottom: '2%',
+                                                                marginLeft: '2%'}}>
+                                                                <TouchableOpacity style={{
+                                                                display: 'flex', 
+                                                                flexDirection: 'row', 
+                                                                width: '100%', 
+                                                                justifyContent: 'center',
+                                                                }}
+                                                                onPress={downloadFileFunction}
+                                                                >
+                                                                    <Text style={{fontSize: 20, color: 'black', fontWeight: '600'}}>Download Or Share File</Text>
+                                                                </TouchableOpacity>
+                                                        </View>
+                                                    </View>
+                                                </>
+                                            }
+                                    </View>
                             </View>
-                        </>
-                    }
-            </View>
-    </View>
-    }
-</>
-</Modal>
+                        }
+                    </>
+                </Modal>
                 
-                : <></>}
+            : <></>}
                     
-            </>
+        </>
     )
 
    
