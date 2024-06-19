@@ -61,14 +61,14 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
             } catch (err) {console.log(err)}
         } else console.log('no user yet')
         
-    }, [auth, addFolder])
+    }, [auth, addFolderForm])
 
     //set the userFolders
     useEffect(() => {
         if (userInst) {
             setFolders(userInst.files)
         }
-    }, [userInst])
+    }, [userInst, addFolderForm])
 
     //get the downloadable url from firebase storage from the file doc and save it in state
     useEffect(() => {
@@ -103,7 +103,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
             return value.nestedUnder === focusedFolder
         })
         setSubFolders(exists)
-    }, [focusedFolder])
+    }, [focusedFolder, addFolderForm])
 
     useEffect(() => {
         if (fileURL && fileObj && fileObj.documentType === 'txt') {
@@ -300,6 +300,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
                 updateUser(updatedUser)
                 setAddFolderForm(false)
                 setFolders(newFiles)
+                setNewFolderName('')
             }
             } else {
             alert('Please enter a folder name')
