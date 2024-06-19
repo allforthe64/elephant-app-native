@@ -271,7 +271,6 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
 
         //add a folder
         const addFolder = async (folderName, targetNest) => {
-            alert('running local addFolder function')
             //if the incoming targetNest is empty string, create the new folder under the home directory
             if (folderName.length > 0) {
             if (targetNest === '') {
