@@ -16,7 +16,7 @@ import { uploadBytes, ref as refFunction, deleteObject } from 'firebase/storage'
 import { format } from 'date-fns'
 
 
-const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, handleFileMove}) => {
+const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFileMove}) => {
 
     //initialize state
     const [userInst, setUserInst] = useState()
