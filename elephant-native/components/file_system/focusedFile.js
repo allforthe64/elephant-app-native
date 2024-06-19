@@ -16,7 +16,7 @@ import { uploadBytes, ref as refFunction, deleteObject } from 'firebase/storage'
 import { format } from 'date-fns'
 
 
-const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, handleFileMove, addFolder}) => {
+const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, handleFileMove}) => {
 
     //initialize state
     const [userInst, setUserInst] = useState()
@@ -29,6 +29,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
     const [sound, setSound] = useState()
     const [playing, setPlaying] = useState(false)
     const [playbackPosition, setPlaybackPosition] = useState(0)
+    const [folders, setFolders] = useState({})
 
     const [fileURL, setFileURL] = useState()
     const [fileObj, setFileObj] = useState()
@@ -61,6 +62,64 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
         } else console.log('no user yet')
         
     }, [auth, addFolder])
+
+    //set the userFolders
+    useEffect(() => {
+        if (userInst) {
+            setFolders(userInst.files)
+        }
+    }, [userInst])
+
+    //get the downloadable url from firebase storage from the file doc and save it in state
+    useEffect(() => {
+        const getFileDoc = async () => {
+            const fileInst = await getFile(file.fileId)
+            const url = await getFileDownloadURL(fileInst.uri)
+            setFileURL(url)
+            setFileObj(fileInst)
+            setNavigateURL(fileInst.linksTo)
+        }
+        getFileDoc()
+
+        const getPermissions = async () => {
+            //get shareAsync permissions
+            const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync()
+            setMediaPermissions(mediaLibraryPermission.status === "granted")
+        }
+        getPermissions()
+    }, [])
+
+    //unload the sound
+    useEffect(() => {
+        return sound
+          ? () => {
+              sound.unloadAsync();
+            }
+          : undefined;
+    }, [sound]);
+
+    useEffect(() => {
+        const exists = Object.values(folders).some((value) => {
+            return value.nestedUnder === focusedFolder
+        })
+        setSubFolders(exists)
+    }, [focusedFolder])
+
+    useEffect(() => {
+        if (fileURL && fileObj && fileObj.documentType === 'txt') {
+            fetch(fileURL).then(result => result.text())
+            .then(text => {
+                setNoteText(text)
+            })
+        }
+    }, [fileURL, fileObj])
+
+    useEffect(() => {
+        if (editingMode === false) Keyboard.dismiss()
+        else {
+            if (ref.current) ref.current.focus()
+        } 
+    }, [editingMode])
 
 
         //rename a file by overwriting the fileName property
@@ -123,25 +182,6 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                 })
             }
         }
-
-        //get the downloadable url from firebase storage from the file doc and save it in state
-        useEffect(() => {
-            const getFileDoc = async () => {
-                const fileInst = await getFile(file.fileId)
-                const url = await getFileDownloadURL(fileInst.uri)
-                setFileURL(url)
-                setFileObj(fileInst)
-                setNavigateURL(fileInst.linksTo)
-            }
-            getFileDoc()
-
-            const getPermissions = async () => {
-                //get shareAsync permissions
-                const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync()
-                setMediaPermissions(mediaLibraryPermission.status === "granted")
-            }
-            getPermissions()
-        }, [])
 
         //call download async method on url passed from firebase storage bucket
         const downloadFileFunction = async () => {
@@ -229,37 +269,42 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
             setEditNote(false)
         }
 
-        //unload the sound
-        useEffect(() => {
-            return sound
-              ? () => {
-                  sound.unloadAsync();
+        //add a folder
+        const addFolder = async (folderName, targetNest) => {
+            alert('running local addFolder function')
+            //if the incoming targetNest is empty string, create the new folder under the home directory
+            if (folderName.length > 0) {
+            if (targetNest === '') {
+                const newFile = {
+                id: Math.random().toString(20).toString().split('.')[1] + Math.random().toString(20).toString().split('.')[1],
+                fileName: folderName,
+                nestedUnder: ''
                 }
-              : undefined;
-        }, [sound]);
+        
+                const newFiles = [...userInst.files, newFile]
+                const updatedUser = {...userInst, files: newFiles}
+                await updateUser(updatedUser)
+                setNewFolderName('')
+                setFolders(newFiles)
+                
+            } else {           //if the incoming targetNest has a value, create the new folder with the nestedUnder property set to targetNest
+                const newFile = {
+                id: Math.random().toString(20).toString().split('.')[1] + Math.random().toString(20).toString().split('.')[1],
+                fileName: folderName,
+                nestedUnder: targetNest
+                }
 
-        useEffect(() => {
-            const exists = Object.values(folders).some((value) => {
-                return value.nestedUnder === focusedFolder
-            })
-            setSubFolders(exists)
-        }, [focusedFolder])
-
-        useEffect(() => {
-            if (fileURL && fileObj && fileObj.documentType === 'txt') {
-                fetch(fileURL).then(result => result.text())
-                .then(text => {
-                    setNoteText(text)
-                })
+                const newFiles = [...userInst.files, newFile]
+                const updatedUser = {...userInst, files: newFiles}
+        
+                updateUser(updatedUser)
+                setAddFolderForm(false)
+                setFolders(newFiles)
             }
-        }, [fileURL, fileObj])
-
-        useEffect(() => {
-            if (editingMode === false) Keyboard.dismiss()
-            else {
-                if (ref.current) ref.current.focus()
-            } 
-        }, [editingMode])
+            } else {
+            alert('Please enter a folder name')
+            }
+        }
 
     return (
         <>
@@ -369,10 +414,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, folders, 
                                     justifyContent: 'center',
                                     }}
                                     onPress={async () => {
-                                        /* alert('addFolder button click') */
                                         addFolder(newFolderName, focusedFolder ? focusedFolder : '')
-                                        setNewFolderName('')
-                                        setAddFolderForm(false)
                                     }}
                                     >
                                         <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save</Text>
