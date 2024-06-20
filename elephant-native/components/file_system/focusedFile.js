@@ -124,17 +124,14 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
 
         //rename a file by overwriting the fileName property
         const renameFile = () => {
-            alert('running rename function')
             let version = 0
             userInst.fileRefs.forEach(fileRef => {
                 if (fileRef.fileName.split('.')[0].toLowerCase() === newFileName.toLowerCase()) version ++})
-            console.log(version)
-
-            console.log(version)
 
             if (newFileName !== file.fileName.split('.')[0] && newFileName.length > 0) {
                 const newFile = {
                     ...file,
+                    flag: destination.id,
                     fileName: newFileName + '.' + file.fileName.split('.')[1],
                     version: version
                 }
@@ -149,9 +146,64 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
             }
         }
 
+        const renameAndMove = () => {
+            if (destination.id !== null) {
+
+                //create a new file instance with the modified name and flag
+                console.log('In the destination !== null check')
+                const newFile = {
+                    ...file,
+                    flag: destination.id,
+                    fileName: newFileName + '.' + file.fileName.split('.')[1],
+                    version: version
+                }
+                const newFileObj = {
+                    ...fileObj,
+                    fileName: newFileName + '.' + file.fileName.split('.')[1],
+                    fileId: file.fileId,
+                    version: version
+                }
+                renameFileFunction({newFileRef: newFile, newFileInst: newFileObj})
+                setNewFileName(version > 0 ? newFileName + ` (${version})` + '.' + file.fileName.split('.')[1] : newFileName + '.' + file.fileName.split('.')[1])
+
+                focus(false)
+                setDestination({id: null, fileName: null, nestedUnder: null})
+                setMoveFile(false)
+                /* handleFileMove(newFile) */
+                toast.show(`Moved file to ${destination.fileName} and renamed it`, {
+                    type: 'success'
+                })
+            } else if (destination.id === null && focusedFolder !== null && focusedFolder !== undefined) {
+
+                //create a new file instance with the modified name and flag
+                console.log('in the destination does equal null check')
+                const folderInst = folders.filter(folder => folder.id === focusedFolder)
+                const newFile = {
+                    ...file,
+                    flag: folderInst[0].id,
+                    fileName: newFileName + '.' + file.fileName.split('.')[1],
+                    version: version
+                }
+                const newFileObj = {
+                    ...fileObj,
+                    fileName: newFileName + '.' + file.fileName.split('.')[1],
+                    fileId: file.fileId,
+                    version: version
+                }
+                renameFileFunction({newFileRef: newFile, newFileInst: newFileObj})
+                setNewFileName(version > 0 ? newFileName + ` (${version})` + '.' + file.fileName.split('.')[1] : newFileName + '.' + file.fileName.split('.')[1])
+                focus(false)
+                setDestination({id: null, fileName: null, nestedUnder: null})
+                setMoveFile(false)
+                /* handleFileMove(newFile) */
+                toast.show(`Moved file to ${folderInst[0].fileName} and renamed it`, {
+                    type: 'success'
+                })
+            }
+        }
+
         //move a file by changing its flag property
         const handleMove = () => {
-            alert('running move function')
             if (destination.id !== null) {4
                 console.log('In the destination !== null check')
                 const newFile = {
@@ -553,9 +605,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
                                                             marginBottom: '10%',
                                                             marginLeft: '2%'}}>
                                                             <TouchableOpacity onPress={() => {
-                                                                handleMove()
-                                                                renameFile()
-                                                                setAdd(false)
+                                                                renameAndMove()
                                                             }} style={{
                                                             display: 'flex', 
                                                             flexDirection: 'row', 
