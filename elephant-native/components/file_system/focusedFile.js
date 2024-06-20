@@ -147,58 +147,62 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
         }
 
         const renameAndMove = () => {
-            if (destination.id !== null) {
+            try {
+                if (destination.id !== null) {
 
-                //create a new file instance with the modified name and flag
-                console.log('In the destination !== null check')
-                const newFile = {
-                    ...file,
-                    flag: destination.id,
-                    fileName: newFileName + '.' + file.fileName.split('.')[1],
-                    version: version
-                }
-                const newFileObj = {
-                    ...fileObj,
-                    fileName: newFileName + '.' + file.fileName.split('.')[1],
-                    fileId: file.fileId,
-                    version: version
-                }
-                renameFileFunction({newFileRef: newFile, newFileInst: newFileObj})
-                setNewFileName(version > 0 ? newFileName + ` (${version})` + '.' + file.fileName.split('.')[1] : newFileName + '.' + file.fileName.split('.')[1])
+                    //create a new file instance with the modified name and flag
+                    console.log('In the destination !== null check')
+                    const newFile = {
+                        ...file,
+                        flag: destination.id,
+                        fileName: newFileName + '.' + file.fileName.split('.')[1],
+                        version: version
+                    }
+                    const newFileObj = {
+                        ...fileObj,
+                        fileName: newFileName + '.' + file.fileName.split('.')[1],
+                        fileId: file.fileId,
+                        version: version
+                    }
+                    renameFileFunction({newFileRef: newFile, newFileInst: newFileObj})
+                    setNewFileName(version > 0 ? newFileName + ` (${version})` + '.' + file.fileName.split('.')[1] : newFileName + '.' + file.fileName.split('.')[1])
 
-                focus(false)
-                setDestination({id: null, fileName: null, nestedUnder: null})
-                setMoveFile(false)
-                /* handleFileMove(newFile) */
-                toast.show(`Moved file to ${destination.fileName} and renamed it`, {
-                    type: 'success'
-                })
-            } else if (destination.id === null && focusedFolder !== null && focusedFolder !== undefined) {
+                    focus(false)
+                    setDestination({id: null, fileName: null, nestedUnder: null})
+                    setMoveFile(false)
+                    /* handleFileMove(newFile) */
+                    toast.show(`Moved file to ${destination.fileName} and renamed it`, {
+                        type: 'success'
+                    })
+                } else if (destination.id === null && focusedFolder !== null && focusedFolder !== undefined) {
 
-                //create a new file instance with the modified name and flag
-                console.log('in the destination does equal null check')
-                const folderInst = folders.filter(folder => folder.id === focusedFolder)
-                const newFile = {
-                    ...file,
-                    flag: folderInst[0].id,
-                    fileName: newFileName + '.' + file.fileName.split('.')[1],
-                    version: version
+                    //create a new file instance with the modified name and flag
+                    console.log('in the destination does equal null check')
+                    const folderInst = folders.filter(folder => folder.id === focusedFolder)
+                    const newFile = {
+                        ...file,
+                        flag: folderInst[0].id,
+                        fileName: newFileName + '.' + file.fileName.split('.')[1],
+                        version: version
+                    }
+                    const newFileObj = {
+                        ...fileObj,
+                        fileName: newFileName + '.' + file.fileName.split('.')[1],
+                        fileId: file.fileId,
+                        version: version
+                    }
+                    renameFileFunction({newFileRef: newFile, newFileInst: newFileObj})
+                    setNewFileName(version > 0 ? newFileName + ` (${version})` + '.' + file.fileName.split('.')[1] : newFileName + '.' + file.fileName.split('.')[1])
+                    focus(false)
+                    setDestination({id: null, fileName: null, nestedUnder: null})
+                    setMoveFile(false)
+                    /* handleFileMove(newFile) */
+                    toast.show(`Moved file to ${folderInst[0].fileName} and renamed it`, {
+                        type: 'success'
+                    })
                 }
-                const newFileObj = {
-                    ...fileObj,
-                    fileName: newFileName + '.' + file.fileName.split('.')[1],
-                    fileId: file.fileId,
-                    version: version
-                }
-                renameFileFunction({newFileRef: newFile, newFileInst: newFileObj})
-                setNewFileName(version > 0 ? newFileName + ` (${version})` + '.' + file.fileName.split('.')[1] : newFileName + '.' + file.fileName.split('.')[1])
-                focus(false)
-                setDestination({id: null, fileName: null, nestedUnder: null})
-                setMoveFile(false)
-                /* handleFileMove(newFile) */
-                toast.show(`Moved file to ${folderInst[0].fileName} and renamed it`, {
-                    type: 'success'
-                })
+            } catch (err) {
+                alert(err)
             }
         }
 
