@@ -124,7 +124,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
 
         //rename a file by overwriting the fileName property
         const renameFile = () => {
-            console.log(newFileName)
+            alert('running rename function')
             let version = 0
             userInst.fileRefs.forEach(fileRef => {
                 if (fileRef.fileName.split('.')[0].toLowerCase() === newFileName.toLowerCase()) version ++})
@@ -151,6 +151,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
 
         //move a file by changing its flag property
         const handleMove = () => {
+            alert('running move function')
             if (destination.id !== null) {4
                 console.log('In the destination !== null check')
                 const newFile = {
@@ -552,8 +553,8 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
                                                             marginBottom: '10%',
                                                             marginLeft: '2%'}}>
                                                             <TouchableOpacity onPress={() => {
-                                                                renameFile()
                                                                 handleMove()
+                                                                renameFile()
                                                                 setAdd(false)
                                                             }} style={{
                                                             display: 'flex', 
@@ -584,7 +585,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
                                                                 onPress={() => {
                                                                         renameFile()
                                                                         setAdd(false)
-                                                                        setMoveFile(true)
+                                                                        setMoveFile(false)
                                                                 }}
                                                                 >
                                                                     <Text style={{fontSize: 10, color: 'black', fontWeight: '600'}}>Rename without moving</Text>
