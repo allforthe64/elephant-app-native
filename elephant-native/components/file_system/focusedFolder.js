@@ -18,6 +18,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
     const [focusedFile, setFocusedFile] = useState()
     const [keybaordClosed, setKeyboardClosed] = useState(true)
     const [nestedFiles, setNestedFiles] = useState([])
+    const [nestedFolders, setNestedFolders] = useState([])
     
 
 
@@ -51,6 +52,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
         }
 
         setNestedFiles(folder.files)
+        setNestedFolders(folder.folders)
 
     }, [folder])
 
@@ -121,7 +123,7 @@ const FocusedFolder = ({folder, folders, clear, getTargetFolder, addFolder, rena
                     </View>
                     <View style={add ? {height: 250} : {height: 267, marginBottom: '5%'}}>
                         <ScrollView style={{height: '100%'}}>
-                            {folder.folders.map((f, i) => {return <Folder key={f + i} getTargetFolder={getTargetFolder} folders={folders} renameFolder={renameFolder} moveFolderFunc={moveFolder} folder={f} deleteFolder={deleteFolder}/>})}
+                            {nestedFolders.map((f, i) => {return <Folder key={f + i} getTargetFolder={getTargetFolder} folders={folders} renameFolder={renameFolder} moveFolderFunc={moveFolder} folder={f} deleteFolder={deleteFolder}/>})}
                             {nestedFiles.map((file, i) => {return <File key={file + i} focus={setFocusedFile} file={file} />})}
                         </ScrollView> 
                     </View>
