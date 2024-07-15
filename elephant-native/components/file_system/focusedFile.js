@@ -126,7 +126,7 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
         const renameFile = () => {
             let version = 0
             userInst.fileRefs.forEach(fileRef => {
-            if (fileRef.fileName.split('.')[0].toLowerCase() === newFileName.toLowerCase()) version ++})
+                if (fileRef.fileName.split('.')[0].toLowerCase() === newFileName.toLowerCase()) version ++})
 
             if (newFileName !== file.fileName.split('.')[0] && newFileName.length > 0) {
                 const newFile = {
@@ -149,11 +149,6 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
         const renameAndMove = () => {
             try {
                 if (destination.id !== null) {
-
-                    //establish the version for the new file
-                    let version = 0
-                    userInst.fileRefs.forEach(fileRef => {
-                    if (fileRef.fileName.split('.')[0].toLowerCase() === newFileName.toLowerCase()) version ++})
 
                     //create a new file instance with the modified name and flag
                     console.log('In the destination !== null check')
@@ -180,11 +175,6 @@ const FocusedFileComp = ({file, focus, deleteFile, renameFileFunction, handleFil
                         type: 'success'
                     })
                 } else if (destination.id === null && focusedFolder !== null && focusedFolder !== undefined) {
-
-                    //establish the version for the new file
-                    let version = 0
-                    userInst.fileRefs.forEach(fileRef => {
-                    if (fileRef.fileName.split('.')[0].toLowerCase() === newFileName.toLowerCase()) version ++})
 
                     //create a new file instance with the modified name and flag
                     console.log('in the destination does equal null check')

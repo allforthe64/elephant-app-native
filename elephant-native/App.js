@@ -8,6 +8,7 @@ import { ToastProvider } from 'react-native-toast-notifications';
 import { setNativeExceptionHandler, setJSExceptionHandler } from 'react-native-exception-handler';
 import * as Sentry from '@sentry/react-native';
 
+
 Sentry.init({
   dsn: 'https://d460ada50918758584a197b5b1d0793e@o4507346968772608.ingest.us.sentry.io/4507346971328512',
 });
