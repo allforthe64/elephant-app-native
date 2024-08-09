@@ -64,7 +64,6 @@ export async function userListener(setCurrentUser, setStaging, user) {
 
 export async function addfile(file, destination) {
 
-
     try {
         let fileRef
         if (file.linksTo) {

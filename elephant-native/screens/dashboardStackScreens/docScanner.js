@@ -279,31 +279,31 @@ const DocScanner = () => {
                                   <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Save</Text>
                               </TouchableOpacity>
                         </View>
+                  </View>
+                  <Text style={{color: 'white', fontSize: 20, marginTop: '7%', textAlign: 'center'}}>Or</Text>
+                  <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', width: '100%', marginTop: '7%'}}>
+                    <View style={{width: '35%',
+                        borderColor: '#777',
+                        borderRadius: 25,
+                        backgroundColor: 'white',
+                        borderWidth: 1,
+                        paddingTop: '2%',
+                        paddingBottom: '2%',
+                        marginLeft: '2%'}}>
+                        <TouchableOpacity style={{
+                        display: 'flex', 
+                        flexDirection: 'row', 
+                        width: '100%', 
+                        justifyContent: 'center',
+                        }}
+                        onPress={() => {
+                            setNameGiven(true)
+                        }}
+                        >
+                            <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Use Timestamp</Text>
+                        </TouchableOpacity>
                     </View>
-                    <Text style={{color: 'white', fontSize: 20, marginTop: '7%', textAlign: 'center'}}>Or</Text>
-                    <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', width: '100%', marginTop: '7%'}}>
-                      <View style={{width: '35%',
-                          borderColor: '#777',
-                          borderRadius: 25,
-                          backgroundColor: 'white',
-                          borderWidth: 1,
-                          paddingTop: '2%',
-                          paddingBottom: '2%',
-                          marginLeft: '2%'}}>
-                          <TouchableOpacity style={{
-                          display: 'flex', 
-                          flexDirection: 'row', 
-                          width: '100%', 
-                          justifyContent: 'center',
-                          }}
-                          onPress={() => {
-                              setNameGiven(true)
-                          }}
-                          >
-                              <Text style={{fontSize: 15, color: 'black', fontWeight: '600'}}>Use Timestamp</Text>
-                          </TouchableOpacity>
-                      </View>
-                    </View>
+                  </View>
               </>
               : addFolderForm ? 
                   <>

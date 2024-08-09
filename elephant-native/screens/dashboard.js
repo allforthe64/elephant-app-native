@@ -18,8 +18,11 @@ export default function Dashboard() {
       <Stack.Screen name="Dashboard" component={DashMain} options={{headerShown: false}}/>
       <Stack.Screen name="Files" component={Files} />
       <Stack.Screen name="Notepad" component={Notepad} />
-      <Stack.Screen name="Camera" component={CameraComponent} />
+      
+      <Stack.Screen name="Camera" component={CameraComponent} /> 
+
       <Stack.Screen name="Record Audio" component={AudioRecorder} />
+      
       <Stack.Screen name="Upload A File" component={FilePicker} />
       <Stack.Screen name='QR Scanner' component={Scanner} />
       {/* <Stack.Screen name='Scan Document' component={DocScanner} /> */}

@@ -13,7 +13,6 @@ import Login from './login';
 import ThankYou from './thankYou';
 import { AuthContext } from '../context/authContext';
 import { onAuthStateChanged } from '@firebase/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Drawer = createDrawerNavigator();
 
